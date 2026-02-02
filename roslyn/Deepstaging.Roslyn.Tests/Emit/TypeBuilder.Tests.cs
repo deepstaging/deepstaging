@@ -139,4 +139,110 @@ public class TypeBuilderTests : RoslynTestBase
         await Assert.That(result.Code).Contains("[Obsolete]");
         await Assert.That(result.Code).Contains("public string GetName()");
     }
+
+    #region Nested Types
+
+    [Test]
+    public async Task Can_emit_nested_class()
+    {
+        var result = TypeBuilder
+            .Class("Outer")
+            .InNamespace("MyApp.Domain")
+            .AddNestedType("Inner", n => n
+                .WithAccessibility(Accessibility.Private)
+                .AddProperty("Value", "int", p => p.WithAutoPropertyAccessors()))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class Outer");
+        await Assert.That(result.Code).Contains("private class Inner");
+        await Assert.That(result.Code).Contains("public int Value");
+    }
+
+    [Test]
+    public async Task Can_emit_multiple_nested_classes()
+    {
+        var result = TypeBuilder
+            .Class("Container")
+            .InNamespace("MyApp")
+            .AddNestedType("First", n => n.WithAccessibility(Accessibility.Public))
+            .AddNestedType("Second", n => n.WithAccessibility(Accessibility.Internal))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class First");
+        await Assert.That(result.Code).Contains("internal class Second");
+    }
+
+    [Test]
+    public async Task Can_emit_deeply_nested_classes()
+    {
+        var result = TypeBuilder
+            .Class("Level1")
+            .InNamespace("MyApp")
+            .AddNestedType("Level2", n => n
+                .AddNestedType("Level3", n2 => n2
+                    .AddProperty("DeepValue", "string", p => p.WithAutoPropertyAccessors())))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class Level1");
+        await Assert.That(result.Code).Contains("public class Level2");
+        await Assert.That(result.Code).Contains("public class Level3");
+        await Assert.That(result.Code).Contains("public string DeepValue");
+    }
+
+    [Test]
+    public async Task Can_emit_nested_struct()
+    {
+        var nestedStruct = TypeBuilder.Struct("InnerStruct")
+            .WithAccessibility(Accessibility.Private)
+            .AddField("_value", "int", f => f);
+
+        var result = TypeBuilder
+            .Class("Outer")
+            .InNamespace("MyApp")
+            .AddNestedType(nestedStruct)
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("private struct InnerStruct");
+    }
+
+    [Test]
+    public async Task Can_emit_nested_interface()
+    {
+        var result = TypeBuilder
+            .Class("Service")
+            .InNamespace("MyApp")
+            .AddNestedType("ICallback", n => TypeBuilder.Interface("ICallback")
+                .WithAccessibility(Accessibility.Public)
+                .AddMethod("OnComplete", m => m.WithReturnType("void")))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public interface ICallback");
+    }
+
+    [Test]
+    public async Task Nested_class_compiles()
+    {
+        var result = TypeBuilder
+            .Class("Outer")
+            .InNamespace("MyApp")
+            .AddUsing("System")
+            .AddNestedType("Inner", n => n
+                .WithAccessibility(Accessibility.Private)
+                .AddProperty("Name", "string", p => p.WithAutoPropertyAccessors()))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+
+        var compilation = CompilationFor(result.Code!);
+        var diagnostics = compilation.GetDiagnostics()
+            .Where(d => d.Severity == DiagnosticSeverity.Error);
+        await Assert.That(diagnostics).IsEmpty();
+    }
+
+    #endregion
 }
