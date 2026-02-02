@@ -46,4 +46,34 @@ public class EffectsModuleEmitterTests : RoslynTestBase
         
         await Assert.That(emit).IsSuccessful();
     }
+    
+    [Test]
+    public async Task ProducesDbContextEffectsModule()
+    {
+        var source = """
+                     using Microsoft.EntityFrameworkCore;
+
+                     namespace TestApp;
+
+                     public class User { public int Id { get; set; } }
+
+                     public class AppDbContext : DbContext
+                     {
+                         public DbSet<User> Users { get; set; } = null!;
+                     }
+
+                     [Deepstaging.EffectsModule(typeof(AppDbContext), Name = "Database")]
+                     public partial class MyEffects;
+                     """;
+
+        var emit = SymbolsFor(source)
+            .RequireNamedType("MyEffects")
+            .ReadEffectsModules()
+            .First()
+            .EmitEffectsModule();
+        
+        await Assert.That(emit).IsSuccessful();
+        await Assert.That(emit).CodeContains("where RT : IHasAppDbContext");
+        await Assert.That(emit).CodeContains("liftEff<RT, int>(async rt => await rt.AppDbContext.SaveChangesAsync(token)");
+    }
 }

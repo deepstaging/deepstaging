@@ -77,7 +77,35 @@ public static class EffectsModuleEmitter
     }
 }
 
-file static class BuilderExtensions
+file static class DbContextEffectExtensions
+{
+    public static TypeBuilder AddDbContextEffects(this TypeBuilder builder, EffectsModuleModel model)
+    {
+        return builder.If(model.IsDbContext, b => b
+            .AddUsings()
+            .AddMethod(model.SaveChangesAsyncMethod())
+        );
+    }
+
+    private static TypeBuilder AddUsings(this TypeBuilder builder) => builder
+        .AddUsing("System.Diagnostics")
+        .AddUsing("System.Linq.Expressions")
+        .AddUsing("LanguageExt")
+        .AddUsing("LanguageExt.Effects")
+        .AddUsing("Microsoft.EntityFrameworkCore")
+        .AddUsing("static LanguageExt.Prelude");
+
+    private static MethodBuilder SaveChangesAsyncMethod(this EffectsModuleModel model) =>
+        MethodBuilder.Parse("public static Eff<RT, int> SaveChangesAsync<RT>(CancellationToken token = default) where RT : IHasAppDbContext")
+            .WithXmlDoc("Saves all changes made in this context to the database asynchronously.")
+            .WithExpressionBody(
+                $"""liftEff<RT, int>(async rt => await rt.{model.PropertyName}.SaveChangesAsync(token))"""
+            )
+            .If(model.Instrumented, m => m
+                .AppendExpressionBody($""".WithActivity("{model.Name}.SaveChangesAsync", ActivitySource)"""));
+}
+
+file static class EffectMethodExtensions
 {
     public static TypeBuilder AddEffectMethods(this TypeBuilder builder, EffectsModuleModel module) =>
         builder.If(module.Methods.Any(), b => b
@@ -92,14 +120,6 @@ file static class BuilderExtensions
                     .WithReturnType($"Eff<RT, {method.EffResultType}>")
                     .WithXmlDoc(method.XmlDocumentation)
                     .WithExpressionBody(module.LiftedMethodExpression(method))));
-
-    public static TypeBuilder AddDbContextEffects(this TypeBuilder builder, EffectsModuleModel module)
-    {
-        if(!module.IsDbContext)
-            return builder;
-
-        return builder;
-    }
 
     private static MethodBuilder AddMethodParameters(this MethodBuilder builder, EffectMethodModel method) =>
         builder.WithEach(method.Parameters, (b, param) => param.HasDefaultValue

@@ -273,6 +273,21 @@ public readonly struct MethodBuilder
             _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, null, expression, _xmlDoc);
     }
 
+    /// <summary>
+    /// Appends to the existing expression body.
+    /// Useful for chaining method calls like: .WithExpressionBody("liftEff(...)").AppendExpressionBody(".WithActivity(...)")
+    /// </summary>
+    /// <param name="suffix">The text to append to the expression body.</param>
+    /// <exception cref="InvalidOperationException">Thrown when no expression body has been set.</exception>
+    public MethodBuilder AppendExpressionBody(string suffix)
+    {
+        if (_expressionBody is null)
+            throw new InvalidOperationException("Cannot append to expression body when no expression body has been set.");
+
+        return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, null, _expressionBody + suffix, _xmlDoc);
+    }
+
     #endregion
 
     #region XML Documentation

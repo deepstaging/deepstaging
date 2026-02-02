@@ -27,7 +27,7 @@ public static partial class {{ Name }}Effects
     /// <summary>
     /// Saves all changes made in this context to the database.
     /// </summary>
-    public static Eff<RT, int> SaveChangesAsync<RT>(CancellationToken token = default) where RT : {{ CapabilityInterface }} =>
+        public static Eff<RT, int> SaveChangesAsync<RT>(CancellationToken token = default) where RT : {{ CapabilityInterface }} =>
         liftEff<RT, int>(async rt => 
             await rt.{{ PropertyName }}.SaveChangesAsync(token)){{ if Instrumented }}
         .WithActivity("{{ Name }}.SaveChangesAsync", _activitySource){{ end }};
