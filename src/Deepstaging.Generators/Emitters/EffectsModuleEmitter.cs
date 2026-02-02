@@ -8,6 +8,19 @@ namespace Deepstaging.Generators.Emitters;
 /// </summary>
 public static class EffectsModuleEmitter
 {
+    extension(EffectsModuleModel module)
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public OptionalEmit EmitCapabilityInterface() => TypeBuilder
+            .Interface(module.CapabilityInterface)
+            .InNamespace(module.Namespace)
+            .AddProperty(module.PropertyName, module.TargetType, builder => builder.AsReadOnly())
+            .Emit();
+    }
+
     private static readonly Func<string, TemplateName> Named =
         TemplateName.ForGenerator<DeepstagingGenerator>();
 
