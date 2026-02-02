@@ -244,5 +244,46 @@ public class TypeBuilderTests : RoslynTestBase
         await Assert.That(diagnostics).IsEmpty();
     }
 
+    [Test]
+    public async Task Nested_type_usings_are_hoisted_to_compilation_unit()
+    {
+        var result = TypeBuilder
+            .Class("Outer")
+            .InNamespace("MyApp")
+            .AddNestedType("Inner", n => n
+                .AddUsing("System.Collections.Generic")
+                .AddProperty("Items", "List<int>", p => p.WithAutoPropertyAccessors()))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using System.Collections.Generic;");
+        
+        // Verify the using is at the top, not inside the class
+        var code = result.Code!;
+        var usingIndex = code.IndexOf("using System.Collections.Generic;");
+        var classIndex = code.IndexOf("public class Outer");
+        await Assert.That(usingIndex).IsLessThan(classIndex);
+    }
+
+    [Test]
+    public async Task Deeply_nested_usings_are_hoisted()
+    {
+        var result = TypeBuilder
+            .Class("Level1")
+            .InNamespace("MyApp")
+            .AddUsing("System")
+            .AddNestedType("Level2", n => n
+                .AddUsing("System.Text")
+                .AddNestedType("Level3", n2 => n2
+                    .AddUsing("System.IO")
+                    .AddProperty("Stream", "MemoryStream", p => p.WithAutoPropertyAccessors())))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using System;");
+        await Assert.That(result.Code).Contains("using System.Text;");
+        await Assert.That(result.Code).Contains("using System.IO;");
+    }
+
     #endregion
 }

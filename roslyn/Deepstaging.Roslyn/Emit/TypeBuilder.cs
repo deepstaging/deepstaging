@@ -574,8 +574,11 @@ public readonly struct TypeBuilder
     {
         var compilationUnit = SyntaxFactory.CompilationUnit();
 
+        // Collect all usings including from nested types
+        var allUsings = CollectAllUsings();
+        
         // Add usings
-        foreach (var @using in _usings.Distinct())
+        foreach (var @using in allUsings.Distinct())
         {
             UsingDirectiveSyntax usingDirective;
             
@@ -705,6 +708,21 @@ public readonly struct TypeBuilder
     internal TypeDeclarationSyntax BuildNestedTypeDeclaration()
     {
         return BuildTypeDeclaration();
+    }
+
+    /// <summary>
+    /// Collects all using directives from this type and all nested types recursively.
+    /// </summary>
+    private IEnumerable<string> CollectAllUsings()
+    {
+        foreach (var @using in _usings)
+            yield return @using;
+
+        foreach (var nestedType in _nestedTypes)
+        {
+            foreach (var @using in nestedType.CollectAllUsings())
+                yield return @using;
+        }
     }
 
     private string FormatCode(CompilationUnitSyntax compilationUnit, EmitOptions options)

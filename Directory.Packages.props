@@ -23,10 +23,10 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.1" />
     <!-- Testing -->
-    <PackageVersion Include="TUnit" Version="1.12.3" />
-    <PackageVersion Include="TUnit.Engine" Version="1.12.3" />
-    <PackageVersion Include="Verify" Version="31.9.4" />
-    <PackageVersion Include="Verify.TUnit" Version="31.9.4" />
+    <PackageVersion Include="TUnit" Version="1.12.111" />
+    <PackageVersion Include="TUnit.Engine" Version="1.12.111" />
+    <PackageVersion Include="Verify" Version="31.10.0" />
+    <PackageVersion Include="Verify.TUnit" Version="31.10.0" />
     <PackageVersion Include="Microsoft.Testing.Platform" Version="2.0.2" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.0.2" />
     <!-- Utilities -->

@@ -8,17 +8,35 @@ namespace Deepstaging.Generators.Emitters;
 /// </summary>
 public static class EffectsModuleEmitter
 {
-    extension(EffectsModuleModel module)
+    extension(EffectsModuleModel model)
     {
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         public OptionalEmit EmitCapabilityInterface() => TypeBuilder
-            .Interface(module.CapabilityInterface)
-            .InNamespace(module.Namespace)
-            .AddProperty(module.PropertyName, module.TargetType, builder => builder.AsReadOnly())
+            .Interface(model.CapabilityInterface)
+            .InNamespace(model.Namespace)
+            .AddProperty(model.PropertyName, model.TargetType, builder => builder.AsReadOnly())
             .Emit();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public OptionalEmit EmitEffectsModule()
+        {
+            var module = TypeBuilder.Parse($"public static partial class {model.Name}")
+                .AddInstrumentationActivitySource(model)
+                .AddEffectMethods(model)
+                .AddDbContextEffects(model);
+
+            return TypeBuilder.Parse($"public static partial class {model.ClassName}")
+                .AddUsing("Deepstaging")
+                .InNamespace(model.Namespace)
+                .AddNestedType(module)
+                .Emit();
+        }
     }
 
     private static readonly Func<string, TemplateName> Named =
@@ -30,13 +48,8 @@ public static class EffectsModuleEmitter
     public static void EmitCapabilityInterface(this SourceProductionContext context, EffectsModuleModel module)
     {
         context.AddFromEmit(
-            hintName: new HintNameProvider(module.Namespace)
-                .Filename(module.CapabilityInterface),
-            emit: TypeBuilder
-                .Interface(module.CapabilityInterface)
-                .InNamespace(module.Namespace)
-                .AddProperty(module.PropertyName, module.TargetType, builder => builder.AsReadOnly())
-                .Emit()
+            hintName: new HintNameProvider(module.Namespace).Filename(module.CapabilityInterface),
+            emit: module.EmitCapabilityInterface()
         );
     }
 
@@ -58,7 +71,7 @@ public static class EffectsModuleEmitter
         {
             context.AddFromEmit(
                 hints.Filename($"{module.Name}Effects"),
-                module.GenerateEffectsModule()
+                module.EmitEffectsModule()
             );
         }
     }
@@ -66,17 +79,8 @@ public static class EffectsModuleEmitter
 
 file static class BuilderExtensions
 {
-    public static OptionalEmit GenerateEffectsModule(this EffectsModuleModel module) =>
-        TypeBuilder
-            .Class($"{module.Name}Effects").AsPartial().AsStatic()
-            .InNamespace(module.Namespace)
-            .AddUsing("Deepstaging.Effects")
-            .AddInstrumentationActivitySource(module)
-            .AddEffectMethods(module)
-            .Emit();
-
-    private static TypeBuilder AddEffectMethods(this TypeBuilder builder, EffectsModuleModel module) =>
-        builder.IfNot(module.Methods.IsDefaultOrEmpty, b => b
+    public static TypeBuilder AddEffectMethods(this TypeBuilder builder, EffectsModuleModel module) =>
+        builder.If(module.Methods.Any(), b => b
                 .AddUsing("LanguageExt")
                 .AddUsing("LanguageExt.Effects")
                 .AddUsing("static LanguageExt.Prelude"))
@@ -89,17 +93,23 @@ file static class BuilderExtensions
                     .WithXmlDoc(method.XmlDocumentation)
                     .WithExpressionBody(module.LiftedMethodExpression(method))));
 
+    public static TypeBuilder AddDbContextEffects(this TypeBuilder builder, EffectsModuleModel module)
+    {
+        if(!module.IsDbContext)
+            return builder;
+
+        return builder;
+    }
+
     private static MethodBuilder AddMethodParameters(this MethodBuilder builder, EffectMethodModel method) =>
         builder.WithEach(method.Parameters, (b, param) => param.HasDefaultValue
             ? b.AddParameter(param.Name, param.Type, p => p.WithDefaultValue(param.DefaultValue!))
             : b.AddParameter(param.Name, param.Type));
 
-    private static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) =>
+    public static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) =>
         builder.If(module.Instrumented, b => b
             .AddUsing("System.Diagnostics")
-            .AddField("ActivitySource", "ActivitySource", field => field
-                .AsStatic()
-                .AsReadonly()
+            .AddField(FieldBuilder.Parse("public static readonly ActivitySource ActivitySource")
                 .WithInitializer($"""new("{module.Namespace}.{module.Name}", "1.0.0")""")));
 
     private static string LiftedMethodExpression(this EffectsModuleModel module, EffectMethodModel method)

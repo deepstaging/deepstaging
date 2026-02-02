@@ -33,7 +33,7 @@ public static class EffectsModule
                         PropertyName = attribute.TargetType.PropertyName,
                         TargetType = attribute.TargetType.GloballyQualifiedName,
                         TargetTypeName = attribute.TargetType.Name,
-                        CapabilityInterface = $"IHas{attribute.TargetType.Name}",
+                        CapabilityInterface = $"IHas{attribute.TargetType.PropertyName}",
                         Methods = attribute.CreateEffectMethods(),
                         Instrumented = attribute.Instrumented,
                         IsDbContext = attribute.TargetType.IsEntityFrameworkDbContext(),
