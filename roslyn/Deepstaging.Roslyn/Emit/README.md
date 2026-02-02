@@ -22,6 +22,43 @@ if (result.IsValid(out var validEmit))
 }
 ```
 
+## Parse API (New!)
+
+Build from natural C# signatures - parse the signature, then customize:
+
+```csharp
+// Parse a method signature, then add the body
+var method = MethodBuilder.Parse("public async Task<bool> ProcessAsync(string input, CancellationToken ct = default)")
+    .WithBody(b => b
+        .AddStatement("await Task.Delay(100, ct)")
+        .AddReturn("true"));
+
+// Parse a property, optionally customize further
+var property = PropertyBuilder.Parse("public string Name { get; set; }")
+    .WithAttribute("Required");
+
+// Parse a field
+var field = FieldBuilder.Parse("private readonly ILogger _logger");
+
+// Parse a type signature with base types, then add members
+var service = TypeBuilder.Parse("public sealed class CustomerService : ICustomerService")
+    .InNamespace("MyApp.Services")
+    .AddField(field)
+    .AddProperty(property)
+    .AddMethod(method);
+```
+
+### What Parse Handles
+
+| Parsed from Signature | Added via Builder Methods |
+|-----------------------|---------------------------|
+| Name, type, return type | Method/property bodies |
+| Accessibility (public, private, etc.) | Attributes |
+| Modifiers (static, async, virtual, etc.) | XML documentation |
+| Parameters with modifiers and defaults | Namespace and usings |
+| Generic type parameters and constraints | Additional members |
+| Base types and interfaces | |
+
 ## Components
 
 ### Builders
@@ -40,9 +77,15 @@ if (result.IsValid(out var validEmit))
 ### Configuration
 - **EmitOptions** - Formatting (indentation, line endings) and validation levels
 
-## Two Builder Patterns
+## Three Builder Patterns
 
-### Lambda Configuration (Concise)
+### 1. Parse + Customize (Natural syntax)
+```csharp
+MethodBuilder.Parse("public async Task<string> FetchAsync(int id)")
+    .WithBody(b => b.AddReturn("await _client.GetAsync(id)"))
+```
+
+### 2. Lambda Configuration (Concise)
 ```csharp
 .AddMethod("Process", method => method
     .WithReturnType("bool")
@@ -50,7 +93,7 @@ if (result.IsValid(out var validEmit))
     .WithBody(b => b.AddReturn("true")))
 ```
 
-### Separate Builders (Composable)
+### 3. Separate Builders (Composable)
 ```csharp
 var processMethod = MethodBuilder
     .For("Process")
@@ -87,6 +130,7 @@ See **[Emit.md](../Docs/Emit.md)** for comprehensive documentation with examples
 ✅ String-based body building (simple, maintainable)  
 ✅ Syntax validation (default, opt-out)  
 ✅ Generates valid, compilable C# code  
+✅ **Parse API** - Build from C# signature strings  
 
 ## Status
 
@@ -94,6 +138,10 @@ See **[Emit.md](../Docs/Emit.md)** for comprehensive documentation with examples
 - String-based type references
 - All core builders implemented
 - Tested and validated
+
+**Phase 1.5: Parse API** ✅  
+- Parse C# signatures into builders
+- MethodBuilder.Parse(), PropertyBuilder.Parse(), FieldBuilder.Parse(), TypeBuilder.Parse()
 
 **Phase 2: Future**  
 - Symbol-based type references (TypeReference struct)

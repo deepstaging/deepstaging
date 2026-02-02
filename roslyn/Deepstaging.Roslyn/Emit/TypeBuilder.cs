@@ -188,6 +188,29 @@ public readonly struct TypeBuilder
             xmlDoc: null);
     }
 
+    /// <summary>
+    /// Creates a type builder by parsing a C# type signature.
+    /// </summary>
+    /// <param name="signature">The type signature (e.g., "public class CustomerService : IService").</param>
+    /// <returns>A configured TypeBuilder with parsed kind, modifiers, and base types.</returns>
+    /// <exception cref="ArgumentException">Thrown when the signature cannot be parsed.</exception>
+    /// <example>
+    /// <code>
+    /// // Class with interface
+    /// var builder = TypeBuilder.Parse("public class CustomerService : IService, IDisposable");
+    /// 
+    /// // Sealed class
+    /// var builder = TypeBuilder.Parse("public sealed class CacheEntry");
+    /// 
+    /// // Abstract class
+    /// var builder = TypeBuilder.Parse("public abstract class BaseHandler");
+    /// 
+    /// // Partial record
+    /// var builder = TypeBuilder.Parse("public partial record OrderDto");
+    /// </code>
+    /// </example>
+    public static TypeBuilder Parse(string signature) => SignatureParser.ParseType(signature);
+
     #endregion
 
     #region Namespace & Usings

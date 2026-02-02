@@ -85,6 +85,26 @@ public readonly struct PropertyBuilder
             xmlDoc: null);
     }
 
+    /// <summary>
+    /// Creates a property builder by parsing a C# property signature.
+    /// </summary>
+    /// <param name="signature">The property signature (e.g., "public string Name { get; set; }").</param>
+    /// <returns>A configured PropertyBuilder with parsed modifiers, type, and accessors.</returns>
+    /// <exception cref="ArgumentException">Thrown when the signature cannot be parsed.</exception>
+    /// <example>
+    /// <code>
+    /// // Auto-property
+    /// var builder = PropertyBuilder.Parse("public string Name { get; set; }");
+    /// 
+    /// // Get-only property
+    /// var builder = PropertyBuilder.Parse("public int Count { get; }");
+    /// 
+    /// // With initializer
+    /// var builder = PropertyBuilder.Parse("public List&lt;string&gt; Items { get; set; } = new()");
+    /// </code>
+    /// </example>
+    public static PropertyBuilder Parse(string signature) => SignatureParser.ParseProperty(signature);
+
     #endregion
 
     #region Accessibility & Modifiers

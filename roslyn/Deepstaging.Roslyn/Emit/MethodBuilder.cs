@@ -82,6 +82,26 @@ public readonly struct MethodBuilder
             xmlDoc: null);
     }
 
+    /// <summary>
+    /// Creates a method builder by parsing a C# method signature.
+    /// </summary>
+    /// <param name="signature">The method signature (e.g., "public string GetName(int id)").</param>
+    /// <returns>A configured MethodBuilder with parsed modifiers, return type, and parameters.</returns>
+    /// <exception cref="ArgumentException">Thrown when the signature cannot be parsed.</exception>
+    /// <example>
+    /// <code>
+    /// // Simple method
+    /// var builder = MethodBuilder.Parse("public string GetName(int id)");
+    /// 
+    /// // Async method with default parameter
+    /// var builder = MethodBuilder.Parse("public async Task&lt;bool&gt; ProcessAsync(string input, CancellationToken ct = default)");
+    /// 
+    /// // Generic method with constraints
+    /// var builder = MethodBuilder.Parse("public T Convert&lt;T&gt;(object value) where T : class");
+    /// </code>
+    /// </example>
+    public static MethodBuilder Parse(string signature) => SignatureParser.ParseMethod(signature);
+
     #endregion
 
     #region Return Type

@@ -65,6 +65,26 @@ public readonly struct FieldBuilder
             xmlDoc: null);
     }
 
+    /// <summary>
+    /// Creates a field builder by parsing a C# field signature.
+    /// </summary>
+    /// <param name="signature">The field signature (e.g., "private readonly string _name").</param>
+    /// <returns>A configured FieldBuilder with parsed modifiers and type.</returns>
+    /// <exception cref="ArgumentException">Thrown when the signature cannot be parsed.</exception>
+    /// <example>
+    /// <code>
+    /// // Readonly field
+    /// var builder = FieldBuilder.Parse("private readonly string _name");
+    /// 
+    /// // Static field with initializer
+    /// var builder = FieldBuilder.Parse("private static int _count = 0");
+    /// 
+    /// // Const field
+    /// var builder = FieldBuilder.Parse("public const int MaxRetries = 3");
+    /// </code>
+    /// </example>
+    public static FieldBuilder Parse(string signature) => SignatureParser.ParseField(signature);
+
     #endregion
 
     #region Accessibility & Modifiers
