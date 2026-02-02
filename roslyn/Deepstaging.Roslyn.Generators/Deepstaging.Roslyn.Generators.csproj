@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Deepstaging.Roslyn.Generators</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        
+        <!-- Generate XML documentation for IntelliSense -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        
+        <!-- Package metadata -->
+        <PackageId>Deepstaging.Roslyn.Generators</PackageId>
+        <Title>Deepstaging.Roslyn.Generators</Title>
+        <Description>Template infrastructure for building Roslyn source generators using Scriban. Makes Roslyn feel natural.</Description>
+        <PackageTags>deepstaging;roslyn;source-generator;templates;scriban</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Deepstaging.Roslyn.Testing" />
+        <InternalsVisibleTo Include="Deepstaging.Effects.Generators" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe"/>
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scriban" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Deepstaging.Roslyn/Deepstaging.Roslyn.csproj"/>
+    </ItemGroup>
+
+</Project>

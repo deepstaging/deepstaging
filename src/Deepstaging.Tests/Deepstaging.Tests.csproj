@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Suppress CS1591 for test project (no docs needed) -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit.Engine" />
+        <PackageReference Include="Basic.Reference.Assemblies.Net80" />
+        <!-- Scriban needed for generator template rendering at test time -->
+        <PackageReference Include="Scriban" />
+        <!-- EF Core for DbContext tests -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    </ItemGroup>
+
+    <!-- Reference Deepstaging.Roslyn.Testing -->
+    <ItemGroup>
+        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn.Testing\Deepstaging.Roslyn.Testing.csproj" />
+        <ProjectReference Include="..\Deepstaging.Generators\Deepstaging.Generators.csproj" />
+    </ItemGroup>
+
+    <!-- Reference the generator project -->
+    <ItemGroup>
+      <Compile Remove="EventQueueModuleTests.cs" />
+      <None Include="EventQueueModuleTests.cs" />
+      <Compile Remove="DispatcherModuleTests.cs" />
+      <None Include="DispatcherModuleTests.cs" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,33 @@
+<Project>
+  <!-- 
+    Build.SourceLink.props
+    
+    Configures debugging symbols, documentation generation, and SourceLink integration.
+    
+    Imported by: Directory.Build.props
+  -->
+  
+  <PropertyGroup>
+    <!-- 
+      GenerateDocumentationFile: Creates XML docs for IntelliSense
+      Warnings about missing /// comments are suppressed via .editorconfig
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
+    <!-- 
+      SourceLink: Embeds source code links in symbols for debugging
+      https://github.com/dotnet/sourcelink
+      
+      Requires: <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+    -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    
+    <!-- 
+      Symbol packages (.snupkg): Separate package with debugging symbols
+      Upload to nuget.org alongside your .nupkg for debugging published packages
+    -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,69 @@
+namespace Deepstaging.Roslyn.Emit;
+
+/// <summary>
+/// Configuration options for emitting code.
+/// Controls formatting, validation, and output behavior.
+/// </summary>
+public sealed class EmitOptions
+{
+    /// <summary>
+    /// Gets or sets the validation level to apply during emit.
+    /// Default is Syntax (validates generated C# is syntactically correct).
+    /// </summary>
+    public ValidationLevel ValidationLevel { get; set; } = ValidationLevel.Syntax;
+
+    /// <summary>
+    /// Gets or sets the indentation string (e.g., "    " for 4 spaces, "\t" for tabs).
+    /// Default is 4 spaces.
+    /// </summary>
+    public string Indentation { get; set; } = "    ";
+
+    /// <summary>
+    /// Gets or sets the end-of-line string (e.g., "\n" for Unix, "\r\n" for Windows).
+    /// Default is "\n" (Unix-style).
+    /// </summary>
+    public string EndOfLine { get; set; } = "\n";
+
+    /// <summary>
+    /// Creates default emit options with syntax validation and standard formatting.
+    /// </summary>
+    public static EmitOptions Default => new();
+
+    /// <summary>
+    /// Creates emit options with no validation (fastest).
+    /// </summary>
+    public static EmitOptions NoValidation => new() { ValidationLevel = ValidationLevel.None };
+}
+
+/// <summary>
+/// Specifies the level of validation to perform during emit.
+/// </summary>
+public enum ValidationLevel
+{
+    /// <summary>
+    /// No validation - emit as-is (fastest).
+    /// Use when you trust the builder configuration.
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// Syntax validation - ensures generated code is syntactically valid C# (default).
+    /// Parses the generated code to check for syntax errors.
+    /// Does not require compilation context.
+    /// </summary>
+    Syntax = 1,
+
+    /// <summary>
+    /// Semantic validation - validates type references and symbols (requires Compilation).
+    /// Checks that types exist and are accessible.
+    /// Reserved for Phase 2 (not implemented in Phase 1).
+    /// </summary>
+    Semantic = 2,
+
+    /// <summary>
+    /// Full validation - all checks including naming conventions (requires Compilation).
+    /// Most comprehensive validation.
+    /// Reserved for Phase 4 (not implemented in Phase 1).
+    /// </summary>
+    Full = 3
+}

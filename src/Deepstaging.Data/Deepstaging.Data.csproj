@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Attributes\Deepstaging.Attributes.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Attributes\EventQueueHandlerAttributeQuery.cs"/>
+        <Compile Remove="Attributes\EventQueueModuleAttributeQuery.cs"/>
+        <Compile Remove="Attributes\DependencyLifetimeAttributeQuery.cs"/>
+        <Compile Remove="Attributes\ExposeEffectsFromAttributeQuery.cs"/>
+        <Compile Remove="Attributes\DispatcherModuleAttributeQuery.cs"/>
+        <Compile Remove="Attributes\UsesAttributeQuery.cs"/>
+        <None Include="Attributes\UsesAttributeQuery.cs"/>
+        <Compile Remove="DispatcherModule.cs"/>
+        <Compile Remove="EventQueueHandler.cs"/>
+        <Compile Remove="EventQueueModule.cs"/>
+        <Compile Remove="Runtime.cs"/>
+        <None Include="Runtime.cs"/>
+    </ItemGroup>
+
+</Project>

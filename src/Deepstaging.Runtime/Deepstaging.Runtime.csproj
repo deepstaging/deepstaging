@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        
+        <!-- Package metadata -->
+        <PackageId>Deepstaging.Effects.Runtime</PackageId>
+        <Title>Deepstaging.Effects.Runtime</Title>
+        <Description>Runtime extensions for Deepstaging.Effects including OpenTelemetry instrumentation and LanguageExt integration.</Description>
+        <PackageTags>deepstaging;effects;languageext;functional;opentelemetry</PackageTags>
+        <RootNamespace>Deepstaging</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LanguageExt.Core" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    </ItemGroup>
+
+</Project>

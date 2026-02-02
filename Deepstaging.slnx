@@ -1,0 +1,15 @@
+<Solution>
+  <Project Path="src/Deepstaging.Attributes/Deepstaging.Attributes.csproj" />
+  <Project Path="src/Deepstaging.Data/Deepstaging.Data.csproj" />
+  <Project Path="src/Deepstaging.Generators/Deepstaging.Generators.csproj" />
+  <Project Path="src/Deepstaging.Analyzers/Deepstaging.Analyzers.csproj" />
+  <Project Path="src/Deepstaging.Runtime/Deepstaging.Runtime.csproj" />
+  <Project Path="src/Deepstaging.Package/Deepstaging.Package.csproj" />
+  <Project Path="src/Deepstaging.Tests/Deepstaging.Tests.csproj" />
+  <Folder Name="/Roslyn/">
+    <Project Path="roslyn/Deepstaging.Roslyn.Generators/Deepstaging.Roslyn.Generators.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn.Testing/Deepstaging.Roslyn.Testing.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn.Tests/Deepstaging.Roslyn.Tests.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn/Deepstaging.Roslyn.csproj" />
+  </Folder>
+</Solution>
