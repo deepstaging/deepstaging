@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2024-present Deepstaging
+// SPDX-License-Identifier: RPL-1.5
 // Polyfills for netstandard2.0 to enable modern C# language features.
 // These types are normally provided by the runtime in .NET 5+ but must be
 // defined for netstandard2.0 targeting.

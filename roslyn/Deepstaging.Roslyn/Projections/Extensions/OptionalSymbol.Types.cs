@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: 2024-present Deepstaging
+// SPDX-License-Identifier: RPL-1.5
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Deepstaging.Roslyn;

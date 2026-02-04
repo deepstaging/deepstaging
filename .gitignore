@@ -34,3 +34,6 @@ Thumbs.db
 
 # Folder metadata
 .folderinfo
+
+# Husky marker file (created on first build)
+.husky/.installed

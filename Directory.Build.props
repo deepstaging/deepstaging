@@ -1,3 +1,5 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
 <Project>
   <!-- 
     Directory.Build.props
@@ -13,6 +15,7 @@
   <Import Project="$(MSBuildThisFileDirectory)build/Build.Language.props" />
   <Import Project="$(MSBuildThisFileDirectory)build/Build.Packaging.props" />
   <Import Project="$(MSBuildThisFileDirectory)build/Build.SourceLink.props" />
+  <Import Project="$(MSBuildThisFileDirectory)build/Build.GitHooks.props" />
   
   <!-- 
     Import development-time overrides
