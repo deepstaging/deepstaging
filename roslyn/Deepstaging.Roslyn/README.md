@@ -134,5 +134,19 @@ When you call `.GetAll()`, you get an array of actual Roslyn symbols you can use
 
 - **[Main README](../../README.md)** - Project overview and effects system
 - **[Testing](../Deepstaging.Roslyn.Testing/README.md)** - Test infrastructure for Roslyn components
+- **[Scriban Templates](../Deepstaging.Roslyn.Scriban/README.md)** - Template infrastructure for source generators
+- **[Workspace / Code Fixes](../Deepstaging.Roslyn.Workspace/README.md)** - Code fix provider infrastructure
 - **[Emit API Overview](Emit/README.md)** - Quick reference for the Emit API
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+Why? We believe if you benefit from this code, the community should benefit from your improvements. That's the deal we think is fair.
+
+**Personal research and experimentation? No obligations.** Go learn, explore, and build.
+
+See [LICENSE](../../LICENSE) for the full legal text.
 

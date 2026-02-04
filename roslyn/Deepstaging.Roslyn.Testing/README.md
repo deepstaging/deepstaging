@@ -119,3 +119,15 @@ await AnalyzeAndFixWith<MyAnalyzer, MyCodeFix>(source)
 - **[Reference Configuration](REFERENCE_CONFIGURATION.md)** - Assembly reference setup
 - **[Template Testing](TEMPLATE_TEST_BASE.md)** - Scriban template testing
 - **[Main README](../../README.md)** - Project overview
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+Why? We believe if you benefit from this code, the community should benefit from your improvements. That's the deal we think is fair.
+
+**Personal research and experimentation? No obligations.** Go learn, explore, and build.
+
+See [LICENSE](../../LICENSE) for the full legal text.
