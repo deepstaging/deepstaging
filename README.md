@@ -339,8 +339,8 @@ dotnet test --filter "FullyQualifiedName~MyTestClass.MyTestMethod"
   - [Emit](roslyn/Deepstaging.Roslyn/Docs/Emit.md) - Generate C# code with fluent builders
   - [Extensions](roslyn/Deepstaging.Roslyn/Docs/Extensions.md) - Convenience methods for Roslyn types
 - **[Testing](roslyn/Deepstaging.Roslyn.Testing/README.md)** - Test infrastructure for analyzers and generators
-  - [RoslynTestBase](roslyn/Deepstaging.Roslyn.Testing/ROSLYN_TEST_BASE.md) - Unified testing API
-  - [Reference Configuration](roslyn/Deepstaging.Roslyn.Testing/REFERENCE_CONFIGURATION.md) - Configure test compilation references
+  - [RoslynTestBase](roslyn/Deepstaging.Roslyn.Testing/Docs/RoslynTestBase.md) - Unified testing API
+  - [Reference Configuration](roslyn/Deepstaging.Roslyn.Testing/Docs/ReferenceConfiguration.md) - Configure test compilation references
   - [Template Testing](roslyn/Deepstaging.Roslyn.Testing/TEMPLATE_TEST_BASE.md) - Test Scriban templates
 - **[Build Configuration](build/README.md)** - MSBuild configuration files
 

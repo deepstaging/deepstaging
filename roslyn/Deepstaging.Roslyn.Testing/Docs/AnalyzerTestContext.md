@@ -2,7 +2,7 @@
 
 Test Roslyn analyzers with fluent diagnostic assertions.
 
-> **See also:** [RoslynTestBase](../ROSLYN_TEST_BASE.md) | [Code Fix Testing](CodeFixTestContext.md)
+> **See also:** [RoslynTestBase](RoslynTestBase.md) | [Code Fix Testing](CodeFixTestContext.md)
 
 ## Overview
 

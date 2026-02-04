@@ -2,7 +2,7 @@
 
 Test utilities for Roslyn analyzers, generators, and code fixes.
 
-> **See also:** [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Reference Configuration](REFERENCE_CONFIGURATION.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
+> **See also:** [RoslynTestBase](Docs/RoslynTestBase.md) | [Reference Configuration](Docs/ReferenceConfiguration.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
 
 ## Quick Start
 
@@ -83,8 +83,8 @@ Each entry point returns a test context with fluent assertions:
 
 ### Guides
 
-- **[RoslynTestBase](ROSLYN_TEST_BASE.md)** — Full API reference for the base class
-- **[Reference Configuration](REFERENCE_CONFIGURATION.md)** — Configure assembly references for tests
+- **[RoslynTestBase](Docs/RoslynTestBase.md)** — Full API reference for the base class
+- **[Reference Configuration](Docs/ReferenceConfiguration.md)** — Configure assembly references for tests
 
 ---
 

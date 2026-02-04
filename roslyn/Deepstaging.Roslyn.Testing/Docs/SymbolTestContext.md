@@ -2,7 +2,7 @@
 
 Query and extract symbols from compiled source code in tests.
 
-> **See also:** [RoslynTestBase](../ROSLYN_TEST_BASE.md) | [Roslyn Queries](../../Deepstaging.Roslyn/Docs/Queries.md)
+> **See also:** [RoslynTestBase](RoslynTestBase.md) | [Roslyn Queries](../../Deepstaging.Roslyn/Docs/Queries.md)
 
 ## Overview
 

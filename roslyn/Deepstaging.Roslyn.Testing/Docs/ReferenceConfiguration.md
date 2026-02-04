@@ -1,6 +1,6 @@
 # Configuring References for Test Compilations
 
-> **See also:** [Testing README](README.md) | [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
+> **See also:** [Testing README](../README.md) | [RoslynTestBase](RoslynTestBase.md) | [Roslyn Toolkit](../../Deepstaging.Roslyn/README.md)
 
 When testing your Roslyn analyzers, generators, or code transformations, you often need to include references to your own assemblies and their dependencies in the test compilations. Deepstaging.Testing provides a `ReferenceConfiguration` API for this purpose.
 
