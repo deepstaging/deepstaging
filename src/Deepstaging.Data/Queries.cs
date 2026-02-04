@@ -5,16 +5,24 @@ namespace Deepstaging.Data;
 /// <summary>
 /// 
 /// </summary>
-public static class Queries
+public static class Projections
 {
-    extension(AttributeData data)
+    extension(ValidAttribute attribute)
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
-        public OptionalValue<EffectsModuleAttributeQuery> AsEffectsModuleAttribute() =>
-            data.As<EffectsModuleAttribute>()
-                .Map(attr => new EffectsModuleAttributeQuery(attr.Value));
+        public UsesAttributeQuery QueryUsesAttribute() =>
+            attribute.Value.As<UsesAttribute>()
+                .Map(attr => new UsesAttributeQuery(attr.Value))
+                .OrThrow($"attribute must be a valid {nameof(UsesAttribute)}.");
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public EffectsModuleAttributeQuery QueryEffectsModuleAttribute() =>
+            attribute.Value.As<EffectsModuleAttribute>()
+                .Map(attr => new EffectsModuleAttributeQuery(attr.Value))
+                .OrThrow($"attribute must be a valid {nameof(EffectsModuleAttribute)}.");
     }
 }
