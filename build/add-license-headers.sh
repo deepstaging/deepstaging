@@ -15,8 +15,16 @@ add_header() {
     local ext="${file##*.}"
     
     # Skip if already has header
-    if head -n 10 "$file" 2>/dev/null | grep -q "SPDX-License-Identifier"; then
-        return 0
+    # For markdown: check for ## License section
+    # For other files: check for SPDX-License-Identifier in first 10 lines
+    if [ "$ext" = "md" ]; then
+        if grep -q "^## License" "$file" 2>/dev/null; then
+            return 0
+        fi
+    else
+        if head -n 10 "$file" 2>/dev/null | grep -q "SPDX-License-Identifier"; then
+            return 0
+        fi
     fi
     
     local header=""
