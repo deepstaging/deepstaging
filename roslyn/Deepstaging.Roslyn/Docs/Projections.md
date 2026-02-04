@@ -1,27 +1,37 @@
 # Projections
 
-Optional and validated wrappers that make null-checking less painful. Inspired by functional Option types.
+Optional and validated wrappers that make null-checking less painful.
 
 > **See also:** [Queries](Queries.md) | [Emit](Emit.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
 
 ## Overview
 
-Roslyn symbols are often nullable, requiring constant null checks. Projections wrap these nullable values and provide:
+Roslyn symbols are often nullable, requiring constant null checks. Projections wrap these nullable values in types that provide safe access and fluent transformations:
 
-- **OptionalSymbol/OptionalAttribute/OptionalValue/OptionalArgument** - May or may not contain a value
-- **ValidSymbol/ValidAttribute** - Guaranteed non-null, created via validation
+| Type | Purpose |
+|------|---------|
+| `OptionalSymbol<T>` | A symbol that may or may not be present |
+| `ValidSymbol<T>` | A symbol guaranteed to be non-null |
+| `OptionalAttribute` | An attribute that may or may not be present |
+| `ValidAttribute` | An attribute guaranteed to be non-null |
+| `OptionalArgument<T>` | An attribute argument that may or may not exist |
+| `OptionalValue<T>` | A general-purpose optional wrapper |
+| `OptionalSyntax<T>` | A syntax node that may or may not be present |
+| `ValidSyntax<T>` | A syntax node guaranteed to be non-null |
+| `ValidTypeSyntax<T>` | A type declaration syntax with rich helpers |
+| `XmlDocumentation` | Parsed XML documentation from a symbol |
 
 ## The Pattern
 
 ```csharp
-// Without projections - null checks everywhere
+// Without projections — null checks everywhere
 var attr = symbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "MyAttribute");
 if (attr == null) return;
 var value = attr.ConstructorArguments.FirstOrDefault().Value;
 if (value is not string s) return;
 // finally use s
 
-// With projections - fluent null-safe operations
+// With projections — fluent, null-safe operations
 var value = symbol
     .GetAttribute("MyAttribute")
     .ConstructorArg<string>(0)
@@ -37,13 +47,8 @@ Wraps a Roslyn symbol that may or may not be present.
 ### Creating
 
 ```csharp
-// From a value
 OptionalSymbol<INamedTypeSymbol>.WithValue(typeSymbol)
-
-// Empty
 OptionalSymbol<INamedTypeSymbol>.Empty()
-
-// From nullable
 OptionalSymbol<INamedTypeSymbol>.FromNullable(maybeNull)
 ```
 
@@ -57,13 +62,7 @@ if (optional.IsEmpty) { /* no symbol */ }
 ### Extracting Values
 
 ```csharp
-// Get or throw
-var symbol = optional.OrThrow("Symbol required");
-
-// Get or null
-var maybeNull = optional.OrNull();
-
-// Validate to non-nullable wrapper
+// Validate to non-nullable wrapper (preferred pattern)
 if (optional.IsValid(out var valid))
 {
     // valid is ValidSymbol<T> with guaranteed non-null
@@ -74,6 +73,12 @@ if (optional.IsValid(out var valid))
 if (optional.IsNotValid(out var valid))
     return;
 // valid is now ValidSymbol<T>
+
+// Other extraction methods
+var symbol = optional.OrThrow("Symbol required");
+var maybeNull = optional.OrNull();
+var validated = optional.Validate();           // OptionalSymbol → ValidSymbol?
+var validated = optional.ValidateOrThrow();    // throws if empty
 ```
 
 ### Transforming
@@ -86,161 +91,212 @@ OptionalValue<string> name = optional.Map(s => s.FullyQualifiedName);
 OptionalSymbol<T> filtered = optional.Where(s => s.IsPublic());
 
 // Cast to derived type
-OptionalSymbol<IMethodSymbol> method = symbol.OfType<IMethodSymbol>();
+OptionalSymbol<IMethodSymbol> method = optional.OfType<IMethodSymbol>();
+
+// Select (alias for Map)
+OptionalValue<int> count = optional.Select(s => s.GetMembers().Length);
 ```
 
-### Properties
-
-Common symbol properties are available directly on the optional:
+### Symbol Identity Properties
 
 ```csharp
-optional.Name               // string? - symbol name
-optional.Namespace          // string? - containing namespace
-optional.FullyQualifiedName // string? - full name without global::
-optional.GloballyQualifiedName // string? - full name with global::
-optional.DisplayName        // string? - namespace.name format
-optional.PropertyName       // string? - suggested property name
-optional.ParameterName      // string? - suggested parameter name
-optional.Location           // Location - primary location
+optional.Name                   // string? — symbol name
+optional.Namespace              // string? — containing namespace
+optional.FullyQualifiedName     // string? — e.g. "MyApp.Domain.Customer"
+optional.GloballyQualifiedName  // string? — e.g. "global::MyApp.Domain.Customer"
+optional.DisplayName            // string? — namespace.name format
+optional.PropertyName           // string? — suggested property name (PascalCase)
+optional.ParameterName          // string? — suggested parameter name (camelCase)
+optional.Location               // Location — primary source location
+```
 
-// Accessibility
-optional.Accessibility      // Accessibility? enum
-optional.IsPublic           // bool
-optional.IsInternal         // bool
-optional.IsPrivate          // bool
-optional.IsProtected        // bool
-optional.AccessibilityString // string? - "public", "private", etc.
+### Accessibility Properties
 
-// Modifiers
-optional.IsStatic           // bool
-optional.IsAbstract         // bool
-optional.IsSealed           // bool
-optional.IsVirtual          // bool
-optional.IsOverride         // bool
-optional.IsReadOnly         // bool
-optional.IsPartial          // bool
+```csharp
+optional.Accessibility          // Accessibility? — enum value
+optional.AccessibilityString    // string? — "public", "private", etc.
+optional.IsPublic               // bool
+optional.IsInternal             // bool
+optional.IsPrivate              // bool
+optional.IsProtected            // bool
+```
 
-// Type classification
-optional.IsGenericType      // bool
-optional.IsValueType        // bool
-optional.IsReferenceType    // bool
-optional.IsInterface        // bool
-optional.IsClass            // bool
-optional.IsStruct           // bool
-optional.IsRecord           // bool
-optional.IsEnum             // bool
-optional.IsDelegate         // bool
-optional.IsNullable         // bool
-optional.Kind               // string? - "class", "struct", "interface", etc.
+### Modifier Properties
 
-// Method-specific
-optional.IsAsync            // bool
-optional.IsExtensionMethod  // bool
+```csharp
+optional.IsStatic               // bool
+optional.IsAbstract             // bool
+optional.IsSealed               // bool
+optional.IsVirtual              // bool
+optional.IsOverride             // bool
+optional.IsReadOnly             // bool
+optional.IsPartial              // bool
+optional.IsImplicitlyDeclared   // bool
+optional.IsExtern               // bool
+```
 
-// Task support
-optional.IsTask             // bool
-optional.InnerTaskType      // inner type of Task<T>/ValueTask<T>
+### Type Classification Properties
+
+```csharp
+optional.IsGenericType          // bool
+optional.IsValueType            // bool
+optional.IsReferenceType        // bool
+optional.IsInterface            // bool
+optional.IsClass                // bool
+optional.IsStruct               // bool
+optional.IsRecord               // bool
+optional.IsEnum                 // bool
+optional.IsDelegate             // bool
+optional.IsNullable             // bool
+optional.Kind                   // string? — "class", "struct", "interface", etc.
+optional.SymbolTypeKind         // TypeKind?
+optional.SpecialType            // SpecialType?
+```
+
+### Method-Specific Properties
+
+```csharp
+optional.IsAsync                // bool
+optional.IsExtensionMethod      // bool
+```
+
+### Type Hierarchy
+
+```csharp
+optional.ContainingType         // OptionalSymbol<INamedTypeSymbol>
+optional.BaseType               // OptionalSymbol<INamedTypeSymbol>
+optional.Interfaces             // ImmutableArray<INamedTypeSymbol>
+
+// Get all base types in inheritance chain
+optional.GetBaseTypes()         // IEnumerable<ValidSymbol<INamedTypeSymbol>>
+
+// Get interfaces
+optional.GetInterfaces()        // IEnumerable<ValidSymbol<INamedTypeSymbol>> — direct interfaces
+optional.GetAllInterfaces()     // IEnumerable<ValidSymbol<INamedTypeSymbol>> — includes inherited
+
+// Check inheritance and interface implementation
+optional.ImplementsInterface("IDisposable")  // bool — checks all interfaces
+optional.InheritsFrom("BaseClass")           // bool — checks inheritance chain
 ```
 
 ### Generic Type Support
 
 ```csharp
-// Get type arguments
-ImmutableArray<OptionalSymbol<INamedTypeSymbol>> args = optional.GetTypeArguments();
+optional.Arity                  // int — number of type parameters
+optional.GetTypeArguments()     // ImmutableArray<OptionalSymbol<INamedTypeSymbol>>
+optional.GetTypeArgument(0)     // OptionalArgument<INamedTypeSymbol>
+optional.GetTypeArgumentSymbol(0) // OptionalSymbol<ITypeSymbol>
+optional.GetFirstTypeArgument() // OptionalSymbol<ITypeSymbol>
+optional.SingleTypeArgument     // OptionalSymbol<ITypeSymbol> (for arity-1 generics)
+optional.GetTypeParameters()    // IEnumerable<OptionalSymbol<ITypeParameterSymbol>>
+optional.GetMethodTypeParameters() // method-specific type parameters
+```
 
-// Get specific argument
-OptionalValue<INamedTypeSymbol> firstArg = optional.GetTypeArgument(0);
-OptionalSymbol<ITypeSymbol> argSymbol = optional.GetTypeArgumentSymbol(0);
+### Task Type Support
 
-// Single type argument (for generics with exactly one type parameter)
-OptionalSymbol<ITypeSymbol> single = optional.SingleTypeArgument;
-
-// Type parameters
-IEnumerable<OptionalSymbol<ITypeParameterSymbol>> typeParams = optional.GetTypeParameters();
+```csharp
+optional.IsTask                 // bool — Task, Task<T>, ValueTask, or ValueTask<T>
+optional.InnerTaskType          // OptionalSymbol<ITypeSymbol> — T in Task<T>
 ```
 
 ### Attributes
 
 ```csharp
-// Get all attributes
-IEnumerable<OptionalAttribute> attrs = optional.GetAttributes();
+optional.GetAttributes()                    // IEnumerable<OptionalAttribute>
+optional.GetAttributes("MyAttribute")       // IEnumerable<ValidAttribute>
+optional.GetAttributes<ObsoleteAttribute>() // IEnumerable<ValidAttribute>
+optional.GetAttribute("MyAttribute")        // OptionalAttribute (first match)
+optional.GetAttribute<ObsoleteAttribute>()  // OptionalAttribute (first match)
+optional.HasAttributes()                    // bool
+optional.HasAttribute("MyAttribute")        // bool
+optional.LacksAttributes()                  // bool
+optional.LacksAttribute("MyAttribute")      // bool
+```
 
-// Get by name
-IEnumerable<ValidAttribute> attrs = optional.GetAttributes("MyAttribute");
+### XML Documentation
 
-// Get by type
-IEnumerable<ValidAttribute> attrs = optional.GetAttributes<ObsoleteAttribute>();
-
-// Get first by name
-OptionalAttribute attr = optional.GetAttribute("MyAttribute");
-
-// Get first by type
-OptionalAttribute attr = optional.GetAttribute<ObsoleteAttribute>();
+```csharp
+optional.XmlDocumentationRaw    // string? — raw XML
+optional.XmlDocumentation       // XmlDocumentation — parsed structure
+optional.HasXmlDocumentation    // bool
 ```
 
 ### Utility Methods
 
 ```csharp
-// Execute action if present
 optional.Do(s => Console.WriteLine(s.Name));
 
-// Pattern matching
 optional.Match(
     whenPresent: s => HandleSymbol(s),
     whenEmpty: () => HandleEmpty());
+
+optional.Equals(otherSymbol);
+optional.DoesNotEqual(otherSymbol);
 ```
 
 ---
 
 ## ValidSymbol<T>
 
-A validated symbol where the underlying value is guaranteed non-null.
+A validated symbol where the underlying value is guaranteed non-null. Created by validating an `OptionalSymbol`.
 
 ### Creating
 
 ```csharp
-// From non-null symbol (throws if null)
-ValidSymbol<INamedTypeSymbol>.From(typeSymbol)
+ValidSymbol<INamedTypeSymbol>.From(typeSymbol)      // throws if null
+ValidSymbol<INamedTypeSymbol>.TryFrom(typeSymbol)   // returns null if input is null
 
-// Try to create (returns null if input is null)
-ValidSymbol<INamedTypeSymbol>? maybe = ValidSymbol<INamedTypeSymbol>.TryFrom(typeSymbol);
-
-// From OptionalSymbol validation
+// From OptionalSymbol validation (preferred)
 if (optional.IsValid(out var valid)) { /* use valid */ }
 ```
 
 ### Properties
 
-Same properties as OptionalSymbol, but return non-nullable types:
+Same properties as `OptionalSymbol`, but return non-nullable types:
 
 ```csharp
+valid.Value                 // TSymbol — the underlying symbol (guaranteed non-null)
 valid.Name                  // string (not nullable)
 valid.FullyQualifiedName    // string (not nullable)
 valid.Accessibility         // Accessibility (not nullable)
-valid.Value                 // TSymbol - the underlying symbol
+```
+
+### Additional Task Properties
+
+```csharp
+valid.IsValueTask           // bool
+valid.IsGenericTask         // bool — Task<T>
+valid.IsGenericValueTask    // bool — ValueTask<T>
+valid.IsNonGenericTask      // bool — Task (no type argument)
+valid.IsNonGenericValueTask // bool — ValueTask (no type argument)
 ```
 
 ### Transforming
 
 ```csharp
-// Map to any type
 TResult result = valid.Map(s => s.Name);
-
-// Map to another ValidSymbol
 ValidSymbol<IMethodSymbol> method = valid.MapTo(s => (IMethodSymbol)s);
-
-// Filter (returns null if predicate fails)
 ValidSymbol<T>? filtered = valid.Where(s => s.IsPublic);
-
-// Cast (returns null if cast fails)
 ValidSymbol<IMethodSymbol>? method = valid.OfType<IMethodSymbol>();
+valid.Do(s => Console.WriteLine(s.Name));
+```
+
+### Type Hierarchy (INamedTypeSymbol)
+
+```csharp
+valid.BaseType                          // OptionalSymbol<INamedTypeSymbol>
+valid.GetBaseTypes()                    // IEnumerable<ValidSymbol<INamedTypeSymbol>>
+valid.GetInterfaces()                   // IEnumerable<ValidSymbol<INamedTypeSymbol>>
+valid.GetAllInterfaces()                // IEnumerable<ValidSymbol<INamedTypeSymbol>>
+valid.ImplementsInterface("IDisposable") // bool
+valid.InheritsFrom("BaseClass")         // bool
 ```
 
 ---
 
 ## OptionalAttribute
 
-Wraps an AttributeData that may or may not be present.
+Wraps an `AttributeData` that may or may not be present.
 
 ### Creating
 
@@ -253,21 +309,24 @@ OptionalAttribute.FromNullable(maybeNull)
 ### Getting Arguments
 
 ```csharp
-// Constructor argument by index
-OptionalArgument<string> arg = attr.ConstructorArg<string>(0);
+// Constructor arguments by index
+OptionalArgument<string> name = attr.ConstructorArg<string>(0);
 OptionalArgument<int> count = attr.ConstructorArg<int>(1);
 
-// Named argument
+// Named arguments
 OptionalArgument<int> retries = attr.NamedArg<int>("MaxRetries");
 OptionalArgument<string> message = attr.NamedArg<string>("Message");
 ```
 
 ### Generic Attribute Type Arguments
 
+For generic attributes like `[MyAttribute<TRuntime, TEvent>]`:
+
 ```csharp
-// Get type arguments from generic attributes like [MyAttribute<TRuntime, TEvent>]
-ImmutableArray<OptionalSymbol<INamedTypeSymbol>> typeArgs = attr.GetTypeArguments();
-OptionalArgument<INamedTypeSymbol> firstTypeArg = attr.GetTypeArgument(0);
+attr.GetTypeArguments()         // ImmutableArray<OptionalSymbol<INamedTypeSymbol>>
+attr.GetTypeArgument(0)         // OptionalArgument<INamedTypeSymbol>
+attr.GetTypeArgumentSymbol(0)   // OptionalSymbol<ITypeSymbol>
+attr.AttributeClass             // OptionalSymbol<INamedTypeSymbol>
 ```
 
 ### Transforming
@@ -287,32 +346,44 @@ OptionalArgument<MyConfig> config = attr.WithArgs(a => new MyConfig
 ### Validation
 
 ```csharp
-if (attr.IsValid(out var valid))
-{
-    // valid is ValidAttribute with guaranteed non-null
-}
+if (attr.IsValid(out var valid)) { /* use valid */ }
+if (attr.IsNotValid(out var valid)) return;
 
-if (attr.IsNotValid(out var valid))
-    return; // early exit
+attr.Validate();           // OptionalAttribute → ValidAttribute?
+attr.ValidateOrThrow();    // throws if empty
+attr.TryValidate(out var valid);
+```
 
-ValidAttribute validated = attr.ValidateOrThrow("Attribute required");
+### Other Methods
+
+```csharp
+attr.Do(a => Console.WriteLine(a.AttributeClass?.Name));
+attr.OrElse(() => fallbackAttribute);
+attr.OrNull();
+attr.OrThrow("Attribute required");
+attr.OrDefault(fallbackValue);
+attr.Match(whenPresent: ..., whenEmpty: ...);
+attr.PropertyName           // string? — suggested property name
+attr.ParameterName          // string? — suggested parameter name
 ```
 
 ---
 
 ## ValidAttribute
 
-A validated attribute with guaranteed non-null AttributeData.
+A validated attribute with guaranteed non-null `AttributeData`.
 
 ```csharp
 // Same argument extraction methods as OptionalAttribute
 OptionalArgument<string> arg = validAttr.ConstructorArg<string>(0);
 OptionalArgument<int> retries = validAttr.NamedArg<int>("MaxRetries");
+validAttr.GetNamedArgument<bool>("Enabled");  // alternate syntax
 
-// Access attribute class directly
-INamedTypeSymbol attrClass = validAttr.AttributeClass;
+// Direct access
+validAttr.Value             // AttributeData
+validAttr.AttributeClass    // INamedTypeSymbol
 
-// Get type arguments from generic attributes
+// Generic attribute type arguments return ValidSymbol
 ImmutableArray<ValidSymbol<INamedTypeSymbol>> typeArgs = validAttr.GetTypeArguments();
 ```
 
@@ -325,26 +396,19 @@ Wraps an attribute argument value that may or may not be present.
 ### Extracting Values
 
 ```csharp
-// Get or default
 string value = arg.OrDefault("fallback");
 int count = arg.OrDefault(() => ComputeDefault());
-
-// Get or throw
 string value = arg.OrThrow("Argument required");
 string value = arg.OrThrow(() => new CustomException());
-
-// Get or null
 string? maybeNull = arg.OrNull();
 ```
 
 ### Transforming
 
 ```csharp
-// Map
 OptionalArgument<int> length = arg.Map(s => s.Length);
-
-// Convert int to enum (Roslyn stores enums as ints)
-OptionalArgument<MyEnum> enumValue = arg.ToEnum<MyEnum>();
+OptionalArgument<int> length = arg.Select(s => s.Length);  // alias
+OptionalArgument<MyEnum> enumValue = arg.ToEnum<MyEnum>(); // Roslyn stores enums as ints
 ```
 
 ### Pattern Matching
@@ -354,24 +418,25 @@ string result = arg.Match(
     whenPresent: v => $"Value: {v}",
     whenEmpty: () => "No value");
 
-// Try pattern
-if (arg.TryGetValue(out var value))
-{
-    Console.WriteLine(value);
-}
+if (arg.TryGetValue(out var value)) { /* use value */ }
+if (arg.IsMissing(out var value)) return;  // early exit pattern
+```
 
-// Early exit pattern
-if (arg.IsMissing(out var value))
-    return;
+### State & Actions
+
+```csharp
+arg.HasValue    // bool
+arg.IsEmpty     // bool
+arg.Value       // T (throws if empty)
+arg.Do(v => Console.WriteLine(v));
+arg.OrElse(() => fallback);
 ```
 
 ---
 
 ## OptionalValue<T>
 
-Generic optional wrapper for any value type (not specific to Roslyn symbols).
-
-Same API as OptionalArgument but for general use:
+Generic optional wrapper for any value (not specific to Roslyn symbols). Same API as `OptionalArgument`:
 
 ```csharp
 OptionalValue<string>.WithValue("hello")
@@ -380,6 +445,156 @@ OptionalValue<string>.Empty()
 value.Map(s => s.Length)
 value.OrDefault("fallback")
 value.OrThrow()
+value.Match(whenPresent: ..., whenEmpty: ...)
+```
+
+---
+
+## OptionalSyntax<T> / ValidSyntax<T>
+
+Wrappers for Roslyn syntax nodes.
+
+### OptionalSyntax<T>
+
+```csharp
+OptionalSyntax<ClassDeclarationSyntax>.WithValue(classDecl)
+OptionalSyntax<ClassDeclarationSyntax>.Empty()
+OptionalSyntax<ClassDeclarationSyntax>.FromNullable(maybeNull)
+
+optional.Node               // TSyntax?
+optional.Location           // Location
+optional.Span               // TextSpan
+optional.FullSpan           // TextSpan
+
+optional.Map(n => n.Identifier.Text)
+optional.Where(n => n.Modifiers.Any(SyntaxKind.PublicKeyword))
+optional.OfType<RecordDeclarationSyntax>()
+
+optional.Parent             // OptionalSyntax<SyntaxNode>
+optional.Ancestor<T>()      // OptionalSyntax<T>
+optional.Ancestors<T>()     // IEnumerable<T>
+
+if (optional.IsValid(out var valid)) { /* use valid */ }
+```
+
+### ValidSyntax<T>
+
+```csharp
+ValidSyntax<ClassDeclarationSyntax>.From(classDecl)
+ValidSyntax<ClassDeclarationSyntax>.TryFrom(maybeNull)
+
+valid.Node                  // TSyntax (guaranteed non-null)
+valid.Location              // Location
+valid.SyntaxTree            // SyntaxTree
+valid.Text                  // string — the node's text
+valid.FullText              // string — text with trivia
+
+valid.Parent                // ValidSyntax<SyntaxNode>?
+valid.Ancestor<T>()         // ValidSyntax<T>?
+valid.Ancestors<T>()        // IEnumerable<T>
+valid.Descendant<T>()       // ValidSyntax<T>?
+valid.Descendants<T>()      // IEnumerable<T>
+
+valid.LeadingTrivia         // SyntaxTriviaList
+valid.TrailingTrivia        // SyntaxTriviaList
+
+// Implicit conversion to the underlying node
+ClassDeclarationSyntax node = valid;
+```
+
+---
+
+## ValidTypeSyntax<T>
+
+Specialized wrapper for type declaration syntax (`ClassDeclarationSyntax`, `RecordDeclarationSyntax`, etc.) with rich helpers.
+
+```csharp
+ValidTypeSyntax<ClassDeclarationSyntax>.From(classDecl)
+
+syntax.Name                 // string
+syntax.Identifier           // SyntaxToken
+syntax.Keyword              // SyntaxToken (e.g., "class", "record")
+syntax.Location             // Location
+syntax.IdentifierLocation   // Location
+
+// Modifiers
+syntax.Modifiers            // SyntaxTokenList
+syntax.HasModifier(SyntaxKind.PublicKeyword)
+syntax.IsPartial            // bool
+syntax.IsStatic             // bool
+syntax.IsAbstract           // bool
+syntax.IsSealed             // bool
+syntax.IsPublic             // bool
+syntax.IsInternal           // bool
+syntax.IsPrivate            // bool
+syntax.IsProtected          // bool
+syntax.IsReadOnly           // bool
+syntax.IsFile               // bool
+
+// Modifier manipulation (returns new syntax)
+syntax.AddModifier(SyntaxKind.PartialKeyword)
+syntax.RemoveModifier(SyntaxKind.SealedKeyword)
+syntax.WithModifiers(newModifiers)
+
+// Structure
+syntax.BaseList             // BaseListSyntax?
+syntax.TypeParameterList    // TypeParameterListSyntax?
+syntax.ConstraintClauses    // SyntaxList<TypeParameterConstraintClauseSyntax>
+syntax.AttributeLists       // SyntaxList<AttributeListSyntax>
+syntax.Members              // SyntaxList<MemberDeclarationSyntax>
+
+syntax.HasBaseList          // bool
+syntax.IsGeneric            // bool
+syntax.Arity                // int
+
+// Navigation
+syntax.ContainingType       // ValidTypeSyntax<TypeDeclarationSyntax>?
+syntax.ContainingNamespace  // ValidSyntax<BaseNamespaceDeclarationSyntax>?
+syntax.NestedTypes          // IEnumerable<ValidTypeSyntax<TypeDeclarationSyntax>>
+
+// Member access
+syntax.Methods              // IEnumerable<MethodDeclarationSyntax>
+syntax.Properties           // IEnumerable<PropertyDeclarationSyntax>
+syntax.Fields               // IEnumerable<FieldDeclarationSyntax>
+syntax.Constructors         // IEnumerable<ConstructorDeclarationSyntax>
+
+// Conversions
+TypeDeclarationSyntax node = syntax;
+ValidSyntax<ClassDeclarationSyntax> validSyntax = syntax;
+```
+
+---
+
+## XmlDocumentation
+
+Parsed XML documentation from a symbol.
+
+```csharp
+var doc = symbol.XmlDocumentation;      // from OptionalSymbol/ValidSymbol
+var doc = XmlDocumentation.FromSymbol(symbol);
+
+doc.HasValue                // bool
+doc.IsEmpty                 // bool
+
+// Content
+doc.Summary                 // string?
+doc.Remarks                 // string?
+doc.Returns                 // string?
+doc.Value                   // string?
+doc.Example                 // string?
+doc.RawXml                  // string?
+
+// Parameters
+doc.Params                  // ImmutableDictionary<string, string>
+doc.GetParam("name")        // string?
+
+// Type parameters
+doc.TypeParams              // ImmutableDictionary<string, string>
+doc.GetTypeParam("T")       // string?
+
+// Exceptions and references
+doc.Exceptions              // ImmutableArray<(string Type, string Description)>
+doc.SeeAlso                 // ImmutableArray<string>
 ```
 
 ---
@@ -400,13 +615,32 @@ var config = symbol
     .OrDefault(RetryConfig.Default);
 ```
 
+### Early Exit Pattern in Analyzers
+
+```csharp
+protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type)
+{
+    var target = GetFirstInvalidTarget(type);
+    return target.HasValue;
+}
+
+private static OptionalSymbol<INamedTypeSymbol> GetFirstInvalidTarget(ValidSymbol<INamedTypeSymbol> type)
+{
+    return OptionalSymbol<INamedTypeSymbol>.FromNullable(
+        type.GetAttributes("EffectsModule")
+            .FirstOrDefault(t => !t.TargetType.IsInterface)
+            ?.TargetType.Value
+    );
+}
+```
+
 ### Safe Type Navigation
 
 ```csharp
 var elementType = typeSymbol
-    .AsNamedType()
+    .AsOptional()
     .Where(t => t.IsGenericType && t.Name == "List")
-    .Map(t => t.Value.SingleTypeArgument)
+    .Map(t => t.SingleTypeArgument)
     .OrDefault(OptionalSymbol<ITypeSymbol>.Empty());
 ```
 
@@ -421,9 +655,10 @@ public void Process(OptionalSymbol<IMethodSymbol> method)
         return;
     }
     
-    // valid is ValidSymbol<IMethodSymbol> - no null checks needed
+    // valid is ValidSymbol<IMethodSymbol> — no null checks needed
     var name = valid.Name;
-    var returnType = valid.Map(m => m.ReturnType);
+    var isAsync = valid.IsAsync;
+    var parameters = valid.Value.Parameters;
 }
 ```
 
@@ -435,4 +670,40 @@ var serviceName = symbol
     .ConstructorArg<INamedTypeSymbol>(0)
     .Map(t => t.Name)
     .OrDefault(() => symbol.Name + "Service");
+```
+
+### Work with Generic Attributes
+
+```csharp
+// For [Handler<TRequest, TResponse>]
+var attr = symbol.GetAttribute("Handler");
+var requestType = attr.GetTypeArgument(0).OrThrow("Request type required");
+var responseType = attr.GetTypeArgument(1).OrThrow("Response type required");
+```
+
+### Check Type Hierarchy
+
+```csharp
+// Check if a type implements IDisposable
+if (typeSymbol.ImplementsInterface("IDisposable"))
+{
+    // Generate dispose pattern
+}
+
+// Check if inherits from a specific base class
+if (typeSymbol.InheritsFrom("ControllerBase"))
+{
+    // Handle controller-specific generation
+}
+
+// Iterate all base types
+foreach (var baseType in typeSymbol.GetBaseTypes())
+{
+    Console.WriteLine($"Inherits from: {baseType.Name}");
+}
+
+// Get all interfaces including inherited ones
+var allInterfaces = typeSymbol.GetAllInterfaces()
+    .Select(i => i.FullyQualifiedName)
+    .ToList();
 ```

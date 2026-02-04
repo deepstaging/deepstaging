@@ -10,6 +10,84 @@ public static class ProjectedNamedTypeSymbolExtensions
     extension(OptionalSymbol<INamedTypeSymbol> type)
     {
         /// <summary>
+        /// Gets the base type of this type.
+        /// Returns Empty if there is no base type (e.g., object, interfaces).
+        /// </summary>
+        public OptionalSymbol<INamedTypeSymbol> BaseType =>
+            type is { HasValue: true, Symbol.BaseType: { } baseType }
+                ? OptionalSymbol<INamedTypeSymbol>.WithValue(baseType)
+                : OptionalSymbol<INamedTypeSymbol>.Empty();
+
+        /// <summary>
+        /// Gets all base types in the inheritance hierarchy.
+        /// Returns empty if type has no value.
+        /// </summary>
+        public IEnumerable<ValidSymbol<INamedTypeSymbol>> GetBaseTypes()
+        {
+            if (!type.HasValue) yield break;
+            var current = type.Symbol!.BaseType;
+            while (current != null)
+            {
+                yield return ValidSymbol<INamedTypeSymbol>.From(current);
+                current = current.BaseType;
+            }
+        }
+
+        /// <summary>
+        /// Gets all interfaces implemented by this type.
+        /// Returns empty if type has no value.
+        /// </summary>
+        public IEnumerable<ValidSymbol<INamedTypeSymbol>> GetInterfaces()
+        {
+            if (!type.HasValue) yield break;
+            foreach (var iface in type.Symbol!.Interfaces)
+                yield return ValidSymbol<INamedTypeSymbol>.From(iface);
+        }
+
+        /// <summary>
+        /// Gets all interfaces implemented by this type, including base type interfaces.
+        /// Returns empty if type has no value.
+        /// </summary>
+        public IEnumerable<ValidSymbol<INamedTypeSymbol>> GetAllInterfaces()
+        {
+            if (!type.HasValue) yield break;
+            foreach (var iface in type.Symbol!.AllInterfaces)
+                yield return ValidSymbol<INamedTypeSymbol>.From(iface);
+        }
+
+        /// <summary>
+        /// Checks if this type implements the specified interface by name.
+        /// Checks both direct and inherited interfaces.
+        /// Returns false if type has no value.
+        /// </summary>
+        public bool ImplementsInterface(string interfaceName)
+        {
+            return type.HasValue && type.Symbol!.AllInterfaces.Any(i =>
+                i.Name == interfaceName ||
+                i.ToDisplayString() == interfaceName ||
+                i.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == interfaceName);
+        }
+
+        /// <summary>
+        /// Checks if this type inherits from the specified base type by name.
+        /// Returns false if type has no value.
+        /// </summary>
+        public bool InheritsFrom(string baseTypeName)
+        {
+            if (!type.HasValue) return false;
+            var current = type.Symbol!.BaseType;
+            while (current != null)
+            {
+                if (current.Name == baseTypeName ||
+                    current.ToDisplayString() == baseTypeName ||
+                    current.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == baseTypeName)
+                    return true;
+                current = current.BaseType;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Gets the underlying type of the enum.
         /// Returns Empty if not an enum or underlying type is null.
         /// </summary>
