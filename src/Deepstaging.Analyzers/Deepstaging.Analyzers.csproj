@@ -26,10 +26,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Deepstaging.Roslyn" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj" />
       <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj" />
       <ProjectReference Include="..\Deepstaging\Deepstaging.csproj" />
     </ItemGroup>

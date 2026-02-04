@@ -12,7 +12,7 @@ namespace Deepstaging.ToDo;
 /// <summary>
 /// Runtime capability interface for the global::Deepstaging.ToDo.Services.Data.TodoDbContext dependency of the Database effects module.
 /// </summary>
-/// <seealso cref="global::Deepstaging.ToDo.RuntimeEffects.Database"/>
+/// <seealso cref="global::Deepstaging.ToDo.ToDoEffects.Database"/>
 public interface IHasTodoDbContext
 {
     public global::Deepstaging.ToDo.Services.Data.TodoDbContext TodoDbContext { get; }

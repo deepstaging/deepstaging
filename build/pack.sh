@@ -9,9 +9,7 @@
 #   ./build/pack.sh --version-suffix dev-20260202
 #   ./build/pack.sh --no-version-suffix  # Pack without version suffix (release)
 #
-# Output: artifacts/packages/
-#   - Deepstaging.Roslyn.{version}.nupkg
-#   - Deepstaging.Roslyn.Testing.{version}.nupkg
+# Output: ../../artifacts/packages/
 #   - Deepstaging.{version}.nupkg
 
 set -euo pipefail
@@ -22,7 +20,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # Default values
 CONFIGURATION="Release"
 VERSION_SUFFIX="dev-$(date +%Y%m%d%H%M%S)"
-OUTPUT_DIR="$REPO_ROOT/artifacts/packages"
+OUTPUT_DIR="$REPO_ROOT/../../artifacts/packages"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -50,7 +48,7 @@ while [[ $# -gt 0 ]]; do
             echo "  -c, --configuration <config>  Build configuration (default: Release)"
             echo "  --version-suffix <suffix>     Version suffix (default: dev-YYYYMMDDHHMMSS)"
             echo "  --no-version-suffix           Pack without version suffix (for release)"
-            echo "  -o, --output <dir>            Output directory (default: artifacts/packages)"
+            echo "  -o, --output <dir>            Output directory (default: ../../artifacts/packages)"
             echo "  -h, --help                    Show this help message"
             exit 0
             ;;
@@ -84,17 +82,9 @@ echo "Creating output directory..."
 mkdir -p "$OUTPUT_DIR"
 
 echo ""
-echo "Packing Deepstaging.Roslyn..."
-dotnet pack $(build_pack_args "$REPO_ROOT/roslyn/Deepstaging.Roslyn/Deepstaging.Roslyn.csproj")
-
-echo ""
-echo "Packing Deepstaging.Roslyn.Testing..."
-dotnet pack $(build_pack_args "$REPO_ROOT/roslyn/Deepstaging.Roslyn.Testing/Deepstaging.Roslyn.Testing.csproj")
-
-echo ""
 echo "Packing Deepstaging..."
 dotnet pack $(build_pack_args "$REPO_ROOT/src/Deepstaging/Deepstaging.csproj")
 
 echo ""
 echo "Packages created in: $OUTPUT_DIR"
-ls -la "$OUTPUT_DIR"/*.nupkg 2>/dev/null || echo "No .nupkg files found"
+ls -la "$OUTPUT_DIR"/Deepstaging.*.nupkg 2>/dev/null || echo "No Deepstaging .nupkg files found"

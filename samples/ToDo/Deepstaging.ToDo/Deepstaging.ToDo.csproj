@@ -1,6 +1,6 @@
 <!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
 <!-- SPDX-License-Identifier: RPL-1.5 -->
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -21,10 +21,6 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
       <PackageReference Include="Microsoft.Extensions.Logging" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Generated\" />
     </ItemGroup>
 
 </Project>

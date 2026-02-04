@@ -3,14 +3,14 @@
 namespace Deepstaging.Generators.Writers;
 
 /// <summary>
-/// 
+/// Provides extension methods for generating runtime-related source code from a <see cref="RuntimeModel"/>.
 /// </summary>
 public static class RuntimeWriter
 {
     extension(RuntimeModel model)
     {
         /// <summary>
-        /// 
+        /// Generates the partial runtime class with capability properties and a primary constructor.
         /// </summary>
         public OptionalEmit WriteRuntimeClass()
         {
@@ -32,9 +32,8 @@ public static class RuntimeWriter
         }
 
         /// <summary>
-        /// 
+        /// Generates a bootstrapper class with a DI extension method to register the runtime.
         /// </summary>
-        /// <returns></returns>
         public OptionalEmit WriteRuntimeBootstrapperClass()
         {
             var boostrapMethod = MethodBuilder

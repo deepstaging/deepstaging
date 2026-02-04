@@ -8,11 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 namespace Deepstaging.ToDo;
-public static class RuntimeBootstrapper
+public static class ToDoRuntimeBootstrapper
 {
-    public static IServiceCollection AddRuntime(this IServiceCollection services)
+    public static IServiceCollection AddToDoRuntime(this IServiceCollection services)
     {
-        services.AddScoped<Deepstaging.ToDo.Runtime>();
+        services.AddScoped<Deepstaging.ToDo.ToDoRuntime>();
         return services;
     }
 }

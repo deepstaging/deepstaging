@@ -12,11 +12,4 @@
   <Project Path="src/Deepstaging.Analyzers/Deepstaging.Analyzers.csproj" />
   <Project Path="src/Deepstaging.Runtime/Deepstaging.Runtime.csproj" />
   <Project Path="src/Deepstaging.Tests/Deepstaging.Tests.csproj" />
-  <Folder Name="/Roslyn/">
-    <Project Path="roslyn/Deepstaging.Roslyn/Deepstaging.Roslyn.csproj" />
-    <Project Path="roslyn/Deepstaging.Roslyn.Scriban/Deepstaging.Roslyn.Scriban.csproj" />
-    <Project Path="roslyn/Deepstaging.Roslyn.Workspace/Deepstaging.Roslyn.Workspace.csproj" />
-    <Project Path="roslyn/Deepstaging.Roslyn.Testing/Deepstaging.Roslyn.Testing.csproj" />
-    <Project Path="roslyn/Deepstaging.Roslyn.Tests/Deepstaging.Roslyn.Tests.csproj" />
-  </Folder>
 </Solution>

@@ -12,7 +12,7 @@ namespace Deepstaging.ToDo;
 /// <summary>
 /// Runtime capability interface for the global::Deepstaging.ToDo.Services.ISlackService dependency of the Slack effects module.
 /// </summary>
-/// <seealso cref="global::Deepstaging.ToDo.RuntimeEffects.Slack"/>
+/// <seealso cref="global::Deepstaging.ToDo.ToDoEffects.Slack"/>
 public interface IHasSlackService
 {
     public global::Deepstaging.ToDo.Services.ISlackService SlackService { get; }

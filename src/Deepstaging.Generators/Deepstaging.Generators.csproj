@@ -30,12 +30,12 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true"/>
+        <PackageReference Include="Deepstaging.Roslyn" />
+        <PackageReference Include="Deepstaging.Roslyn.Scriban" />
     </ItemGroup>
 
-    <!-- Reference Deepstaging.Roslyn projects -->
+    <!-- Reference Deepstaging projects -->
     <ItemGroup>
-        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn.Scriban\Deepstaging.Roslyn.Scriban.csproj" />
-        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj" />
         <ProjectReference Include="..\Deepstaging\Deepstaging.csproj" />
         <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj" />
     </ItemGroup>

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 using static LanguageExt.Prelude;
 
 namespace Deepstaging.ToDo;
-public static partial class RuntimeEffects
+public static partial class ToDoEffects
 {
     public static partial class Slack
     {

@@ -19,7 +19,7 @@
       Recommendation: Use local artifacts (default) for repository portability
     -->
     <ArtifactsDir Condition="'$(DEEPSTAGING_ARTIFACTS_DIR)' != ''">$(DEEPSTAGING_ARTIFACTS_DIR)</ArtifactsDir>
-    <ArtifactsDir Condition="'$(DEEPSTAGING_ARTIFACTS_DIR)' == ''">$(MSBuildThisFileDirectory)../artifacts</ArtifactsDir>
+    <ArtifactsDir Condition="'$(DEEPSTAGING_ARTIFACTS_DIR)' == ''">$(MSBuildThisFileDirectory)../../../artifacts</ArtifactsDir>
     
     <!-- 
       BaseOutputPath: Where compiled binaries (.dll, .exe) go

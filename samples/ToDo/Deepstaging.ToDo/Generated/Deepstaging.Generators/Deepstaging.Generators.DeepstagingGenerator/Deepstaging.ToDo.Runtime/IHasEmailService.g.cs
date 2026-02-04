@@ -12,7 +12,7 @@ namespace Deepstaging.ToDo;
 /// <summary>
 /// Runtime capability interface for the global::Deepstaging.ToDo.Services.IEmailService dependency of the Email effects module.
 /// </summary>
-/// <seealso cref="global::Deepstaging.ToDo.RuntimeEffects.Email"/>
+/// <seealso cref="global::Deepstaging.ToDo.ToDoEffects.Email"/>
 public interface IHasEmailService
 {
     public global::Deepstaging.ToDo.Services.IEmailService EmailService { get; }

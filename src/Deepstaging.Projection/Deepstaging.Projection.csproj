@@ -8,10 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Common"/>
+        <PackageReference Include="Deepstaging.Roslyn"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj"/>
         <ProjectReference Include="..\Deepstaging\Deepstaging.csproj"/>
     </ItemGroup>
 

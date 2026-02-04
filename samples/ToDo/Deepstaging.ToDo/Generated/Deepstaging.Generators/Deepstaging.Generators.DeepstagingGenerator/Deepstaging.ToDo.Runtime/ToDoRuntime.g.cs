@@ -7,7 +7,7 @@
 using System.Threading.Tasks;
 
 namespace Deepstaging.ToDo;
-public partial class Runtime(global::Deepstaging.ToDo.Services.IEmailService emailService, global::Deepstaging.ToDo.Services.ISlackService slackService, global::Deepstaging.ToDo.Services.Data.TodoDbContext todoDbContext) : IHasEmailService, IHasSlackService, IHasTodoDbContext
+public partial class ToDoRuntime(global::Deepstaging.ToDo.Services.IEmailService emailService, global::Deepstaging.ToDo.Services.ISlackService slackService, global::Deepstaging.ToDo.Services.Data.TodoDbContext todoDbContext) : IHasEmailService, IHasSlackService, IHasTodoDbContext
 {
     public global::Deepstaging.ToDo.Services.IEmailService EmailService => emailService;
 

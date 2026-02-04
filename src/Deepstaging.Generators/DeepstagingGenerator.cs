@@ -6,6 +6,7 @@ using Deepstaging.Roslyn.Generators;
 namespace Deepstaging.Generators;
 
 /// <summary>
+/// Incremental source generator that produces runtime and effects code for Deepstaging-attributed types.
 /// </summary>
 [Generator]
 public sealed class DeepstagingGenerator : IIncrementalGenerator

@@ -34,7 +34,7 @@ public sealed record RuntimeModel
 }
 
 /// <summary>
-/// 
+/// Model for a capability dependency required by the runtime.
 /// </summary>
 public sealed record RuntimeCapabilityModel
 {
@@ -49,7 +49,7 @@ public sealed record RuntimeCapabilityModel
     public required string PropertyName { get; init; }
 
     /// <summary>
-    /// 
+    /// The constructor parameter name for the capability (e.g., "emailService").
     /// </summary>
     public required string ParameterName { get; init; }
 
