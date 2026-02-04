@@ -25,7 +25,7 @@
     <Authors>Christopher Martin</Authors>
     <Company>Deepstaging</Company>
     <Copyright>Copyright © Deepstaging</Copyright>
-    <Description>Source generator, analyzer, and code fixes for MyRoslynTool.Runtime</Description>
+    <Description>Roslyn-based code generation toolkit for C#/.NET</Description>
 
     <!-- 
       PackageLicenseExpression: SPDX license identifier
@@ -34,8 +34,8 @@
     -->
     <PackageLicenseExpression>RPL-1.5</PackageLicenseExpression>
 
-    <PackageProjectUrl>https://github.com/yourorg/MyRoslynTool.Runtime</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/yourorg/MyRoslynTool.Runtime</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/deepstaging/deepstaging</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/deepstaging/deepstaging</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
 
     <!-- 
