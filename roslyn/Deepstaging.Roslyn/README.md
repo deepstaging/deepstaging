@@ -21,8 +21,8 @@ TypeQuery.From(compilation)
 ```csharp
 OptionalSymbol<INamedTypeSymbol> type = GetTypeOrNull();
 var name = type
-    .Where(t => t.IsPublic())
-    .Map(t => t.FullyQualifiedName())
+    .Where(t => t.IsPublic)
+    .Map(t => t.FullyQualifiedName)
     .OrNull();
 ```
 
@@ -83,9 +83,8 @@ var maxRetries = symbol
 **Check if a type implements an interface:**
 
 ```csharp
-bool isDisposable = typeSymbol
-    .AsNamedType()
-    .HasInterface("System.IDisposable");
+bool isDisposable = ((INamedTypeSymbol)typeSymbol)
+    .ImplementsInterface("System.IDisposable");
 ```
 
 **Generate a complete class with properties:**

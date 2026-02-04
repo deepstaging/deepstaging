@@ -1,36 +1,33 @@
 # Emit
 
-Fluent builders for generating compilable C# code. Symmetric with the query API - where queries find code, emit builders create it.
+Fluent builders for generating compilable C# code.
 
 > **See also:** [Queries](Queries.md) | [Projections](Projections.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
 
 ## Overview
 
-Emit builders let you construct Roslyn syntax trees using a fluent, immutable API:
+Emit builders construct Roslyn syntax trees using a fluent, immutable API. Where queries find code, emit builders create it.
 
-- **TypeBuilder** - Create classes, interfaces, structs, records
-- **MethodBuilder** - Create methods
-- **PropertyBuilder** - Create properties
-- **FieldBuilder** - Create fields
-- **ConstructorBuilder** - Create constructors
-- **ParameterBuilder** - Create parameters
-- **BodyBuilder** - Create method/property bodies
-- **XmlDocumentationBuilder** - Create XML doc comments
+| Builder | Purpose |
+|---------|---------|
+| `TypeBuilder` | Create classes, interfaces, structs, records |
+| `MethodBuilder` | Create methods |
+| `PropertyBuilder` | Create properties |
+| `FieldBuilder` | Create fields |
+| `ConstructorBuilder` | Create constructors |
+| `ParameterBuilder` | Create parameters |
+| `TypeParameterBuilder` | Create generic type parameters |
+| `BodyBuilder` | Create method/property bodies |
+| `AttributeBuilder` | Create attributes |
+| `XmlDocumentationBuilder` | Create XML doc comments |
 
-All builders are immutable - each method returns a new instance.
-
-## TypeBuilder
-
-Create type declarations.
+All builders are **immutable** — each method returns a new instance.
 
 ```csharp
 var result = TypeBuilder
     .Class("Customer")
     .InNamespace("MyApp.Domain")
     .AsPartial()
-    .AddProperty("Id", "Guid", p => p
-        .WithAccessibility(Accessibility.Public)
-        .WithAutoPropertyAccessors())
     .AddProperty("Name", "string", p => p
         .WithAccessibility(Accessibility.Public)
         .WithAutoPropertyAccessors())
@@ -38,19 +35,26 @@ var result = TypeBuilder
 
 if (result.IsValid(out var valid))
 {
-    string code = valid.Code;
-    CompilationUnitSyntax syntax = valid.Syntax;
+    string code = valid.Code;                    // Formatted C# code
+    CompilationUnitSyntax syntax = valid.Syntax; // Roslyn syntax tree
 }
 ```
+
+---
+
+## TypeBuilder
+
+Create type declarations.
 
 ### Factory Methods
 
 | Method | Description |
 |--------|-------------|
-| `Class(string name)` | Create a class type |
-| `Interface(string name)` | Create an interface type |
-| `Struct(string name)` | Create a struct type |
-| `Record(string name)` | Create a record type |
+| `Class(string name)` | Create a class |
+| `Interface(string name)` | Create an interface |
+| `Struct(string name)` | Create a struct |
+| `Record(string name)` | Create a record |
+| `Parse(string signature)` | Parse from signature (e.g., `"public partial class MyClass"`) |
 
 ### Namespace & Usings
 
@@ -59,7 +63,7 @@ TypeBuilder
     .Class("MyClass")
     .InNamespace("MyApp.Domain")
     .AddUsing("System")
-    .AddUsing("System.Collections.Generic")
+    .AddUsings("System.Collections.Generic", "System.Linq")
 ```
 
 ### Accessibility & Modifiers
@@ -67,11 +71,11 @@ TypeBuilder
 ```csharp
 TypeBuilder
     .Class("MyClass")
-    .WithAccessibility(Accessibility.Public)  // public, internal, private
-    .AsStatic()    // static class
-    .AsAbstract()  // abstract class
-    .AsSealed()    // sealed class
-    .AsPartial()   // partial class
+    .WithAccessibility(Accessibility.Public)
+    .AsStatic()
+    .AsAbstract()
+    .AsSealed()
+    .AsPartial()
 ```
 
 ### Interfaces
@@ -86,28 +90,48 @@ TypeBuilder
 ### Adding Members
 
 ```csharp
-// Add property with configuration
+// Properties
 builder.AddProperty("Name", "string", prop => prop
     .WithAccessibility(Accessibility.Public)
     .WithAutoPropertyAccessors())
+builder.AddProperty(propertyBuilder)
 
-// Add pre-configured property
-builder.AddProperty(PropertyBuilder.For("Name", "string").WithAutoPropertyAccessors())
-
-// Add field
+// Fields
 builder.AddField("_name", "string", field => field
     .WithAccessibility(Accessibility.Private)
-    .AsReadOnly())
+    .AsReadonly())
+builder.AddField(fieldBuilder)
 
-// Add method
+// Methods
 builder.AddMethod("GetName", method => method
     .WithReturnType("string")
-    .WithBody(body => body.Return("_name")))
+    .WithBody(body => body.AddReturn("_name")))
+builder.AddMethod(methodBuilder)
 
-// Add constructor
+// Constructors
 builder.AddConstructor(ctor => ctor
     .AddParameter("name", "string")
-    .WithBody(body => body.Statement("_name = name;")))
+    .WithBody(body => body.AddStatement("_name = name;")))
+builder.AddConstructor(constructorBuilder)
+
+// Primary constructors (records, C# 12+)
+builder.WithPrimaryConstructor(ctor => ctor
+    .AddParameter("name", "string"))
+
+// Nested types
+builder.AddNestedType("Inner", inner => inner
+    .WithAccessibility(Accessibility.Private))
+builder.AddNestedType(nestedTypeBuilder)
+```
+
+### Attributes
+
+```csharp
+builder.WithAttribute("Serializable")
+builder.WithAttribute("JsonProperty", attr => attr
+    .WithArgument("\"name\"")
+    .WithNamedArgument("Required", "true"))
+builder.WithAttribute(attributeBuilder)
 ```
 
 ### XML Documentation
@@ -115,34 +139,25 @@ builder.AddConstructor(ctor => ctor
 ```csharp
 builder.WithXmlDoc("Represents a customer entity.")
 
-// Or with more control
 builder.WithXmlDoc(doc => doc
     .Summary("Represents a customer entity.")
     .Remarks("This class is generated by the source generator."))
+
+builder.WithXmlDoc(existingXmlDocumentation)
+```
+
+### Properties
+
+```csharp
+builder.Name    // string — the type name
+builder.Kind    // TypeKind — class, interface, struct, etc.
 ```
 
 ### Emit
 
 ```csharp
-// Emit with default options (syntax validation)
 OptionalEmit result = builder.Emit();
-
-// Emit with custom options
-OptionalEmit result = builder.Emit(EmitOptions.Default
-    .WithValidation(ValidationLevel.Syntax)
-    .WithIndentation("    ")
-    .WithEndOfLine("\n"));
-
-// Check result
-if (result.IsValid(out var valid))
-{
-    string code = valid.Code;                    // Formatted C# code
-    CompilationUnitSyntax syntax = valid.Syntax; // Roslyn syntax tree
-}
-else
-{
-    ImmutableArray<Diagnostic> errors = result.Diagnostics;
-}
+OptionalEmit result = builder.Emit(EmitOptions.Default);
 ```
 
 ---
@@ -151,17 +166,12 @@ else
 
 Create method declarations.
 
-```csharp
-MethodBuilder.For("ProcessOrder")
-    .WithReturnType("Task<OrderResult>")
-    .WithAccessibility(Accessibility.Public)
-    .Async()
-    .AddParameter("order", "Order")
-    .AddParameter("token", "CancellationToken", p => p.WithDefault("default"))
-    .WithBody(body => body
-        .Statement("var result = await _processor.Process(order, token);")
-        .Return("result"))
-```
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `For(string name)` | Create a method with the given name |
+| `Parse(string signature)` | Parse from signature (e.g., `"public async Task<int> GetCount()"`) |
 
 ### Return Type
 
@@ -172,7 +182,7 @@ method.WithReturnType("Task<int>")
 method.WithReturnType("IAsyncEnumerable<Order>")
 ```
 
-### Modifiers
+### Accessibility & Modifiers
 
 ```csharp
 method.WithAccessibility(Accessibility.Public)
@@ -183,27 +193,66 @@ method.AsAbstract()
 method.Async()
 ```
 
+### Type Parameters
+
+```csharp
+method.AddTypeParameter("T")
+method.AddTypeParameter("T", tp => tp
+    .AsClass()
+    .WithNewConstraint())
+method.AddTypeParameter(typeParameterBuilder)
+```
+
 ### Parameters
 
 ```csharp
-// Simple parameter
 method.AddParameter("name", "string")
-
-// Parameter with configuration
-method.AddParameter("count", "int", p => p
-    .WithDefault("0"))
-
-// Pre-configured parameter
-method.AddParameter(ParameterBuilder.For("items", "IEnumerable<T>"))
+method.AddParameter("count", "int", p => p.WithDefaultValue("0"))
+method.AddParameter(parameterBuilder)
 ```
 
 ### Body
 
 ```csharp
+// Block body
 method.WithBody(body => body
-    .Statement("Console.WriteLine(\"Starting\");")
-    .Statement("DoWork();")
-    .Return("result"))
+    .AddStatement("Console.WriteLine(\"Starting\");")
+    .AddStatement("DoWork();")
+    .AddReturn("result"))
+
+// Expression body
+method.WithExpressionBody("_name")
+
+// Append to expression body
+method.AppendExpressionBody(".ToList()")
+```
+
+### Attributes & XML Documentation
+
+```csharp
+method.WithAttribute("HttpGet")
+method.WithAttribute("Route", attr => attr.WithArgument("\"/api/items\""))
+
+method.WithXmlDoc("Gets the customer name.")
+method.WithXmlDoc(doc => doc
+    .Summary("Gets a customer by identifier.")
+    .Param("id", "The customer identifier.")
+    .Returns("The customer if found; otherwise, null."))
+```
+
+### Usings
+
+```csharp
+method.AddUsing("System.Linq")
+method.AddUsings("System", "System.Threading.Tasks")
+```
+
+### Properties
+
+```csharp
+method.Name             // string
+method.ReturnType       // string?
+method.ExtensionTargetType // string? — the type being extended (for extension methods)
 ```
 
 ---
@@ -212,51 +261,35 @@ method.WithBody(body => body
 
 Create property declarations.
 
-```csharp
-// Auto-property
-PropertyBuilder.For("Name", "string")
-    .WithAccessibility(Accessibility.Public)
-    .WithAutoPropertyAccessors()
+### Factory Methods
 
-// Read-only auto-property
-PropertyBuilder.For("Id", "Guid")
-    .WithAccessibility(Accessibility.Public)
-    .WithAutoPropertyAccessors()
-    .AsReadOnly()
-
-// Expression-bodied property
-PropertyBuilder.For("FullName", "string")
-    .WithAccessibility(Accessibility.Public)
-    .WithGetter("$\"{FirstName} {LastName}\"")
-
-// With initializer
-PropertyBuilder.For("Items", "List<string>")
-    .WithAutoPropertyAccessors()
-    .WithInitializer("new()")
-```
+| Method | Description |
+|--------|-------------|
+| `For(string name, string type)` | Create a property |
+| `Parse(string signature)` | Parse from signature (e.g., `"public string Name { get; set; }"`) |
 
 ### Accessor Styles
 
 ```csharp
-// Auto { get; set; }
+// Auto-property { get; set; }
 prop.WithAutoPropertyAccessors()
 
-// Read-only { get; }
+// Read-only auto-property { get; }
 prop.WithAutoPropertyAccessors().AsReadOnly()
 
-// Expression-bodied => expression
+// Expression-bodied getter => expression
 prop.WithGetter("_name")
 prop.WithGetter("=> _name")  // "=>" is optional
 
 // Block-bodied getter
 prop.WithGetter(body => body
-    .Statement("if (_name == null) _name = LoadName();")
-    .Return("_name"))
+    .AddStatement("if (_name == null) _name = LoadName();")
+    .AddReturn("_name"))
 
 // Block-bodied setter
 prop.WithSetter(body => body
-    .Statement("_name = value;")
-    .Statement("OnPropertyChanged();"))
+    .AddStatement("_name = value;")
+    .AddStatement("OnPropertyChanged();"))
 ```
 
 ### Modifiers
@@ -267,6 +300,7 @@ prop.AsStatic()
 prop.AsVirtual()
 prop.AsOverride()
 prop.AsAbstract()
+prop.AsReadOnly()  // removes setter
 ```
 
 ### Initialization
@@ -275,7 +309,27 @@ prop.AsAbstract()
 prop.WithInitializer("new()")
 prop.WithInitializer("default")
 prop.WithInitializer("\"Default Value\"")
-prop.WithBackingField("_name")  // Note: add field separately
+prop.WithBackingField("_name")  // references a backing field
+```
+
+### Attributes & XML Documentation
+
+```csharp
+prop.WithAttribute("JsonProperty")
+prop.WithXmlDoc("Gets or sets the customer name.")
+```
+
+### Usings
+
+```csharp
+prop.AddUsing("System.Text.Json.Serialization")
+```
+
+### Properties
+
+```csharp
+prop.Name   // string
+prop.Type   // string
 ```
 
 ---
@@ -284,21 +338,47 @@ prop.WithBackingField("_name")  // Note: add field separately
 
 Create field declarations.
 
-```csharp
-FieldBuilder.For("_name", "string")
-    .WithAccessibility(Accessibility.Private)
-    .AsReadOnly()
-    .WithInitializer("string.Empty")
-```
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `For(string name, string type)` | Create a field |
+| `Parse(string signature)` | Parse from signature |
 
 ### Modifiers
 
 ```csharp
 field.WithAccessibility(Accessibility.Private)
 field.AsStatic()
-field.AsReadOnly()
+field.AsReadonly()
 field.AsConst()
-field.AsVolatile()
+```
+
+### Initialization
+
+```csharp
+field.WithInitializer("string.Empty")
+field.WithInitializer("42")
+```
+
+### Attributes & XML Documentation
+
+```csharp
+field.WithAttribute("NonSerialized")
+field.WithXmlDoc("The backing field for Name.")
+```
+
+### Usings
+
+```csharp
+field.AddUsing("System")
+```
+
+### Properties
+
+```csharp
+field.Name   // string
+field.Type   // string
 ```
 
 ---
@@ -307,24 +387,56 @@ field.AsVolatile()
 
 Create constructor declarations.
 
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `For(string typeName)` | Create a constructor for the given type |
+
+### Modifiers
+
 ```csharp
-ConstructorBuilder.For("Customer")
-    .WithAccessibility(Accessibility.Public)
-    .AddParameter("name", "string")
-    .AddParameter("email", "string")
-    .WithBody(body => body
-        .Statement("Name = name;")
-        .Statement("Email = email;"))
+ctor.WithAccessibility(Accessibility.Public)
+ctor.AsStatic()
+ctor.AsPrimary()  // for primary constructors
 ```
 
-### Base/This Calls
+### Parameters
 
 ```csharp
-// Call base constructor
-ctor.CallsBase("name", "email")
+ctor.AddParameter("name", "string")
+ctor.AddParameter("email", "string", p => p.WithDefaultValue("null"))
+ctor.AddParameter(parameterBuilder)
+```
 
-// Call another constructor
-ctor.CallsThis("name")
+### Body
+
+```csharp
+ctor.WithBody(body => body
+    .AddStatement("Name = name;")
+    .AddStatement("Email = email;"))
+```
+
+### Constructor Chaining
+
+```csharp
+ctor.CallsBase("name", "email")  // : base(name, email)
+ctor.CallsThis("name")           // : this(name)
+```
+
+### Attributes & XML Documentation
+
+```csharp
+ctor.WithAttribute("Obsolete")
+ctor.WithXmlDoc("Initializes a new instance of the Customer class.")
+```
+
+### Properties
+
+```csharp
+ctor.IsPrimary      // bool
+ctor.Parameters     // ImmutableArray<ParameterBuilder>
+ctor.Usings         // ImmutableArray<string>
 ```
 
 ---
@@ -333,25 +445,59 @@ ctor.CallsThis("name")
 
 Create parameter declarations.
 
-```csharp
-ParameterBuilder.For("name", "string")
-    .WithDefault("\"Unknown\"")
+### Factory Methods
 
-ParameterBuilder.For("count", "int")
-    .WithDefault("0")
+| Method | Description |
+|--------|-------------|
+| `For(string name, string type)` | Create a parameter |
 
-ParameterBuilder.For("items", "IEnumerable<T>")
-    .AsParams()
-```
-
-### Modifiers
+### Configuration
 
 ```csharp
-param.WithDefault("defaultValue")
+param.WithDefaultValue("0")
+param.WithDefaultValue("\"default\"")
 param.AsRef()
 param.AsOut()
 param.AsIn()
 param.AsParams()
+param.AsThis()  // for extension method target
+```
+
+### Properties
+
+```csharp
+param.Name              // string
+param.Type              // string
+param.IsExtensionTarget // bool
+```
+
+---
+
+## TypeParameterBuilder
+
+Create generic type parameter declarations.
+
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `For(string name)` | Create a type parameter |
+
+### Constraints
+
+```csharp
+tp.WithConstraint("IDisposable")
+tp.AsClass()       // where T : class
+tp.AsStruct()      // where T : struct
+tp.AsNotNull()     // where T : notnull
+tp.WithNewConstraint()  // where T : new()
+```
+
+### Properties
+
+```csharp
+tp.Name           // string
+tp.HasConstraints // bool
 ```
 
 ---
@@ -360,23 +506,60 @@ param.AsParams()
 
 Build method and property bodies.
 
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `Empty()` | Create an empty body |
+
+### Adding Statements
+
 ```csharp
-BodyBuilder.Empty()
-    .Statement("var x = 10;")
-    .Statement("var y = 20;")
-    .Return("x + y")
+body.AddStatement("Console.WriteLine(\"Hello\");")
+body.AddStatements("var a = 1;\nvar b = 2;")  // multi-line string
+body.AddReturn("result")
+body.AddReturn()  // void return
+body.AddThrow("new InvalidOperationException()")
+body.AddCustom(statementSyntax)  // raw Roslyn syntax
 ```
 
-### Statements
+### Properties
 
 ```csharp
-body.Statement("Console.WriteLine(\"Hello\");")
-body.Statements(
-    "var a = 1;",
-    "var b = 2;",
-    "var c = a + b;")
-body.Return("result")
-body.Return()  // void return
+body.IsEmpty  // bool
+```
+
+---
+
+## AttributeBuilder
+
+Create attribute declarations.
+
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `For(string name)` | Create an attribute |
+
+### Arguments
+
+```csharp
+attr.WithArgument("\"value\"")
+attr.WithArguments("1", "2", "3")
+attr.WithNamedArgument("Name", "\"value\"")
+```
+
+### Usings
+
+```csharp
+attr.AddUsing("System.ComponentModel")
+```
+
+### Properties
+
+```csharp
+attr.Name    // string
+attr.Usings  // ImmutableArray<string>
 ```
 
 ---
@@ -385,26 +568,32 @@ body.Return()  // void return
 
 Create XML documentation comments.
 
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `Create()` | Create empty documentation |
+| `WithSummary(string)` | Create with just a summary |
+| `From(XmlDocumentation)` | Create from existing parsed documentation |
+
+### Content
+
 ```csharp
-XmlDocumentationBuilder.Create()
-    .Summary("Gets the customer name.")
-    .Param("id", "The customer identifier.")
-    .Returns("The customer name if found; otherwise, null.")
-    .Remarks("This method queries the database.")
-    .Example("<code>var name = GetName(123);</code>")
+doc.Summary("Gets the customer name.")
+doc.Remarks("This method queries the database.")
+doc.Returns("The customer name if found; otherwise, null.")
+doc.Value("The property value.")
+doc.Param("id", "The customer identifier.")
+doc.TypeParam("T", "The entity type.")
+doc.Exception("InvalidOperationException", "Thrown when...")
+doc.SeeAlso("OtherClass")
+doc.Example("<code>var name = GetName(123);</code>")
 ```
 
-### Shorthand
+### Properties
 
 ```csharp
-// Just a summary
-XmlDocumentationBuilder.WithSummary("Gets the customer name.")
-
-// On builders
-builder.WithXmlDoc("Gets the customer name.")
-builder.WithXmlDoc(doc => doc
-    .Summary("Gets the customer name.")
-    .Param("id", "The customer identifier."))
+doc.HasContent  // bool
 ```
 
 ---
@@ -413,13 +602,43 @@ builder.WithXmlDoc(doc => doc
 
 Configure code emission.
 
+### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `ValidationLevel` | `ValidationLevel` | None, Syntax, Semantic, Full |
+| `Indentation` | `string` | Indentation string (default: 4 spaces) |
+| `EndOfLine` | `string` | Line ending (default: `\n`) |
+| `HeaderComment` | `string` | Comment at top of file |
+| `LicenseHeader` | `string?` | License header text |
+
+### Static Instances
+
 ```csharp
-EmitOptions.Default
-    .WithValidation(ValidationLevel.Syntax)     // None, Syntax, Semantic, Full
-    .WithIndentation("    ")                    // Indentation string
-    .WithEndOfLine("\n")                        // Line ending
-    .WithFullFormatter(false)                   // Use Roslyn formatter (slower)
+EmitOptions.Default      // syntax validation, standard formatting
+EmitOptions.NoValidation // skip validation
 ```
+
+### Usage
+
+```csharp
+var options = EmitOptions.Default with
+{
+    ValidationLevel = ValidationLevel.Semantic,
+    HeaderComment = "// Auto-generated"
+};
+
+var result = builder.Emit(options);
+```
+
+### ValidationLevel Enum
+
+| Value | Description |
+|-------|-------------|
+| `None` | No validation |
+| `Syntax` | Syntax validation only (default) |
+| `Semantic` | Semantic validation (requires compilation) |
+| `Full` | Full validation |
 
 ---
 
@@ -433,8 +652,8 @@ var result = builder.Emit();
 // Check if valid
 if (result.IsValid(out var valid))
 {
-    string code = valid.Code;
-    CompilationUnitSyntax syntax = valid.Syntax;
+    string code = valid.Code;                    // Formatted C# code
+    CompilationUnitSyntax syntax = valid.Syntax; // Roslyn syntax tree
 }
 
 // Check if invalid
@@ -464,29 +683,71 @@ var result = TypeBuilder
     .WithXmlDoc("Repository for customer data access.")
     .AddField("_context", "DbContext", f => f
         .WithAccessibility(Accessibility.Private)
-        .AsReadOnly())
+        .AsReadonly())
     .AddConstructor(ctor => ctor
         .WithAccessibility(Accessibility.Public)
         .AddParameter("context", "DbContext")
-        .WithBody(body => body.Statement("_context = context;")))
+        .WithBody(body => body.AddStatement("_context = context;")))
     .AddMethod("GetByIdAsync", m => m
         .WithReturnType("Task<Customer?>")
         .WithAccessibility(Accessibility.Public)
         .Async()
         .AddParameter("id", "Guid")
-        .AddParameter("cancellationToken", "CancellationToken", p => p.WithDefault("default"))
+        .AddParameter("cancellationToken", "CancellationToken", p => p.WithDefaultValue("default"))
         .WithXmlDoc(doc => doc
             .Summary("Gets a customer by identifier.")
             .Param("id", "The customer identifier.")
             .Param("cancellationToken", "Cancellation token.")
             .Returns("The customer if found; otherwise, null."))
         .WithBody(body => body
-            .Return("await _context.Customers.FindAsync(new object[] { id }, cancellationToken)")))
+            .AddReturn("await _context.Customers.FindAsync(new object[] { id }, cancellationToken)")))
     .Emit();
 
 if (result.IsValid(out var valid))
 {
-    // Add to source generation context
     context.AddSource("CustomerRepository.g.cs", valid.Code);
 }
+```
+
+---
+
+## Real-World Usage
+
+### Generating from Analyzed Symbols
+
+```csharp
+// Generate a module class from analyzed type information
+return TypeBuilder.Parse($"public static partial class {model.EffectsContainerName}")
+    .AddUsings(usings)
+    .InNamespace(model.Namespace)
+    .AddNestedType(module)
+    .Emit(options ?? EmitOptions.Default);
+```
+
+### Adding Methods Dynamically
+
+```csharp
+var builder = TypeBuilder.Class("Generated");
+
+foreach (var method in methods)
+{
+    builder = builder.AddMethod(method.Name, m => m
+        .AsStatic()
+        .WithReturnType($"Eff<RT, {method.ReturnType}>")
+        .AddParameter("input", method.InputType)
+        .WithXmlDoc(method.XmlDocumentation)
+        .WithExpressionBody(GenerateBody(method)));
+}
+```
+
+### Using Parse for Complex Signatures
+
+```csharp
+// Parse handles complex signatures more naturally
+var method = MethodBuilder.Parse("public async Task<IEnumerable<Customer>> GetAllAsync()")
+    .AddParameter("filter", "CustomerFilter", p => p.WithDefaultValue("null"))
+    .WithBody(body => body
+        .AddStatement("var query = _context.Customers.AsQueryable();")
+        .AddStatement("if (filter != null) query = query.Where(filter.ToPredicate());")
+        .AddReturn("await query.ToListAsync()"));
 ```

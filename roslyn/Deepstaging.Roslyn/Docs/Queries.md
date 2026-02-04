@@ -1,33 +1,55 @@
 # Queries
 
-Fluent builders for finding types, methods, properties, fields, constructors, events, and parameters without writing loops.
+Fluent builders for finding types, methods, properties, fields, constructors, events, and parameters.
 
 > **See also:** [Projections](Projections.md) | [Emit](Emit.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
 
 ## Overview
 
-Query builders let you compose chainable filters on Roslyn symbols. Each query builder:
+Query builders let you compose chainable filters on Roslyn symbols:
 
-- Is immutable (each method returns a new instance)
-- Uses lazy evaluation (filters are applied when you call `GetAll()`, `First()`, etc.)
-- Returns `ValidSymbol<T>` wrappers with guaranteed non-null access
+- **Immutable** — each method returns a new instance
+- **Lazy** — filters are applied when you call `GetAll()`, `First()`, etc.
+- **Safe** — materialization returns `ValidSymbol<T>` wrappers with guaranteed non-null access
+
+```csharp
+// Find all public async methods returning Task<T>
+var methods = typeSymbol.QueryMethods()
+    .ThatArePublic()
+    .ThatAreAsync()
+    .ReturningGenericTask()
+    .GetAll();
+
+// Project results directly to your model
+var models = TypeQuery.From(compilation)
+    .ThatAreClasses()
+    .WithAttribute("Entity")
+    .Select(t => new EntityModel(t.Name, t.Namespace));
+```
+
+---
 
 ## TypeQuery
 
 Find types in a compilation or namespace.
 
 ```csharp
-// Start from a compilation
+// From a compilation
 var types = TypeQuery.From(compilation)
     .ThatArePublic()
     .ThatAreClasses()
     .WithAttribute("MyAttribute")
     .GetAll();
 
-// Start from a namespace
+// From a namespace symbol
 var types = TypeQuery.From(namespaceSymbol)
     .ThatAreInterfaces()
     .InNamespaceStartingWith("MyApp.Domain")
+    .GetAll();
+
+// Using extension method
+var types = compilation.QueryTypes()
+    .ThatAreRecords()
     .GetAll();
 ```
 
@@ -35,15 +57,15 @@ var types = TypeQuery.From(namespaceSymbol)
 
 | Method | Description |
 |--------|-------------|
-| `From(Compilation)` | Query types from the global namespace |
+| `From(Compilation)` | Query all types in the compilation |
 | `From(INamespaceSymbol)` | Query types from a specific namespace |
 
 ### Accessibility Filters
 
 | Method | Description |
 |--------|-------------|
-| `ThatArePublic()` | Public types only |
-| `ThatAreInternal()` | Internal types only |
+| `ThatArePublic()` | Public types |
+| `ThatAreInternal()` | Internal types |
 | `ThatArePrivate()` | Private types (nested only) |
 | `ThatAreProtected()` | Protected types (nested only) |
 
@@ -87,23 +109,30 @@ var types = TypeQuery.From(namespaceSymbol)
 | `ImplementingInterface(INamedTypeSymbol)` | Types implementing interface |
 | `ImplementingInterface(string)` | Types implementing interface by name |
 
-### Attribute & Namespace Filters
+### Namespace Filters
+
+| Method | Description |
+|--------|-------------|
+| `InNamespace(string)` | Exact namespace match |
+| `InNamespaceStartingWith(string)` | Namespace starts with prefix |
+| `IncludeNestedNamespaces()` | Include types in nested namespaces |
+
+### Attribute Filters
 
 | Method | Description |
 |--------|-------------|
 | `WithAttribute(string)` | Types with attribute (with or without "Attribute" suffix) |
-| `InNamespace(string)` | Exact namespace match |
-| `InNamespaceStartingWith(string)` | Namespace starts with prefix |
 
 ### Materialization
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `GetAll()` | `ImmutableArray<ValidSymbol<INamedTypeSymbol>>` | All matching types as projections |
-| `GetAllSymbols()` | `ImmutableArray<INamedTypeSymbol>` | Raw symbols without wrapper |
-| `Select<T>(Func)` | `ImmutableArray<T>` | Project each type to a model |
+| `GetAll()` | `ImmutableArray<ValidSymbol<INamedTypeSymbol>>` | All matches as validated wrappers |
+| `GetAllSymbols()` | `ImmutableArray<INamedTypeSymbol>` | Raw symbols |
+| `Select<T>(Func)` | `ImmutableArray<T>` | Project each to a model |
+| `SelectMany<T>(Func)` | `ImmutableArray<T>` | Project and flatten |
 | `FirstOrDefault()` | `OptionalSymbol<INamedTypeSymbol>` | First match or empty |
-| `First()` | `ValidSymbol<INamedTypeSymbol>` | First match or throws |
+| `First()` | `ValidSymbol<INamedTypeSymbol>` | First match (throws if none) |
 | `Any()` | `bool` | True if any match |
 | `Count()` | `int` | Count of matches |
 
@@ -114,12 +143,14 @@ var types = TypeQuery.From(namespaceSymbol)
 Find methods on a type.
 
 ```csharp
-var asyncMethods = MethodQuery.From(typeSymbol)
+// Static factory
+var methods = MethodQuery.From(typeSymbol)
     .ThatAreAsync()
     .ThatArePublic()
     .ReturningTask()
     .GetAll();
 
+// Extension method (preferred)
 var handlers = typeSymbol.QueryMethods()
     .WithNameEndingWith("Handler")
     .WithParameterCount(1)
@@ -131,11 +162,6 @@ var handlers = typeSymbol.QueryMethods()
 | Method | Description |
 |--------|-------------|
 | `From(ITypeSymbol)` | Query methods on a type |
-
-You can also use the extension method:
-```csharp
-typeSymbol.QueryMethods()
-```
 
 ### Accessibility Filters
 
@@ -185,22 +211,22 @@ typeSymbol.QueryMethods()
 |--------|-------------|
 | `WithReturnType(string)` | Return type name match |
 | `WithReturnType(Func<ITypeSymbol, bool>)` | Custom return type predicate |
-| `ReturningVoid()` | Methods returning void |
-| `ReturningTask()` | Methods returning Task |
-| `ReturningValueTask()` | Methods returning ValueTask |
-| `ReturningGenericTask()` | Methods returning Task<T> or ValueTask<T> |
+| `ReturningVoid()` | Returns void |
+| `ReturningTask()` | Returns Task or ValueTask |
+| `ReturningValueTask()` | Returns ValueTask |
+| `ReturningGenericTask()` | Returns Task<T> or ValueTask<T> |
 
 ### Attribute Filters
 
 | Method | Description |
 |--------|-------------|
-| `WithAttribute<TAttribute>()` | Methods with attribute type |
-| `WithAttribute(string)` | Methods with attribute by name |
-| `WithoutAttribute<TAttribute>()` | Methods without attribute type |
+| `WithAttribute<TAttribute>()` | Has attribute type |
+| `WithAttribute(string)` | Has attribute by name |
+| `WithoutAttribute<TAttribute>()` | Lacks attribute type |
 
 ### Materialization
 
-Same as TypeQuery: `GetAll()`, `GetAllSymbols()`, `Select<T>()`, `FirstOrDefault()`, `First()`, `Any()`, `Count()`
+Same as TypeQuery: `GetAll()`, `GetAllSymbols()`, `Select<T>()`, `SelectMany<T>()`, `FirstOrDefault()`, `First()`, `Any()`, `Count()`
 
 ---
 
@@ -209,7 +235,7 @@ Same as TypeQuery: `GetAll()`, `GetAllSymbols()`, `Select<T>()`, `FirstOrDefault
 Find properties on a type.
 
 ```csharp
-var requiredProps = PropertyQuery.From(typeSymbol)
+var requiredProps = typeSymbol.QueryProperties()
     .ThatAreRequired()
     .ThatArePublic()
     .GetAll();
@@ -219,6 +245,16 @@ var readOnlyProps = typeSymbol.QueryProperties()
     .WithoutAttribute<ObsoleteAttribute>()
     .GetAll();
 ```
+
+### Accessibility Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatArePublic()` | Public properties |
+| `ThatArePrivate()` | Private properties |
+| `ThatAreProtected()` | Protected properties |
+| `ThatAreInternal()` | Internal properties |
+| `ThatAreProtectedOrInternal()` | Protected internal properties |
 
 ### Modifier Filters
 
@@ -232,17 +268,34 @@ var readOnlyProps = typeSymbol.QueryProperties()
 | `ThatAreSealed()` | Sealed properties |
 | `ThatAreReadOnly()` | Read-only (no setter) |
 | `ThatAreWriteOnly()` | Write-only (no getter) |
-| `ThatAreReadWrite()` | Has both getter and setter |
+| `ThatAreReadWrite()` | Has getter and setter |
 | `WithInitOnlySetter()` | Init-only setter |
 | `ThatAreRequired()` | Required properties |
+
+### Name Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithName(string)` | Exact name match |
+| `WithNameStartingWith(string)` | Name starts with prefix |
+| `WithNameContaining(string)` | Name contains substring |
+| `WithNameEndingWith(string)` | Name ends with suffix |
 
 ### Type Filters
 
 | Method | Description |
 |--------|-------------|
-| `OfType(ITypeSymbol)` | Properties of exact type |
-| `OfTypeName(string)` | Properties with type name |
+| `OfType(ITypeSymbol)` | Exact type match |
+| `OfTypeName(string)` | Type name match |
 | `OfType(Func<ITypeSymbol, bool>)` | Custom type predicate |
+
+### Attribute Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithAttribute<TAttribute>()` | Has attribute type |
+| `WithAttribute(string)` | Has attribute by name |
+| `WithoutAttribute<TAttribute>()` | Lacks attribute type |
 
 ---
 
@@ -251,7 +304,7 @@ var readOnlyProps = typeSymbol.QueryProperties()
 Find fields on a type.
 
 ```csharp
-var constants = FieldQuery.From(typeSymbol)
+var constants = typeSymbol.QueryFields()
     .ThatAreConst()
     .ThatArePublic()
     .GetAll();
@@ -261,6 +314,15 @@ var injectableFields = typeSymbol.QueryFields()
     .ThatArePrivate()
     .GetAll();
 ```
+
+### Accessibility Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatArePublic()` | Public fields |
+| `ThatArePrivate()` | Private fields |
+| `ThatAreProtected()` | Protected fields |
+| `ThatAreInternal()` | Internal fields |
 
 ### Modifier Filters
 
@@ -272,15 +334,6 @@ var injectableFields = typeSymbol.QueryFields()
 | `ThatAreConst()` | Const fields |
 | `ThatAreVolatile()` | Volatile fields |
 
-### Type Filters
-
-| Method | Description |
-|--------|-------------|
-| `WithType<T>()` | Fields of type T |
-| `WithType(string)` | Fields with type name |
-| `ThatAreGenericType()` | Fields with generic types |
-| `ThatAreNullable()` | Fields with nullable annotation |
-
 ### Name Filters
 
 | Method | Description |
@@ -290,6 +343,23 @@ var injectableFields = typeSymbol.QueryFields()
 | `WithNameSuffix(string)` | Name ends with suffix |
 | `WithNameMatching(Func<string, bool>)` | Custom name predicate |
 
+### Type Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithType<T>()` | Fields of type T |
+| `WithType(string)` | Fields with type name |
+| `ThatAreGenericType()` | Fields with generic types |
+| `ThatAreNullable()` | Fields with nullable annotation |
+
+### Attribute Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithAttribute<TAttribute>()` | Has attribute type |
+| `WithAttribute(string)` | Has attribute by name |
+| `WithoutAttribute<TAttribute>()` | Lacks attribute type |
+
 ---
 
 ## ConstructorQuery
@@ -297,15 +367,32 @@ var injectableFields = typeSymbol.QueryFields()
 Find constructors on a type.
 
 ```csharp
-var publicCtors = ConstructorQuery.From(typeSymbol)
+var publicCtors = typeSymbol.QueryConstructors()
     .ThatArePublic()
     .ThatAreInstance()
     .GetAll();
 
-var primaryCtor = typeSymbol.QueryConstructors()
+var parameterless = typeSymbol.QueryConstructors()
     .WithNoParameters()
     .FirstOrDefault();
 ```
+
+### Accessibility Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatArePublic()` | Public constructors |
+| `ThatArePrivate()` | Private constructors |
+| `ThatAreProtected()` | Protected constructors |
+| `ThatAreInternal()` | Internal constructors |
+| `ThatAreProtectedOrInternal()` | Protected internal constructors |
+
+### Modifier Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatAreStatic()` | Static constructors |
+| `ThatAreInstance()` | Instance constructors |
 
 ### Parameter Filters
 
@@ -318,6 +405,12 @@ var primaryCtor = typeSymbol.QueryConstructors()
 | `WithParameter(Func<IParameterSymbol, bool>)` | Any parameter matches predicate |
 | `WhereAllParameters(Func<IParameterSymbol, bool>)` | All parameters match predicate |
 
+### Attribute Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithAttribute(string)` | Has attribute by name |
+
 ---
 
 ## EventQuery
@@ -325,11 +418,40 @@ var primaryCtor = typeSymbol.QueryConstructors()
 Find events on a type.
 
 ```csharp
-var publicEvents = EventQuery.From(typeSymbol)
+var publicEvents = typeSymbol.QueryEvents()
     .ThatArePublic()
     .WithType("EventHandler")
     .GetAll();
 ```
+
+### Accessibility Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatArePublic()` | Public events |
+| `ThatArePrivate()` | Private events |
+| `ThatAreProtected()` | Protected events |
+| `ThatAreInternal()` | Internal events |
+
+### Modifier Filters
+
+| Method | Description |
+|--------|-------------|
+| `ThatAreStatic()` | Static events |
+| `ThatAreInstance()` | Instance events |
+| `ThatAreAbstract()` | Abstract events |
+| `ThatAreVirtual()` | Virtual events |
+| `ThatAreSealed()` | Sealed events |
+| `ThatAreOverride()` | Override events |
+
+### Name Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithName(string)` | Exact name match |
+| `WithNamePrefix(string)` | Name starts with prefix |
+| `WithNameSuffix(string)` | Name ends with suffix |
+| `WithNameMatching(Func<string, bool>)` | Custom name predicate |
 
 ### Type Filters
 
@@ -337,6 +459,14 @@ var publicEvents = EventQuery.From(typeSymbol)
 |--------|-------------|
 | `WithType<T>()` | Events of type T |
 | `WithType(string)` | Events with type name |
+
+### Attribute Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithAttribute<TAttribute>()` | Has attribute type |
+| `WithAttribute(string)` | Has attribute by name |
+| `WithoutAttribute<TAttribute>()` | Lacks attribute type |
 
 ---
 
@@ -349,10 +479,16 @@ var optionalParams = ParameterQuery.From(methodSymbol)
     .ThatAreOptional()
     .GetAll();
 
-var refParams = ParameterQuery.From(methodSymbol)
+var refParams = methodSymbol.QueryParameters()
     .ThatAreRef()
     .GetAll();
 ```
+
+### Factory Methods
+
+| Method | Description |
+|--------|-------------|
+| `From(IMethodSymbol)` | Query parameters on a method |
 
 ### Modifier Filters
 
@@ -365,7 +501,25 @@ var refParams = ParameterQuery.From(methodSymbol)
 | `ThatAreOptional()` | Optional parameters (with defaults) |
 | `ThatAreRequired()` | Required parameters |
 | `ThatAreThis()` | Extension method 'this' parameter |
-| `ThatAreDiscards()` | Discard parameters (named _) |
+| `ThatAreDiscards()` | Discard parameters (named `_`) |
+
+### Name Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithName(string)` | Exact name match |
+| `WithNamePrefix(string)` | Name starts with prefix |
+| `WithNameSuffix(string)` | Name ends with suffix |
+| `WithNameMatching(Func<string, bool>)` | Custom name predicate |
+
+### Type Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithType<T>()` | Parameters of type T |
+| `WithType(string)` | Parameters with type name |
+| `ThatAreGenericType()` | Parameters with generic types |
+| `ThatAreNullable()` | Parameters with nullable annotation |
 
 ### Position Filters
 
@@ -375,6 +529,14 @@ var refParams = ParameterQuery.From(methodSymbol)
 | `ThatAreFirst()` | First parameter |
 | `ThatAreLast()` | Last parameter |
 
+### Attribute Filters
+
+| Method | Description |
+|--------|-------------|
+| `WithAttribute<TAttribute>()` | Has attribute type |
+| `WithAttribute(string)` | Has attribute by name |
+| `WithoutAttribute<TAttribute>()` | Lacks attribute type |
+
 ---
 
 ## Custom Filters
@@ -382,9 +544,49 @@ var refParams = ParameterQuery.From(methodSymbol)
 All query builders support `Where()` for custom predicates:
 
 ```csharp
-// Custom predicate escape hatch
 var special = TypeQuery.From(compilation)
     .Where(t => t.GetMembers().Length > 10)
     .Where(t => t.ContainingNamespace?.Name == "Domain")
     .GetAll();
+```
+
+---
+
+## Common Patterns
+
+### Filter and Project
+
+```csharp
+var models = TypeQuery.From(compilation)
+    .ThatAreClasses()
+    .WithAttribute("Entity")
+    .Select(type => new EntityModel
+    {
+        Name = type.Name,
+        Properties = type.Value.QueryProperties().ThatArePublic().GetAll()
+    });
+```
+
+### Early Exit with FirstOrDefault
+
+```csharp
+var handler = typeSymbol.QueryMethods()
+    .WithName("Handle")
+    .WithParameterCount(1)
+    .FirstOrDefault();
+
+if (handler.IsNotValid(out var valid))
+    return; // No handler found
+
+// Use valid.Name, valid.Value, etc.
+```
+
+### Chaining Queries
+
+```csharp
+var targetMethods = new HashSet<string>(
+    attribute.TargetType.QueryMethods()
+        .ThatArePublic()
+        .Select(m => m.Name)
+);
 ```
