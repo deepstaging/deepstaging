@@ -1,6 +1,6 @@
 # Configuring References for Test Compilations
 
-> **See also:** [Testing README](README.md) | [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Template Testing](TEMPLATE_TEST_BASE.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
+> **See also:** [Testing README](README.md) | [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
 
 When testing your Roslyn analyzers, generators, or code transformations, you often need to include references to your own assemblies and their dependencies in the test compilations. Deepstaging.Testing provides a `ReferenceConfiguration` API for this purpose.
 
@@ -219,3 +219,15 @@ Make sure your `ModuleInitializer` or hook is in the same assembly as your tests
 **Multiple initializations**
 
 `ReferenceConfiguration` is thread-safe and can be called multiple times, but it's best to configure everything once in a single initializer.
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+Why? We believe if you benefit from this code, the community should benefit from your improvements. That's the deal we think is fair.
+
+**Personal research and experimentation? No obligations.** Go learn, explore, and build.
+
+See [LICENSE](../../LICENSE) for the full legal text.

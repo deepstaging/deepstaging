@@ -2,7 +2,7 @@
 
 Test utilities for Roslyn analyzers, generators, and code fixes.
 
-> **See also:** [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Reference Configuration](REFERENCE_CONFIGURATION.md) | [Template Testing](TEMPLATE_TEST_BASE.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
+> **See also:** [RoslynTestBase](ROSLYN_TEST_BASE.md) | [Reference Configuration](REFERENCE_CONFIGURATION.md) | [Roslyn Toolkit](../Deepstaging.Roslyn/README.md)
 
 ## Quick Start
 
@@ -14,8 +14,8 @@ public class MyTests : RoslynTestBase
     [Test]
     public async Task TestSymbols()
     {
-        var type = SymbolsFor("public class Foo { }").GetType("Foo");
-        await Assert.That(type.Name).IsEqualTo("Foo");
+        var type = SymbolsFor("public class Foo { }").RequireNamedType("Foo");
+        await Assert.That(type.Value.Name).IsEqualTo("Foo");
     }
 
     [Test]
@@ -32,6 +32,14 @@ public class MyTests : RoslynTestBase
             .ShouldGenerate()
             .VerifySnapshot();
     }
+
+    [Test]
+    public async Task TestCodeFix()
+    {
+        await AnalyzeAndFixWith<MyAnalyzer, MyCodeFix>(source)
+            .ForDiagnostic("MY001")
+            .ShouldProduce(expectedSource);
+    }
 }
 ```
 
@@ -47,31 +55,49 @@ public static void Init() =>
 
 ---
 
-## API Reference
-
-### RoslynTestBase Methods
+## Entry Points
 
 | Method | Description |
 |--------|-------------|
 | `SymbolsFor(source)` | Create compilation and query symbols |
-| `CompilationFor(source)` | Get the compilation for source code |
+| `CompilationFor(source)` | Get the raw compilation |
 | `AnalyzeWith<T>(source)` | Run analyzer and assert diagnostics |
 | `GenerateWith<T>(source)` | Run generator and assert output |
-| `FixWith<T>(source)` | Run code fix and assert transformation |
-| `AnalyzeAndFixWith<TAnalyzer, TCodeFix>(source)` | Run analyzer then code fix |
+| `FixWith<T>(source)` | Test code fix for compiler diagnostics |
+| `AnalyzeAndFixWith<TAnalyzer, TCodeFix>(source)` | Test code fix for analyzer diagnostics |
+| `RenderTemplateFrom<T>(source)` | Test Scriban template rendering |
+
+---
+
+## Documentation
+
+### Test Contexts
+
+Each entry point returns a test context with fluent assertions:
+
+- **[SymbolTestContext](Docs/SymbolTestContext.md)** — Query symbols from compiled source
+- **[AnalyzerTestContext](Docs/AnalyzerTestContext.md)** — Assert on analyzer diagnostics
+- **[GeneratorTestContext](Docs/GeneratorTestContext.md)** — Assert on generator output
+- **[CodeFixTestContext](Docs/CodeFixTestContext.md)** — Assert on code fix transformations
+- **[TemplateTestContext](Docs/TemplateTestContext.md)** — Assert on template rendering
+
+### Guides
+
+- **[RoslynTestBase](ROSLYN_TEST_BASE.md)** — Full API reference for the base class
+- **[Reference Configuration](REFERENCE_CONFIGURATION.md)** — Configure assembly references for tests
+
+---
+
+## Quick Examples
 
 ### Symbol Testing
 
 ```csharp
-// Get a type
-var type = SymbolsFor(source).GetType("MyClass");
+var ctx = SymbolsFor(source);
 
-// Query members
-var methods = type.QueryMethods().ThatArePublic().GetAll();
-var props = type.QueryProperties().ThatAreRequired().GetAll();
-
-// Custom projection
-var model = SymbolsFor(source).Project("MyClass", t => new MyModel(t));
+// Get types and members
+var type = ctx.RequireNamedType("Customer");
+var methods = ctx.Type("Customer").Methods().ThatArePublic().GetAll();
 ```
 
 ### Analyzer Testing
@@ -81,9 +107,6 @@ await AnalyzeWith<MyAnalyzer>(source)
     .ShouldReportDiagnostic("MY001")
     .WithSeverity(DiagnosticSeverity.Error)
     .WithMessage("*must be partial*");
-
-await AnalyzeWith<MyAnalyzer>(source)
-    .ShouldNotReportDiagnostic("MY001");
 ```
 
 ### Generator Testing
@@ -92,33 +115,29 @@ await AnalyzeWith<MyAnalyzer>(source)
 await GenerateWith<MyGenerator>(source)
     .ShouldGenerate()
     .WithFileCount(2)
-    .WithFileNamed("Foo.g.cs")
-    .WithFileContaining("public partial class")
+    .WithFileNamed("Customer.g.cs")
+    .WithNoDiagnostics()
     .VerifySnapshot();
-
-await GenerateWith<MyGenerator>(source)
-    .ShouldNotGenerate();
 ```
 
 ### Code Fix Testing
 
 ```csharp
-await FixWith<MyCodeFix>(source)
-    .ShouldFixTo(expectedSource);
-
-// Or with an analyzer that produces the diagnostics
 await AnalyzeAndFixWith<MyAnalyzer, MyCodeFix>(source)
-    .ShouldFixTo(expectedSource);
+    .ForDiagnostic("MY001")
+    .ShouldProduce(expectedSource);
+```
+
+### Template Testing
+
+```csharp
+await RenderTemplateFrom<MyGenerator>(source)
+    .Render("MyTemplate.scriban-cs", ctx => new { Name = ctx.RequireNamedType("Foo").Value.Name })
+    .ShouldRender()
+    .VerifySnapshot();
 ```
 
 ---
-
-## Related Documentation
-
-- **[RoslynTestBase](ROSLYN_TEST_BASE.md)** - Full unified API details
-- **[Reference Configuration](REFERENCE_CONFIGURATION.md)** - Assembly reference setup
-- **[Template Testing](TEMPLATE_TEST_BASE.md)** - Scriban template testing
-- **[Main README](../../README.md)** - Project overview
 
 ## License
 
