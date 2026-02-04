@@ -48,11 +48,6 @@
         <!-- Override icon requirement from shared props (no icon yet) -->
         <PackageIcon></PackageIcon>
     </PropertyGroup>
-    
-    <!-- Include README in package -->
-    <ItemGroup>
-        <None Include="../../README.md" Pack="true" PackagePath="/" />
-    </ItemGroup>
 
     <ItemGroup>
         <!-- Direct dependencies for this assembly -->
