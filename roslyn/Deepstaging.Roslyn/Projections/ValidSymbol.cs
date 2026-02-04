@@ -673,6 +673,54 @@ public readonly struct ValidSymbol<TSymbol> : IProjection<TSymbol>
         return _symbol.GetAttributesByType<TAttribute>().FirstOrDefault().Map(OptionalAttribute.FromNullable);
     }
 
+    /// <summary>
+    /// Checks if the symbol has any attributes.
+    /// </summary>
+    public bool HasAttributes()
+    {
+        return _symbol.GetAttributes().Length > 0;
+    }
+
+    /// <summary>
+    /// Checks if the symbol has an attribute with the specified name.
+    /// </summary>
+    public bool HasAttribute(string attributeName)
+    {
+        return _symbol.GetAttributesByName(attributeName).Any();
+    }
+
+    /// <summary>
+    /// Checks if the symbol has an attribute of the specified type.
+    /// </summary>
+    public bool HasAttribute<TAttribute>() where TAttribute : Attribute
+    {
+        return _symbol.GetAttributesByType<TAttribute>().Any();
+    }
+
+    /// <summary>
+    /// Checks if the symbol has no attributes.
+    /// </summary>
+    public bool LacksAttributes()
+    {
+        return _symbol.GetAttributes().Length == 0;
+    }
+
+    /// <summary>
+    /// Checks if the symbol does not have an attribute with the specified name.
+    /// </summary>
+    public bool LacksAttribute(string attributeName)
+    {
+        return !_symbol.GetAttributesByName(attributeName).Any();
+    }
+
+    /// <summary>
+    /// Checks if the symbol does not have an attribute of the specified type.
+    /// </summary>
+    public bool LacksAttribute<TAttribute>() where TAttribute : Attribute
+    {
+        return !_symbol.GetAttributesByType<TAttribute>().Any();
+    }
+
     #endregion
 
     #region XML Documentation

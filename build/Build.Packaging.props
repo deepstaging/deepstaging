@@ -56,6 +56,7 @@
 
     <!-- 
       VersionPrefix: Base version for your package (SemVer format: major.minor.patch)
+      VersionSuffix: Prerelease suffix (e.g., alpha.1, beta.1, rc.1)
       
       For dev builds, the workspace automatically appends a timestamp suffix like:
       1.0.0-dev-20260107120000
@@ -63,5 +64,6 @@
       Update this when you want to release a new version.
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>alpha.1</VersionSuffix>
   </PropertyGroup>
 </Project>

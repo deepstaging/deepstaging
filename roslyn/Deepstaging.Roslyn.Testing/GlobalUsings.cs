@@ -8,7 +8,7 @@ global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using System.Threading;
 global using System.Threading.Tasks;
-global using Deepstaging.Roslyn.Generators;
+global using Deepstaging.Roslyn.Scriban;
 global using Deepstaging.Roslyn;
 global using LanguageExt;
 global using Microsoft.CodeAnalysis;

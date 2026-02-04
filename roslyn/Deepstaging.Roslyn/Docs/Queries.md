@@ -2,6 +2,8 @@
 
 Fluent builders for finding types, methods, properties, fields, constructors, events, and parameters without writing loops.
 
+> **See also:** [Projections](Projections.md) | [Emit](Emit.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
+
 ## Overview
 
 Query builders let you compose chainable filters on Roslyn symbols. Each query builder:

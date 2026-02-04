@@ -17,12 +17,17 @@
     <!-- 
       SourceLink: Embeds source code links in symbols for debugging
       https://github.com/dotnet/sourcelink
-      
-      Requires: <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <EmbedAllSources>true</EmbedAllSources>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
+  </ItemGroup>
     
+  <PropertyGroup>
     <!-- 
       Symbol packages (.snupkg): Separate package with debugging symbols
       Upload to nuget.org alongside your .nupkg for debugging published packages

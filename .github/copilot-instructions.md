@@ -23,15 +23,15 @@ dotnet test roslyn/Deepstaging.Roslyn.Tests
 ### Solution Structure
 
 - **`src/`** - Main application code
+  - `Deepstaging` - Core package with marker attributes (entry point for consumers)
   - `Deepstaging.Generators` - Incremental source generators
   - `Deepstaging.Analyzers` - Roslyn diagnostic analyzers
-  - `Deepstaging.Attributes` - Marker attributes for code generation
   - `Deepstaging.Runtime` - Runtime support library
   - `Deepstaging.Tests` - Integration tests
 
 - **`roslyn/`** - Roslyn utilities (the core toolkit)
-  - `Deepstaging.Roslyn` - Query builders, projections, and emit API
-  - `Deepstaging.Roslyn.Generators` - Scriban template infrastructure for generators
+  - `Deepstaging.Roslyn` - Query builders, projections, emit API, and generator extensions
+  - `Deepstaging.Roslyn.Scriban` - Scriban template infrastructure for generators
   - `Deepstaging.Roslyn.Testing` - Test base classes for Roslyn components
   - `Deepstaging.Roslyn.Tests` - Tests for the Roslyn toolkit
 
@@ -70,7 +70,7 @@ Generators use Scriban templates with this structure:
 ```
 Deepstaging.Generators/
 ├── DeepstagingGenerator.cs
-├── Emitters/           # Template invocation logic
+├── Writers/           # Template invocation logic
 └── Templates/          # .scriban-cs templates (embedded resources)
 ```
 

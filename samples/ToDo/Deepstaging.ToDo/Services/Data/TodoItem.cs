@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Todo.Data;
+namespace Deepstaging.ToDo.Services.Data;
 
 /// <summary>
 ///     Represents a TODO item in the system

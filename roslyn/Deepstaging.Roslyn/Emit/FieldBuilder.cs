@@ -15,6 +15,7 @@ public readonly struct FieldBuilder
     private readonly bool _isConst;
     private readonly string? _initializer;
     private readonly ImmutableArray<AttributeBuilder> _attributes;
+    private readonly ImmutableArray<string> _usings;
     private readonly XmlDocumentationBuilder? _xmlDoc;
 
     private FieldBuilder(
@@ -26,6 +27,7 @@ public readonly struct FieldBuilder
         bool isConst,
         string? initializer,
         ImmutableArray<AttributeBuilder> attributes,
+        ImmutableArray<string> usings,
         XmlDocumentationBuilder? xmlDoc)
     {
         _name = name;
@@ -36,6 +38,7 @@ public readonly struct FieldBuilder
         _isConst = isConst;
         _initializer = initializer;
         _attributes = attributes.IsDefault ? ImmutableArray<AttributeBuilder>.Empty : attributes;
+        _usings = usings.IsDefault ? ImmutableArray<string>.Empty : usings;
         _xmlDoc = xmlDoc;
     }
 
@@ -62,6 +65,7 @@ public readonly struct FieldBuilder
             isConst: false,
             initializer: null,
             ImmutableArray<AttributeBuilder>.Empty,
+            ImmutableArray<string>.Empty,
             xmlDoc: null);
     }
 
@@ -94,7 +98,7 @@ public readonly struct FieldBuilder
     /// </summary>
     public FieldBuilder WithAccessibility(Accessibility accessibility)
     {
-        return new FieldBuilder(_name, _type, accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _xmlDoc);
+        return new FieldBuilder(_name, _type, accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -102,7 +106,7 @@ public readonly struct FieldBuilder
     /// </summary>
     public FieldBuilder AsStatic()
     {
-        return new FieldBuilder(_name, _type, _accessibility, true, _isReadonly, _isConst, _initializer, _attributes, _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, true, _isReadonly, _isConst, _initializer, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -110,7 +114,7 @@ public readonly struct FieldBuilder
     /// </summary>
     public FieldBuilder AsReadonly()
     {
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, true, _isConst, _initializer, _attributes, _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, true, _isConst, _initializer, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -119,7 +123,7 @@ public readonly struct FieldBuilder
     /// </summary>
     public FieldBuilder AsConst()
     {
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, true, _initializer, _attributes, _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, true, _initializer, _attributes, _usings, _xmlDoc);
     }
 
     #endregion
@@ -132,7 +136,7 @@ public readonly struct FieldBuilder
     /// <param name="initializer">The initializer expression (e.g., "new()", "null", "42").</param>
     public FieldBuilder WithInitializer(string initializer)
     {
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, initializer, _attributes, _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, initializer, _attributes, _usings, _xmlDoc);
     }
 
     #endregion
@@ -146,7 +150,7 @@ public readonly struct FieldBuilder
     public FieldBuilder WithXmlDoc(Func<XmlDocumentationBuilder, XmlDocumentationBuilder> configure)
     {
         var xmlDoc = configure(XmlDocumentationBuilder.Create());
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _usings, xmlDoc);
     }
 
     /// <summary>
@@ -156,7 +160,7 @@ public readonly struct FieldBuilder
     public FieldBuilder WithXmlDoc(string summary)
     {
         var xmlDoc = XmlDocumentationBuilder.WithSummary(summary);
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _usings, xmlDoc);
     }
 
     /// <summary>
@@ -169,7 +173,7 @@ public readonly struct FieldBuilder
             return this;
 
         var xmlDoc = XmlDocumentationBuilder.From(documentation);
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _usings, xmlDoc);
     }
 
     #endregion
@@ -183,7 +187,7 @@ public readonly struct FieldBuilder
     public FieldBuilder WithAttribute(string name)
     {
         var attribute = AttributeBuilder.For(name);
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -194,7 +198,7 @@ public readonly struct FieldBuilder
     public FieldBuilder WithAttribute(string name, Func<AttributeBuilder, AttributeBuilder> configure)
     {
         var attribute = configure(AttributeBuilder.For(name));
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -202,8 +206,26 @@ public readonly struct FieldBuilder
     /// </summary>
     public FieldBuilder WithAttribute(AttributeBuilder attribute)
     {
-        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _xmlDoc);
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes.Add(attribute), _usings, _xmlDoc);
     }
+
+    #endregion
+
+    #region Usings
+
+    /// <summary>
+    /// Adds a using directive that will be collected by the containing TypeBuilder.
+    /// </summary>
+    /// <param name="namespace">The namespace to add (e.g., "System.Linq", "static System.Math").</param>
+    public FieldBuilder AddUsing(string @namespace)
+    {
+        return new FieldBuilder(_name, _type, _accessibility, _isStatic, _isReadonly, _isConst, _initializer, _attributes, _usings.Add(@namespace), _xmlDoc);
+    }
+
+    /// <summary>
+    /// Gets the using directives for this field.
+    /// </summary>
+    internal ImmutableArray<string> Usings => _usings;
 
     #endregion
 

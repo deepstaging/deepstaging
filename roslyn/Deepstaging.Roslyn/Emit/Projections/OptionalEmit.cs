@@ -152,9 +152,63 @@ public readonly struct OptionalEmit : IValidatableProjection<CompilationUnitSynt
         ValidateOrThrow(message).Syntax;
 
     /// <summary>
+    /// Returns the syntax or throws with a lazily-computed message if emit failed.
+    /// </summary>
+    /// <param name="messageFactory">Factory function to create the error message.</param>
+    public CompilationUnitSyntax OrThrow(Func<string> messageFactory) =>
+        ValidateOrThrow(messageFactory()).Syntax;
+
+    /// <summary>
     /// Returns the syntax or null if emit failed.
     /// </summary>
     public CompilationUnitSyntax? OrNull() => _syntax;
+
+    #endregion
+
+    #region Combination
+
+    /// <summary>
+    /// Combines multiple optional emits into a single optional emit.
+    /// If any emit failed, returns a failed result with all aggregated diagnostics.
+    /// If all succeed, combines using ValidEmit.Combine and returns a successful result.
+    /// </summary>
+    /// <param name="emits">The optional emits to combine.</param>
+    /// <param name="options">Optional emit options for formatting. Defaults to no validation.</param>
+    public static OptionalEmit Combine(IEnumerable<OptionalEmit> emits, EmitOptions? options = null)
+    {
+        var emitList = emits.ToList();
+        if (emitList.Count == 0)
+            throw new ArgumentException("At least one emit is required.", nameof(emits));
+
+        // Collect all diagnostics
+        var allDiagnostics = emitList
+            .SelectMany(e => e.Diagnostics)
+            .ToImmutableArray();
+
+        // Check if any emit failed
+        var failedEmits = emitList.Where(e => !e.Success).ToList();
+        if (failedEmits.Count > 0)
+        {
+            return FromFailure(allDiagnostics);
+        }
+
+        // All succeeded - combine the validated emits
+        var validEmits = emitList.Select(e => e.ValidateOrThrow());
+        var combined = ValidEmit.Combine(validEmits, options);
+
+        return allDiagnostics.Length > 0
+            ? FromDiagnostics(combined.Syntax, combined.Code, allDiagnostics)
+            : FromSuccess(combined.Syntax, combined.Code);
+    }
+
+    /// <summary>
+    /// Combines multiple optional emits into a single optional emit.
+    /// If any emit failed, returns a failed result with all aggregated diagnostics.
+    /// If all succeed, combines using ValidEmit.Combine and returns a successful result.
+    /// </summary>
+    /// <param name="emits">The optional emits to combine.</param>
+    public static OptionalEmit Combine(params OptionalEmit[] emits)
+        => Combine((IEnumerable<OptionalEmit>)emits);
 
     #endregion
 

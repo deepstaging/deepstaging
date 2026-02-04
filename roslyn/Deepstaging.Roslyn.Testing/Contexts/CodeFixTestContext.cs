@@ -1,5 +1,6 @@
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -12,11 +13,25 @@ public class CodeFixTestContext
 {
     private readonly string _source;
     private readonly CodeFixProvider _codeFix;
+    private DiagnosticAnalyzer? _analyzer;
     
-    internal CodeFixTestContext(string source, CodeFixProvider codeFix)
+    internal CodeFixTestContext(string source, CodeFixProvider codeFix, DiagnosticAnalyzer? analyzer = null)
     {
         _source = source;
         _codeFix = codeFix;
+        _analyzer = analyzer;
+    }
+    
+    /// <summary>
+    /// Specify an analyzer to run to produce diagnostics for the code fix.
+    /// Use this when testing code fixes for analyzer diagnostics (not compiler diagnostics).
+    /// </summary>
+    /// <typeparam name="TAnalyzer">The analyzer type that produces the diagnostics.</typeparam>
+    /// <returns>This context for method chaining.</returns>
+    public CodeFixTestContext WithAnalyzer<TAnalyzer>() where TAnalyzer : DiagnosticAnalyzer, new()
+    {
+        _analyzer = new TAnalyzer();
+        return this;
     }
     
     /// <summary>
@@ -38,6 +53,11 @@ public class CodeFixTestContext
     /// Get the source code being tested.
     /// </summary>
     internal string Source => _source;
+    
+    /// <summary>
+    /// Get the optional analyzer for producing diagnostics.
+    /// </summary>
+    internal DiagnosticAnalyzer? Analyzer => _analyzer;
 }
 
 /// <summary>
@@ -61,22 +81,15 @@ public class CodeFixAssertion
     public async Task ShouldProduce(string expectedSource)
     {
         var compilation = CompilationHelper.CreateCompilation(_context.Source);
-        var document = CreateDocument(compilation);
+        var document = CreateDocument(_context.Source);
         
-        // Get diagnostics for the document
-        var semanticModel = await document.GetSemanticModelAsync();
-        if (semanticModel == null)
-        {
-            Assert.Fail("Failed to get semantic model from document");
-            return;
-        }
-        
-        var diagnostics = semanticModel.GetDiagnostics();
-        var targetDiagnostic = diagnostics.FirstOrDefault(d => d.Id == _diagnosticId);
+        // Get diagnostics - either from analyzer or semantic model
+        var targetDiagnostic = await GetTargetDiagnosticAsync(compilation, document);
         
         if (targetDiagnostic == null)
         {
-            Assert.Fail($"No diagnostic '{_diagnosticId}' found in source code. Cannot apply fix.");
+            var source = _context.Analyzer != null ? "analyzer" : "compiler";
+            Assert.Fail($"No diagnostic '{_diagnosticId}' found from {source}. Cannot apply fix.");
             return;
         }
         
@@ -133,16 +146,72 @@ public class CodeFixAssertion
         }
     }
     
-    private static Document CreateDocument(Compilation compilation)
+    private async Task<Diagnostic?> GetTargetDiagnosticAsync(Compilation compilation, Document document)
+    {
+        if (_context.Analyzer != null)
+        {
+            // Run the analyzer to get diagnostics
+            var analyzers = ImmutableArray.Create(_context.Analyzer);
+            var compilationWithAnalyzers = compilation.WithAnalyzers(analyzers);
+            var allDiagnostics = await compilationWithAnalyzers.GetAllDiagnosticsAsync();
+            
+            // Find matching diagnostic and remap to document location
+            var analyzerDiagnostic = allDiagnostics.FirstOrDefault(d => d.Id == _diagnosticId);
+            if (analyzerDiagnostic == null)
+                return null;
+            
+            // The diagnostic location references the compilation's syntax tree.
+            // We need to create a new diagnostic with a location in the document's syntax tree.
+            var documentTree = await document.GetSyntaxTreeAsync();
+            if (documentTree == null)
+                return null;
+            
+            var originalSpan = analyzerDiagnostic.Location.SourceSpan;
+            var newLocation = Location.Create(documentTree, originalSpan);
+            
+            // Create new diagnostic with remapped location
+            return Diagnostic.Create(
+                analyzerDiagnostic.Descriptor,
+                newLocation,
+                analyzerDiagnostic.Properties.ToImmutableDictionary(),
+                analyzerDiagnostic.Descriptor.MessageFormat.ToString());
+        }
+        else
+        {
+            // Fall back to semantic model diagnostics (compiler diagnostics)
+            var semanticModel = await document.GetSemanticModelAsync();
+            if (semanticModel == null)
+            {
+                Assert.Fail("Failed to get semantic model from document");
+                return null;
+            }
+            
+            var diagnostics = semanticModel.GetDiagnostics();
+            return diagnostics.FirstOrDefault(d => d.Id == _diagnosticId);
+        }
+    }
+    
+    private static Document CreateDocument(string source)
     {
         var projectId = ProjectId.CreateNewId();
         var documentId = DocumentId.CreateNewId(projectId);
         
+        // Get all configured references
+        var references = ReferenceConfiguration.GetAdditionalReferences()
+            .Concat([MetadataReference.CreateFromFile(typeof(object).Assembly.Location)]);
+        
         var solution = new AdhocWorkspace()
             .CurrentSolution
             .AddProject(projectId, "TestProject", "TestProject", LanguageNames.CSharp)
-            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(object).Assembly.Location))
-            .AddDocument(documentId, "TestDocument.cs", SourceText.From(compilation.SyntaxTrees.First().ToString()));
+            .WithProjectParseOptions(projectId, CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp14));
+        
+        // Add all references
+        foreach (var reference in references)
+        {
+            solution = solution.AddMetadataReference(projectId, reference);
+        }
+        
+        solution = solution.AddDocument(documentId, "TestDocument.cs", SourceText.From(source));
         
         var document = solution.GetDocument(documentId);
         if (document == null)

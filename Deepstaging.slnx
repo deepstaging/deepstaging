@@ -1,15 +1,22 @@
 <Solution>
-  <Project Path="src/Deepstaging.Attributes/Deepstaging.Attributes.csproj" />
-  <Project Path="src/Deepstaging.Data/Deepstaging.Data.csproj" />
+  <Project Path="src/Deepstaging/Deepstaging.csproj" />
+  <Project Path="src/Deepstaging.CodeFixes/Deepstaging.CodeFixes.csproj" />
+  <Project Path="src/Deepstaging.Projection/Deepstaging.Projection.csproj" />
   <Project Path="src/Deepstaging.Generators/Deepstaging.Generators.csproj" />
+  <Folder Name="/Samples/" />
+  <Folder Name="/Samples/ToDo/">
+    <Project Path="samples/ToDo/Deepstaging.ToDo/Deepstaging.ToDo.csproj" />
+    <Project Path="samples\ToDo\AspireApp1\Deepstaging.ToDo.AppHost\Deepstaging.ToDo.AppHost.csproj" />
+    <Project Path="samples\ToDo\AspireApp1\Deepstaging.ToDo.Server\Deepstaging.ToDo.Server.csproj" />
+  </Folder>
   <Project Path="src/Deepstaging.Analyzers/Deepstaging.Analyzers.csproj" />
   <Project Path="src/Deepstaging.Runtime/Deepstaging.Runtime.csproj" />
-  <Project Path="src/Deepstaging.Package/Deepstaging.Package.csproj" />
   <Project Path="src/Deepstaging.Tests/Deepstaging.Tests.csproj" />
   <Folder Name="/Roslyn/">
-    <Project Path="roslyn/Deepstaging.Roslyn.Generators/Deepstaging.Roslyn.Generators.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn/Deepstaging.Roslyn.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn.Scriban/Deepstaging.Roslyn.Scriban.csproj" />
+    <Project Path="roslyn/Deepstaging.Roslyn.Workspace/Deepstaging.Roslyn.Workspace.csproj" />
     <Project Path="roslyn/Deepstaging.Roslyn.Testing/Deepstaging.Roslyn.Testing.csproj" />
     <Project Path="roslyn/Deepstaging.Roslyn.Tests/Deepstaging.Roslyn.Tests.csproj" />
-    <Project Path="roslyn/Deepstaging.Roslyn/Deepstaging.Roslyn.csproj" />
   </Folder>
 </Solution>

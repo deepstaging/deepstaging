@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace Todo.Data;
+namespace Deepstaging.ToDo.Services.Data;
 
 /// <summary>
 ///     Database context for TODO items

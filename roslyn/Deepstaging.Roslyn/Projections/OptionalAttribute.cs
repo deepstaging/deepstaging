@@ -186,6 +186,16 @@ public readonly struct OptionalAttribute(AttributeData? attribute)
     }
 
     /// <summary>
+    /// Returns the attribute or throws an exception with a lazily-computed message if not present.
+    /// </summary>
+    /// <param name="messageFactory">Factory function to create the error message.</param>
+    /// <exception cref="InvalidOperationException">Thrown when attribute is not found.</exception>
+    public AttributeData OrThrow(Func<string> messageFactory)
+    {
+        return attribute ?? throw new InvalidOperationException(messageFactory());
+    }
+
+    /// <summary>
     /// Returns the attribute or throws a custom exception if not present.
     /// </summary>
     /// <param name="exceptionFactory">Factory function to create the exception.</param>

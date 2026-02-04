@@ -13,7 +13,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
 
         await Assert.That(ns.HasValue).IsTrue();
         await Assert.That(ns.Name).IsEqualTo("MyNamespace");
@@ -30,7 +30,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
 
         await Assert.That(ns.Name).IsEqualTo("MyNamespace");
     }
@@ -47,7 +47,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
         var types = ns.GetTypes().ToList();
 
         await Assert.That(types.Count).IsEqualTo(2);
@@ -66,7 +66,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
         var type = ns.GetNamedType("MyClass");
 
         await Assert.That(type.HasValue).IsTrue();
@@ -84,7 +84,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
         var type = ns.RequireNamedType("MyClass");
 
         await Assert.That(type.Name).IsEqualTo("MyClass");
@@ -104,7 +104,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var parent = context.GetNamespace("Parent");
+        var parent = context.RequireNamespace("Parent");
         var childNamespaces = parent.GetNamespaces().ToList();
 
         await Assert.That(childNamespaces.Count).IsEqualTo(1);
@@ -122,8 +122,8 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var parent = context.GetNamespace("Parent");
-        var child = parent.GetNamespace("Child");
+        var parent = context.RequireNamespace("Parent");
+        var child = parent.RequireNamespace("Child");
         var type = child.RequireNamedType("MyClass");
 
         await Assert.That(type.Name).IsEqualTo("MyClass");
@@ -140,7 +140,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
 
         await Assert.That(ns.IsGlobalNamespace()).IsFalse();
     }
@@ -157,7 +157,7 @@ public class ValidSymbolNamespaceTests : RoslynTestBase
             """;
 
         var context = SymbolsFor(code);
-        var ns = context.GetNamespace("MyNamespace");
+        var ns = context.RequireNamespace("MyNamespace");
         var type = ns.RequireNamedType("PublicClass");
         var methods = type.QueryMethods().GetAll().ToList();
 

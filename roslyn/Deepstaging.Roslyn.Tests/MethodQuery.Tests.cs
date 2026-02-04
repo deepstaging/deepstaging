@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace Deepstaging.Roslyn.Tests;
 
 public class MethodQueryTests : RoslynTestBase

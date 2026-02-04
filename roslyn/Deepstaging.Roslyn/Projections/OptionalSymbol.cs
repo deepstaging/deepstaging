@@ -67,6 +67,16 @@ public readonly struct OptionalSymbol<TSymbol> : IValidatableProjection<TSymbol,
     }
 
     /// <summary>
+    /// Returns the symbol or throws an exception with a lazily-computed message if absent.
+    /// </summary>
+    /// <param name="messageFactory">Factory function to create the error message.</param>
+    /// <exception cref="InvalidOperationException">Thrown when symbol is not present.</exception>
+    public TSymbol OrThrow(Func<string> messageFactory)
+    {
+        return _symbol ?? throw new InvalidOperationException(messageFactory());
+    }
+
+    /// <summary>
     /// Returns the symbol or null if absent.
     /// </summary>
     public TSymbol? OrNull() => _symbol;
@@ -665,6 +675,54 @@ public readonly struct OptionalSymbol<TSymbol> : IValidatableProjection<TSymbol,
         return _symbol == null
             ? OptionalAttribute.Empty()
             : OptionalAttribute.FromNullable(_symbol.GetAttributesByType<TAttribute>().FirstOrDefault().Value);
+    }
+
+    /// <summary>
+    /// Checks if the symbol has any attributes.
+    /// </summary>
+    public bool HasAttributes()
+    {
+        return _symbol?.GetAttributes().Length > 0;
+    }
+
+    /// <summary>
+    /// Checks if the symbol has an attribute with the specified name.
+    /// </summary>
+    public bool HasAttribute(string attributeName)
+    {
+        return _symbol?.GetAttributesByName(attributeName).Any() == true;
+    }
+
+    /// <summary>
+    /// Checks if the symbol has an attribute of the specified type.
+    /// </summary>
+    public bool HasAttribute<TAttribute>() where TAttribute : Attribute
+    {
+        return _symbol?.GetAttributesByType<TAttribute>().Any() == true;
+    }
+
+    /// <summary>
+    /// Checks if the symbol has no attributes (or symbol is empty).
+    /// </summary>
+    public bool LacksAttributes()
+    {
+        return _symbol == null || _symbol.GetAttributes().Length == 0;
+    }
+
+    /// <summary>
+    /// Checks if the symbol does not have an attribute with the specified name (or symbol is empty).
+    /// </summary>
+    public bool LacksAttribute(string attributeName)
+    {
+        return _symbol == null || !_symbol.GetAttributesByName(attributeName).Any();
+    }
+
+    /// <summary>
+    /// Checks if the symbol does not have an attribute of the specified type (or symbol is empty).
+    /// </summary>
+    public bool LacksAttribute<TAttribute>() where TAttribute : Attribute
+    {
+        return _symbol == null || !_symbol.GetAttributesByType<TAttribute>().Any();
     }
 
     #endregion

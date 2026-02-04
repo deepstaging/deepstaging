@@ -597,8 +597,15 @@ src/shared/Deepstaging.Common.Testing/
 
 ## See Also
 
-- [Deepstaging Documentation](../../../docs/)
-- [Generator Implementation Guide](../../../.claude/docs/generators/IMPLEMENTING_GENERATORS.md)
+- **[Main README](../../README.md)** - Project overview
+- **[Roslyn Toolkit](../Deepstaging.Roslyn/README.md)** - Queries, projections, and emit APIs
+  - [Queries](../Deepstaging.Roslyn/Docs/Queries.md)
+  - [Projections](../Deepstaging.Roslyn/Docs/Projections.md)
+  - [Emit](../Deepstaging.Roslyn/Docs/Emit.md)
+  - [Extensions](../Deepstaging.Roslyn/Docs/Extensions.md)
+- **[RoslynTestBase](ROSLYN_TEST_BASE.md)** - Unified testing API
+- **[Reference Configuration](REFERENCE_CONFIGURATION.md)** - Configure test references
+- **[Template Testing](TEMPLATE_TEST_BASE.md)** - Test Scriban templates
 - [Roslyn API Documentation](https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/)
 
 ---

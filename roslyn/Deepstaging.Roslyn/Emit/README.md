@@ -2,6 +2,8 @@
 
 Fluent builders for generating C# code using Roslyn's SyntaxFactory.
 
+> **See also:** [Full Emit Documentation](../Docs/Emit.md) | [Queries](../Docs/Queries.md) | [Projections](../Docs/Projections.md) | [Roslyn Toolkit README](../README.md)
+
 ## Quick Start
 
 ```csharp

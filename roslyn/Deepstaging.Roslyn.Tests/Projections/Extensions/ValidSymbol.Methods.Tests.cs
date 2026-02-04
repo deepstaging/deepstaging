@@ -214,7 +214,7 @@ public class ValidSymbolMethodsTests : RoslynTestBase
                    """;
 
         var extensions = SymbolsFor(code)
-            .GetNamespace("TestNamespace")
+            .RequireNamespace("TestNamespace")
             .RequireNamedType("Extensions");
 
         var extensionMethod = extensions.QueryMethods().WithName("ExtensionMethod").First();

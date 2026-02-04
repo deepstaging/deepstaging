@@ -2,6 +2,8 @@
 
 Convenience methods for common Roslyn operations. These extend standard Roslyn types with fluent, null-safe APIs.
 
+> **See also:** [Queries](Queries.md) | [Projections](Projections.md) | [Emit](Emit.md) | [Roslyn Toolkit README](../README.md)
+
 ## Overview
 
 Extension methods are organized by the type they extend:

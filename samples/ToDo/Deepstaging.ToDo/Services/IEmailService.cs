@@ -1,6 +1,15 @@
-namespace Deepstaging.ToDo;
+namespace Deepstaging.ToDo.Services;
 
+/// <summary>
+///    Service for sending emails
+/// </summary>
 public interface IEmailService
 {
+    /// <summary>
+    ///  Sends an email
+    /// </summary>
+    /// <param name="to">The recipient email address</param>
+    /// <param name="subject">The email subject</param>
+    /// <param name="body">The email body</param>
     Task SendAsync(string to, string subject, string body);
 }

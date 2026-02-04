@@ -1,4 +1,3 @@
-using System.IO;
 using Assembly = System.Reflection.Assembly;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global

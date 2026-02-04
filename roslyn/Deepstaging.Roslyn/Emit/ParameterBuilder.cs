@@ -85,6 +85,14 @@ public readonly struct ParameterBuilder
         return new ParameterBuilder(_name, _type, _defaultValue, ParameterModifier.Params);
     }
 
+    /// <summary>
+    /// Marks the parameter as 'this' (extension method target).
+    /// </summary>
+    public ParameterBuilder AsThis()
+    {
+        return new ParameterBuilder(_name, _type, _defaultValue, ParameterModifier.This);
+    }
+
     #endregion
 
     #region Building
@@ -107,6 +115,7 @@ public readonly struct ParameterBuilder
                 ParameterModifier.Out => SyntaxKind.OutKeyword,
                 ParameterModifier.In => SyntaxKind.InKeyword,
                 ParameterModifier.Params => SyntaxKind.ParamsKeyword,
+                ParameterModifier.This => SyntaxKind.ThisKeyword,
                 _ => throw new InvalidOperationException($"Unknown parameter modifier: {_modifier}")
             };
             parameter = parameter.WithModifiers(
@@ -134,11 +143,16 @@ public readonly struct ParameterBuilder
     /// </summary>
     public string Type => _type;
 
+    /// <summary>
+    /// Gets whether this parameter is an extension method target (has 'this' modifier).
+    /// </summary>
+    public bool IsExtensionTarget => _modifier == ParameterModifier.This;
+
     #endregion
 }
 
 /// <summary>
-/// Parameter modifiers (ref, out, in, params).
+/// Parameter modifiers (ref, out, in, params, this).
 /// </summary>
 internal enum ParameterModifier
 {
@@ -146,5 +160,6 @@ internal enum ParameterModifier
     Ref,
     Out,
     In,
-    Params
+    Params,
+    This
 }

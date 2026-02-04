@@ -2,6 +2,8 @@
 
 Optional and validated wrappers that make null-checking less painful. Inspired by functional Option types.
 
+> **See also:** [Queries](Queries.md) | [Emit](Emit.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
+
 ## Overview
 
 Roslyn symbols are often nullable, requiring constant null checks. Projections wrap these nullable values and provide:

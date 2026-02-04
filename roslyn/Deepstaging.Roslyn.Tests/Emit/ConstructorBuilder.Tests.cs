@@ -153,4 +153,63 @@ public class ConstructorBuilderTests : RoslynTestBase
         await Assert.That(result.Success).IsTrue();
         await Assert.That(result.Code).Contains("public Entity(Guid id)");
     }
+
+    [Test]
+    public async Task Can_emit_class_with_primary_constructor()
+    {
+        var result = TypeBuilder
+            .Class("Person")
+            .WithPrimaryConstructor(c => c
+                .AddParameter("name", "string")
+                .AddParameter("age", "int"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class Person(string name, int age)");
+    }
+
+    [Test]
+    public async Task Can_emit_struct_with_primary_constructor()
+    {
+        var result = TypeBuilder
+            .Struct("Point")
+            .WithPrimaryConstructor(c => c
+                .AddParameter("x", "double")
+                .AddParameter("y", "double"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public struct Point(double x, double y)");
+    }
+
+    [Test]
+    public async Task Can_emit_primary_constructor_with_default_values()
+    {
+        var result = TypeBuilder
+            .Class("Service")
+            .WithPrimaryConstructor(c => c
+                .AddParameter("name", "string")
+                .AddParameter("timeout", "int", p => p.WithDefaultValue("30")))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class Service(string name, int timeout = 30)");
+    }
+
+    [Test]
+    public async Task AsPrimary_can_be_used_with_TypeBuilder()
+    {
+        var constructor = ConstructorBuilder
+            .For("Test")
+            .AddParameter("value", "string")
+            .AsPrimary();
+
+        var result = TypeBuilder
+            .Class("Test")
+            .WithPrimaryConstructor(constructor)
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("public class Test(string value)");
+    }
 }

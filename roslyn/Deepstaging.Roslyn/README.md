@@ -131,3 +131,9 @@ When you call `.GetAll()`, you get an array of actual Roslyn symbols you can use
 - String-based filters → String-based type references
 - Fluent, immutable → Fluent, immutable
 
+## Related Documentation
+
+- **[Main README](../../README.md)** - Project overview and effects system
+- **[Testing](../Deepstaging.Roslyn.Testing/README.md)** - Test infrastructure for Roslyn components
+- **[Emit API Overview](Emit/README.md)** - Quick reference for the Emit API
+

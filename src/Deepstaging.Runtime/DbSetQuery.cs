@@ -3,7 +3,7 @@ using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using static LanguageExt.Prelude;
 
-namespace Deepstaging;
+namespace Deepstaging.Runtime;
 
 /// <summary>
 /// A composable query builder for DbSet that accumulates LINQ expressions

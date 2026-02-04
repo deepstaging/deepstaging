@@ -93,6 +93,19 @@ public readonly struct OptionalArgument<TSource> : IProjection<TSource?>, IEquat
     }
 
     /// <summary>
+    /// Returns the value or throws an exception with a lazily-computed message if not present.
+    /// </summary>
+    /// <param name="messageFactory">Factory function to create the error message.</param>
+    /// <returns>The value.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when value is not present.</exception>
+    public TSource OrThrow(Func<string> messageFactory)
+    {
+        return _hasValue && _value != null
+            ? _value
+            : throw new InvalidOperationException(messageFactory());
+    }
+
+    /// <summary>
     /// Returns the value or throws a custom exception if not present.
     /// </summary>
     /// <param name="exceptionFactory">Factory function to create the exception.</param>

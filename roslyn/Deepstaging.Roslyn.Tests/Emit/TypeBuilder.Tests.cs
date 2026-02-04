@@ -285,5 +285,94 @@ public class TypeBuilderTests : RoslynTestBase
         await Assert.That(result.Code).Contains("using System.IO;");
     }
 
+    [Test]
+    public async Task Collects_usings_from_method_builders()
+    {
+        var result = TypeBuilder
+            .Class("Service")
+            .InNamespace("MyApp")
+            .AddMethod("Process", m => m
+                .WithReturnType("Task")
+                .AddUsing("System.Threading.Tasks"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using System.Threading.Tasks;");
+    }
+
+    [Test]
+    public async Task Collects_usings_from_property_builders()
+    {
+        var result = TypeBuilder
+            .Class("Entity")
+            .InNamespace("MyApp")
+            .AddProperty("Items", "List<string>", p => p
+                .WithAutoPropertyAccessors()
+                .AddUsing("System.Collections.Generic"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using System.Collections.Generic;");
+    }
+
+    [Test]
+    public async Task Collects_usings_from_field_builders()
+    {
+        var result = TypeBuilder
+            .Class("Repository")
+            .InNamespace("MyApp")
+            .AddField("_logger", "ILogger", f => f
+                .AsReadonly()
+                .AddUsing("Microsoft.Extensions.Logging"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using Microsoft.Extensions.Logging;");
+    }
+
+    [Test]
+    public async Task Collects_usings_from_constructor_builders()
+    {
+        var result = TypeBuilder
+            .Class("Handler")
+            .InNamespace("MyApp")
+            .AddConstructor(c => c
+                .AddParameter("options", "IOptions<Config>")
+                .AddUsing("Microsoft.Extensions.Options"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using Microsoft.Extensions.Options;");
+    }
+
+    [Test]
+    public async Task Collects_usings_from_multiple_member_types()
+    {
+        var result = TypeBuilder
+            .Class("ComplexService")
+            .InNamespace("MyApp")
+            .AddUsing("System")
+            .AddField("_cache", "IMemoryCache", f => f
+                .AsReadonly()
+                .AddUsing("Microsoft.Extensions.Caching.Memory"))
+            .AddProperty("Logger", "ILogger", p => p
+                .WithAutoPropertyAccessors()
+                .AddUsing("Microsoft.Extensions.Logging"))
+            .AddMethod("ProcessAsync", m => m
+                .WithReturnType("Task<Result>")
+                .AddUsing("System.Threading.Tasks"))
+            .AddConstructor(c => c
+                .AddParameter("options", "IOptions<Config>")
+                .AddUsing("Microsoft.Extensions.Options"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("using Microsoft.Extensions.Caching.Memory;");
+        await Assert.That(result.Code).Contains("using Microsoft.Extensions.Logging;");
+        await Assert.That(result.Code).Contains("using Microsoft.Extensions.Options;");
+        await Assert.That(result.Code).Contains("using System;");
+        await Assert.That(result.Code).Contains("using System.Threading.Tasks;");
+    }
+
     #endregion
 }

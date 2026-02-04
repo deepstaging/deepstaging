@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
 
-namespace Deepstaging;
+namespace Deepstaging.Runtime;
 
 /// <summary>
 /// OpenTelemetry metrics for effect operations.
@@ -21,17 +21,17 @@ public sealed class EffectMetrics : IDisposable
         _meter = new Meter(meterName, "1.0.0");
         
         _operationsSucceeded = _meter.CreateCounter<long>(
-            "deepstaging.effects.operations.succeeded",
+            "effects.succeeded",
             "operations",
             "Number of successful effect operations");
             
         _operationsFailed = _meter.CreateCounter<long>(
-            "deepstaging.effects.operations.failed", 
+            "effects.failed", 
             "operations",
             "Number of failed effect operations");
             
         _operationDuration = _meter.CreateHistogram<double>(
-            "deepstaging.effects.operations.duration",
+            "effects.duration",
             "ms",
             "Duration of effect operations in milliseconds");
     }

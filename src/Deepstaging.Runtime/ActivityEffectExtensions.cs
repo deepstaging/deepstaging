@@ -2,7 +2,7 @@ using System.Diagnostics;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
 
-namespace Deepstaging;
+namespace Deepstaging.Runtime;
 
 /// <summary>
 /// Extension methods for adding OpenTelemetry activity tracing to LanguageExt effects.

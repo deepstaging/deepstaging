@@ -2,6 +2,8 @@
 
 Fluent builders for generating compilable C# code. Symmetric with the query API - where queries find code, emit builders create it.
 
+> **See also:** [Queries](Queries.md) | [Projections](Projections.md) | [Extensions](Extensions.md) | [Roslyn Toolkit README](../README.md)
+
 ## Overview
 
 Emit builders let you construct Roslyn syntax trees using a fluent, immutable API:

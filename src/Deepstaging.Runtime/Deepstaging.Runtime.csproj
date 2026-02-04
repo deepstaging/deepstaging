@@ -7,11 +7,10 @@
         <Nullable>enable</Nullable>
         
         <!-- Package metadata -->
-        <PackageId>Deepstaging.Effects.Runtime</PackageId>
-        <Title>Deepstaging.Effects.Runtime</Title>
+        <PackageId>Deepstaging.Runtime</PackageId>
+        <Title>Deepstaging.Runtime</Title>
         <Description>Runtime extensions for Deepstaging.Effects including OpenTelemetry instrumentation and LanguageExt integration.</Description>
         <PackageTags>deepstaging;effects;languageext;functional;opentelemetry</PackageTags>
-        <RootNamespace>Deepstaging</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

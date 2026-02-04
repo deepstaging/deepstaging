@@ -42,11 +42,11 @@ public class SymbolTestContext
     
     /// <summary>
     /// Get a namespace by name from the compilation.
+    /// Returns Empty if not found.
     /// </summary>
     /// <param name="namespaceName">The namespace name (e.g., "MyApp.Services").</param>
-    /// <returns>The namespace symbol.</returns>
-    /// <exception cref="InvalidOperationException">If namespace is not found.</exception>
-    public ValidSymbol<INamespaceSymbol> GetNamespace(string namespaceName)
+    /// <returns>The namespace symbol, or Empty if not found.</returns>
+    public OptionalSymbol<INamespaceSymbol> GetNamespace(string namespaceName)
     {
         var parts = namespaceName.Split('.');
         INamespaceSymbol current = Compilation.GlobalNamespace;
@@ -54,11 +54,22 @@ public class SymbolTestContext
         foreach (var part in parts)
         {
             var next = current.GetNamespaceMembers().FirstOrDefault(ns => ns.Name == part);
-            current = next ?? throw new InvalidOperationException($"Namespace '{namespaceName}' not found in compilation.");
+            if (next is null)
+                return OptionalSymbol<INamespaceSymbol>.Empty();
+            current = next;
         }
         
-        return current.AsValidNamespace();
+        return OptionalSymbol<INamespaceSymbol>.WithValue(current);
     }
+    
+    /// <summary>
+    /// Get a namespace by name from the compilation.
+    /// Throws if not found.
+    /// </summary>
+    /// <param name="namespaceName">The namespace name (e.g., "MyApp.Services").</param>
+    /// <returns>The namespace symbol.</returns>
+    public ValidSymbol<INamespaceSymbol> RequireNamespace(string namespaceName) =>
+        GetNamespace(namespaceName).ValidateOrThrow();
     
     /// <summary>
     /// Start a fluent query for a specific type by name.

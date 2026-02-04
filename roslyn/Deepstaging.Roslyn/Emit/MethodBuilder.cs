@@ -18,6 +18,7 @@ public readonly struct MethodBuilder
     private readonly ImmutableArray<TypeParameterBuilder> _typeParameters;
     private readonly ImmutableArray<ParameterBuilder> _parameters;
     private readonly ImmutableArray<AttributeBuilder> _attributes;
+    private readonly ImmutableArray<string> _usings;
     private readonly BodyBuilder? _body;
     private readonly string? _expressionBody;
     private readonly XmlDocumentationBuilder? _xmlDoc;
@@ -34,6 +35,7 @@ public readonly struct MethodBuilder
         ImmutableArray<TypeParameterBuilder> typeParameters,
         ImmutableArray<ParameterBuilder> parameters,
         ImmutableArray<AttributeBuilder> attributes,
+        ImmutableArray<string> usings,
         BodyBuilder? body,
         string? expressionBody,
         XmlDocumentationBuilder? xmlDoc)
@@ -49,6 +51,7 @@ public readonly struct MethodBuilder
         _typeParameters = typeParameters.IsDefault ? ImmutableArray<TypeParameterBuilder>.Empty : typeParameters;
         _parameters = parameters.IsDefault ? ImmutableArray<ParameterBuilder>.Empty : parameters;
         _attributes = attributes.IsDefault ? ImmutableArray<AttributeBuilder>.Empty : attributes;
+        _usings = usings.IsDefault ? ImmutableArray<string>.Empty : usings;
         _body = body;
         _expressionBody = expressionBody;
         _xmlDoc = xmlDoc;
@@ -77,6 +80,7 @@ public readonly struct MethodBuilder
             ImmutableArray<TypeParameterBuilder>.Empty,
             ImmutableArray<ParameterBuilder>.Empty,
             ImmutableArray<AttributeBuilder>.Empty,
+            ImmutableArray<string>.Empty,
             body: null,
             expressionBody: null,
             xmlDoc: null);
@@ -113,7 +117,7 @@ public readonly struct MethodBuilder
     public MethodBuilder WithReturnType(string returnType)
     {
         return new MethodBuilder(_name, returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     #endregion
@@ -126,7 +130,7 @@ public readonly struct MethodBuilder
     public MethodBuilder WithAccessibility(Accessibility accessibility)
     {
         return new MethodBuilder(_name, _returnType, accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -135,7 +139,7 @@ public readonly struct MethodBuilder
     public MethodBuilder AsStatic()
     {
         return new MethodBuilder(_name, _returnType, _accessibility, true, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -144,7 +148,7 @@ public readonly struct MethodBuilder
     public MethodBuilder AsVirtual()
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, true, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -153,7 +157,7 @@ public readonly struct MethodBuilder
     public MethodBuilder AsOverride()
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, true,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -162,7 +166,7 @@ public readonly struct MethodBuilder
     public MethodBuilder AsAbstract()
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            true, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            true, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -171,7 +175,7 @@ public readonly struct MethodBuilder
     public MethodBuilder Async()
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, true, _typeParameters, _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, true, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, _xmlDoc);
     }
 
     #endregion
@@ -186,7 +190,8 @@ public readonly struct MethodBuilder
     {
         var typeParameter = TypeParameterBuilder.For(name);
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -198,7 +203,8 @@ public readonly struct MethodBuilder
     {
         var typeParameter = configure(TypeParameterBuilder.For(name));
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -207,7 +213,8 @@ public readonly struct MethodBuilder
     public MethodBuilder AddTypeParameter(TypeParameterBuilder typeParameter)
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters.Add(typeParameter), _parameters, _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     #endregion
@@ -223,7 +230,8 @@ public readonly struct MethodBuilder
     {
         var parameter = ParameterBuilder.For(name, type);
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -236,7 +244,8 @@ public readonly struct MethodBuilder
     {
         var parameter = configure(ParameterBuilder.For(name, type));
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -245,7 +254,8 @@ public readonly struct MethodBuilder
     public MethodBuilder AddParameter(ParameterBuilder parameter)
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters.Add(parameter), _attributes, _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     #endregion
@@ -259,7 +269,7 @@ public readonly struct MethodBuilder
     {
         var body = configure(BodyBuilder.Empty());
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, body, null, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, body, null, _xmlDoc);
     }
 
     /// <summary>
@@ -270,7 +280,7 @@ public readonly struct MethodBuilder
     public MethodBuilder WithExpressionBody(string expression)
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, null, expression, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, null, expression, _xmlDoc);
     }
 
     /// <summary>
@@ -282,10 +292,12 @@ public readonly struct MethodBuilder
     public MethodBuilder AppendExpressionBody(string suffix)
     {
         if (_expressionBody is null)
-            throw new InvalidOperationException("Cannot append to expression body when no expression body has been set.");
+            throw new InvalidOperationException(
+                "Cannot append to expression body when no expression body has been set.");
 
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, null, _expressionBody + suffix, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, null, _expressionBody + suffix,
+            _xmlDoc);
     }
 
     #endregion
@@ -300,7 +312,7 @@ public readonly struct MethodBuilder
     {
         var xmlDoc = configure(XmlDocumentationBuilder.Create());
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, xmlDoc);
     }
 
     /// <summary>
@@ -311,7 +323,7 @@ public readonly struct MethodBuilder
     {
         var xmlDoc = XmlDocumentationBuilder.WithSummary(summary);
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, xmlDoc);
     }
 
     /// <summary>
@@ -325,7 +337,7 @@ public readonly struct MethodBuilder
 
         var xmlDoc = XmlDocumentationBuilder.From(documentation);
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _body, _expressionBody, xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings, _body, _expressionBody, xmlDoc);
     }
 
     #endregion
@@ -340,7 +352,8 @@ public readonly struct MethodBuilder
     {
         var attribute = AttributeBuilder.For(name);
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -352,7 +365,8 @@ public readonly struct MethodBuilder
     {
         var attribute = configure(AttributeBuilder.For(name));
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _usings, _body,
+            _expressionBody, _xmlDoc);
     }
 
     /// <summary>
@@ -361,8 +375,41 @@ public readonly struct MethodBuilder
     public MethodBuilder WithAttribute(AttributeBuilder attribute)
     {
         return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _body, _expressionBody, _xmlDoc);
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes.Add(attribute), _usings, _body,
+            _expressionBody, _xmlDoc);
     }
+
+    #endregion
+
+    #region Usings
+
+    /// <summary>
+    /// Adds a using directive that will be collected by the containing TypeBuilder.
+    /// </summary>
+    /// <param name="namespace">The namespace to add (e.g., "System.Linq", "static System.Math").</param>
+    public MethodBuilder AddUsing(string @namespace)
+    {
+        return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings.Add(@namespace), _body,
+            _expressionBody, _xmlDoc);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="namespaces"></param>
+    /// <returns></returns>
+    public MethodBuilder AddUsings(params string[] namespaces)
+    {
+        return new MethodBuilder(_name, _returnType, _accessibility, _isStatic, _isVirtual, _isOverride,
+            _isAbstract, _isAsync, _typeParameters, _parameters, _attributes, _usings.AddRange(namespaces), _body,
+            _expressionBody, _xmlDoc);
+    }
+
+    /// <summary>
+    /// Gets the using directives for this method.
+    /// </summary>
+    internal ImmutableArray<string> Usings => _usings;
 
     #endregion
 
@@ -478,6 +525,13 @@ public readonly struct MethodBuilder
     /// Gets the return type.
     /// </summary>
     public string? ReturnType => _returnType;
+
+    /// <summary>
+    /// Gets the extension method target type, if this is an extension method.
+    /// Returns null if the method is not an extension method.
+    /// </summary>
+    public string? ExtensionTargetType =>
+        _parameters.FirstOrDefault(p => p.IsExtensionTarget) is { } param ? param.Type : null;
 
     #endregion
 }

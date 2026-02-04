@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Deepstaging.Roslyn.Scriban</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        
+        <!-- Generate XML documentation for IntelliSense -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        
+        <!-- This project is bundled into Deepstaging.Roslyn package, not published separately -->
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Deepstaging.Roslyn.Testing" />
+        <InternalsVisibleTo Include="Deepstaging.Generators" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe"/>
+        <PackageReference Include="System.Text.Json"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scriban" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Deepstaging.Roslyn/Deepstaging.Roslyn.csproj"/>
+    </ItemGroup>
+
+</Project>

@@ -12,8 +12,8 @@
         <NoWarn>$(NoWarn);RS1038</NoWarn>
 
         <!-- Package metadata -->
-        <PackageId>Deepstaging.Effects.Generators</PackageId>
-        <Title>Deepstaging.Effects.Generators</Title>
+        <PackageId>Deepstaging.Generators</PackageId>
+        <Title>Deepstaging.Generators</Title>
         <Description>Source generators for Deepstaging.Effects. Generates runtime orchestration, effect wrappers, dispatchers, and event queues.</Description>
         <PackageTags>deepstaging;effects;source-generator;roslyn</PackageTags>
 
@@ -32,24 +32,23 @@
 
     <!-- Reference Deepstaging.Roslyn projects -->
     <ItemGroup>
-        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn.Generators\Deepstaging.Roslyn.Generators.csproj" />
+        <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn.Scriban\Deepstaging.Roslyn.Scriban.csproj" />
         <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj" />
-        <ProjectReference Include="..\Deepstaging.Attributes\Deepstaging.Attributes.csproj" />
-        <ProjectReference Include="..\Deepstaging.Data\Deepstaging.Data.csproj" />
+        <ProjectReference Include="..\Deepstaging\Deepstaging.csproj" />
+        <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj" />
     </ItemGroup>
-
-    <!-- Reference Effects library for attribute types -->
 
     <!-- Embed templates as resources -->
     <ItemGroup>
         <EmbeddedResource Include="Templates/**/*.scriban-cs"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Remove="Discovery\DispatcherModuleDiscovery.cs"/>
-        <Compile Remove="Discovery\EffectsModuleDiscovery.cs"/>
-        <Compile Remove="Discovery\EventQueueHandlerDiscovery.cs"/>
-        <Compile Remove="Discovery\EventQueueModuleDiscovery.cs"/>
-        <Compile Remove="Discovery\RuntimeDiscovery.cs"/>
+      <Compile Update="Writers\EffectsModuleWriter.DbContext.cs">
+        <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Writers\EffectsModuleWriter.Methods.cs">
+        <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <!-- 
@@ -69,17 +68,17 @@
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
                                                  Condition="'%(Filename)' == 'Deepstaging.Roslyn'"
                                                  IncludeRuntimeDependency="false"/>
-            <!-- Bundle Deepstaging.Roslyn.Generators -->
+            <!-- Bundle Deepstaging.Roslyn.Scriban -->
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
-                                                 Condition="'%(Filename)' == 'Deepstaging.Roslyn.Generators'"
+                                                 Condition="'%(Filename)' == 'Deepstaging.Roslyn.Scriban'"
                                                  IncludeRuntimeDependency="false"/>
-            <!-- Bundle Effects attributes -->
+            <!-- Bundle Deepstaging (attributes) -->
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
-                                                 Condition="'%(Filename)' == 'Deepstaging.Effects.Attributes'"
+                                                 Condition="'%(Filename)' == 'Deepstaging'"
                                                  IncludeRuntimeDependency="false"/>
-            <!-- Bundle Deepstaging.Effects.Queries -->
+            <!-- Bundle Deepstaging.Projection -->
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
-                                                 Condition="'%(Filename)' == 'Deepstaging.Effects.Queries'"
+                                                 Condition="'%(Filename)' == 'Deepstaging.Projection'"
                                                  IncludeRuntimeDependency="false"/>
         </ItemGroup>
     </Target>

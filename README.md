@@ -331,6 +331,19 @@ dotnet test Deepstaging.slnx
 dotnet test --filter "FullyQualifiedName~MyTestClass.MyTestMethod"
 ```
 
+## Documentation
+
+- **[Roslyn Toolkit](roslyn/Deepstaging.Roslyn/README.md)** - Fluent APIs for queries, projections, and code emission
+  - [Queries](roslyn/Deepstaging.Roslyn/Docs/Queries.md) - Find types, methods, properties, and more
+  - [Projections](roslyn/Deepstaging.Roslyn/Docs/Projections.md) - Safe nullable symbol wrappers
+  - [Emit](roslyn/Deepstaging.Roslyn/Docs/Emit.md) - Generate C# code with fluent builders
+  - [Extensions](roslyn/Deepstaging.Roslyn/Docs/Extensions.md) - Convenience methods for Roslyn types
+- **[Testing](roslyn/Deepstaging.Roslyn.Testing/README.md)** - Test infrastructure for analyzers and generators
+  - [RoslynTestBase](roslyn/Deepstaging.Roslyn.Testing/ROSLYN_TEST_BASE.md) - Unified testing API
+  - [Reference Configuration](roslyn/Deepstaging.Roslyn.Testing/REFERENCE_CONFIGURATION.md) - Configure test compilation references
+  - [Template Testing](roslyn/Deepstaging.Roslyn.Testing/TEMPLATE_TEST_BASE.md) - Test Scriban templates
+- **[Build Configuration](build/README.md)** - MSBuild configuration files
+
 ## License
 
 Licensed under the [Reciprocal Public License 1.5 (RPL-1.5)](https://opensource.org/licenses/RPL-1.5).

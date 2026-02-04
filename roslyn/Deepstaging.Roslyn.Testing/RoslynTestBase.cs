@@ -56,6 +56,19 @@ public abstract class RoslynTestBase
         new(source, new TCodeFix());
 
     /// <summary>
+    /// Start a code fix test with an analyzer that produces the diagnostics.
+    /// Use this when testing code fixes for analyzer diagnostics (not compiler diagnostics).
+    /// </summary>
+    /// <typeparam name="TAnalyzer">The analyzer type that produces the diagnostics.</typeparam>
+    /// <typeparam name="TCodeFix">The code fix provider type to test.</typeparam>
+    /// <param name="source">The C# source code to analyze and fix.</param>
+    /// <returns>A context for applying code fixes and making assertions.</returns>
+    protected CodeFixTestContext AnalyzeAndFixWith<TAnalyzer, TCodeFix>(string source)
+        where TAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFix : CodeFixProvider, new() =>
+        new(source, new TCodeFix(), new TAnalyzer());
+
+    /// <summary>
     /// Create a template test context for rendering templates with a compilation.
     /// </summary>
     /// <param name="source">The C# source code to compile.</param>

@@ -1,5 +1,7 @@
 # Build Configuration
 
+> **See also:** [Main README](../README.md) | [Roslyn Toolkit](../roslyn/Deepstaging.Roslyn/README.md) | [Testing](../roslyn/Deepstaging.Roslyn.Testing/README.md)
+
 This directory contains modular MSBuild configuration files that are imported by `Directory.Build.props`.
 
 ## Files

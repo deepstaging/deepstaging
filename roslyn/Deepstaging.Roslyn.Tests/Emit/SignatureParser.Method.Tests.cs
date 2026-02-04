@@ -342,4 +342,39 @@ public class SignatureParserMethodTests : RoslynTestBase
         await Assert.That(builder.Name).IsEqualTo("GetName");
         await Assert.That(builder.ReturnType).IsEqualTo("string");
     }
+
+    [Test]
+    public async Task Parse_ExtensionMethod_SetsThisModifier()
+    {
+        var result = TypeBuilder.Class("Extensions").AsStatic()
+            .AddMethod(MethodBuilder.Parse("public static string ToUpper(this string value)"))
+            .Emit();
+
+        await Assert.That(result.Success).IsTrue();
+        await Assert.That(result.Code).Contains("this string value");
+    }
+
+    [Test]
+    public async Task Parse_ExtensionMethod_ExposesExtensionTargetType()
+    {
+        var builder = MethodBuilder.Parse("public static IServiceCollection AddMyService(this IServiceCollection services)");
+
+        await Assert.That(builder.ExtensionTargetType).IsEqualTo("IServiceCollection");
+    }
+
+    [Test]
+    public async Task Parse_NonExtensionMethod_ReturnsNullExtensionTargetType()
+    {
+        var builder = MethodBuilder.Parse("public static void Execute(string input)");
+
+        await Assert.That(builder.ExtensionTargetType).IsNull();
+    }
+
+    [Test]
+    public async Task Parse_ExtensionMethodWithMultipleParams_OnlyFirstIsExtensionTarget()
+    {
+        var builder = MethodBuilder.Parse("public static string Format(this string template, params object[] args)");
+
+        await Assert.That(builder.ExtensionTargetType).IsEqualTo("string");
+    }
 }

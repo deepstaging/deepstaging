@@ -1,0 +1,22 @@
+using System.Composition;
+using Deepstaging.Analyzers;
+using Deepstaging.Roslyn;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace Deepstaging.CodeFixes;
+
+/// <summary>
+/// Code fix provider that adds the 'partial' modifier to classes with [Runtime].
+/// </summary>
+[Shared]
+[CodeFix(RuntimeMustBePartialAnalyzer.DiagnosticId)]
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(RuntimeMustBePartialCodeFix))]
+public sealed class RuntimeMustBePartialCodeFix : ClassCodeFix
+{
+    /// <inheritdoc />
+    protected override CodeAction CreateFix(Document document, ValidSyntax<ClassDeclarationSyntax> syntax) =>
+        document.AddPartialModifierAction(syntax);
+}

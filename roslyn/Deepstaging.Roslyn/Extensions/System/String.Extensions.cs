@@ -4,16 +4,16 @@ using System.Text;
 namespace Deepstaging.Roslyn;
 
 /// <summary>
-/// 
+/// Provides string case conversion extensions for code generation.
 /// </summary>
 public static class StringExtensions
 {
     extension(string text)
     {
         /// <summary>
-        /// 
+        /// Converts the string to snake_case (e.g., "MyPropertyName" → "my_property_name").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The snake_case version of the string.</returns>
         public string ToSnakeCase()
         {
             if (string.IsNullOrEmpty(text))
@@ -66,9 +66,9 @@ public static class StringExtensions
         }
 
         /// <summary>
-        /// 
+        /// Converts the string to camelCase (e.g., "MyPropertyName" → "myPropertyName").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The camelCase version of the string.</returns>
         public string ToCamelCase()
         {
             if (string.IsNullOrEmpty(text))
@@ -100,9 +100,9 @@ public static class StringExtensions
         }
 
         /// <summary>
-        /// 
+        /// Converts the string to PascalCase (e.g., "my_property_name" → "MyPropertyName").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The PascalCase version of the string.</returns>
         public string ToPascalCase()
         {
             if (string.IsNullOrEmpty(text))
@@ -141,9 +141,9 @@ public static class StringExtensions
         }
 
         /// <summary>
-        /// 
+        /// Converts the string to kebab-case (e.g., "MyPropertyName" → "my-property-name").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The kebab-case version of the string.</returns>
         public string ToKebabCase()
         {
             if (string.IsNullOrEmpty(text))
@@ -182,9 +182,9 @@ public static class StringExtensions
         }
 
         /// <summary>
-        /// 
+        /// Converts the string to Train-Case (e.g., "myPropertyName" → "My-Property-Name").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The Train-Case version of the string.</returns>
         public string ToTrainCase()
         {
             return text.ToPascalCase()
@@ -194,9 +194,9 @@ public static class StringExtensions
         }
 
         /// <summary>
-        /// 
+        /// Converts the string to Title Case (e.g., "my_property_name" → "My Property Name").
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The Title Case version of the string.</returns>
         public string ToTitleCase()
         {
             if (string.IsNullOrEmpty(text))

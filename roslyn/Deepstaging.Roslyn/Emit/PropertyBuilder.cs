@@ -20,6 +20,7 @@ public readonly struct PropertyBuilder
     private readonly string? _initializer;
     private readonly string? _backingFieldName;
     private readonly ImmutableArray<AttributeBuilder> _attributes;
+    private readonly ImmutableArray<string> _usings;
     private readonly XmlDocumentationBuilder? _xmlDoc;
 
     private PropertyBuilder(
@@ -36,6 +37,7 @@ public readonly struct PropertyBuilder
         string? initializer,
         string? backingFieldName,
         ImmutableArray<AttributeBuilder> attributes,
+        ImmutableArray<string> usings,
         XmlDocumentationBuilder? xmlDoc)
     {
         _name = name;
@@ -51,6 +53,7 @@ public readonly struct PropertyBuilder
         _initializer = initializer;
         _backingFieldName = backingFieldName;
         _attributes = attributes.IsDefault ? ImmutableArray<AttributeBuilder>.Empty : attributes;
+        _usings = usings.IsDefault ? ImmutableArray<string>.Empty : usings;
         _xmlDoc = xmlDoc;
     }
 
@@ -82,6 +85,7 @@ public readonly struct PropertyBuilder
             initializer: null,
             backingFieldName: null,
             ImmutableArray<AttributeBuilder>.Empty,
+            ImmutableArray<string>.Empty,
             xmlDoc: null);
     }
 
@@ -115,7 +119,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder WithAccessibility(Accessibility accessibility)
     {
         return new PropertyBuilder(_name, _type, accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -124,7 +128,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder AsStatic()
     {
         return new PropertyBuilder(_name, _type, _accessibility, true, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -133,7 +137,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder AsVirtual()
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, true, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -142,7 +146,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder AsOverride()
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, true,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -151,7 +155,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder AsAbstract()
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            true, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            true, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     #endregion
@@ -165,7 +169,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder WithAutoPropertyAccessors()
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, PropertyAccessorStyle.Auto, null, null, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, PropertyAccessorStyle.Auto, null, null, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -181,7 +185,7 @@ public readonly struct PropertyBuilder
 
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
             _isAbstract, PropertyAccessorStyle.ExpressionBodied, cleanExpression, _setterBody,
-            _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -192,7 +196,7 @@ public readonly struct PropertyBuilder
         var body = configure(BodyBuilder.Empty());
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
             _isAbstract, PropertyAccessorStyle.BlockBodied, _getterBody, 
-            body.Build().ToFullString(), _initializer, _backingFieldName, _attributes, _xmlDoc);
+            body.Build().ToFullString(), _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -203,7 +207,7 @@ public readonly struct PropertyBuilder
         var body = configure(BodyBuilder.Empty());
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
             _isAbstract, PropertyAccessorStyle.BlockBodied, body.Build().ToFullString(),
-            _setterBody, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _setterBody, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -213,7 +217,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder AsReadOnly()
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, PropertyAccessorStyle.GetterOnly, _getterBody, null, _initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, PropertyAccessorStyle.GetterOnly, _getterBody, null, _initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     #endregion
@@ -228,7 +232,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder WithInitializer(string initializer)
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, initializer, _backingFieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, initializer, _backingFieldName, _attributes, _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -239,7 +243,7 @@ public readonly struct PropertyBuilder
     public PropertyBuilder WithBackingField(string fieldName)
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, fieldName, _attributes, _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, fieldName, _attributes, _usings, _xmlDoc);
     }
 
     #endregion
@@ -254,7 +258,7 @@ public readonly struct PropertyBuilder
     {
         var xmlDoc = configure(XmlDocumentationBuilder.Create());
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, xmlDoc);
     }
 
     /// <summary>
@@ -265,7 +269,7 @@ public readonly struct PropertyBuilder
     {
         var xmlDoc = XmlDocumentationBuilder.WithSummary(summary);
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, xmlDoc);
     }
 
     /// <summary>
@@ -279,7 +283,7 @@ public readonly struct PropertyBuilder
 
         var xmlDoc = XmlDocumentationBuilder.From(documentation);
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings, xmlDoc);
     }
 
     #endregion
@@ -294,7 +298,7 @@ public readonly struct PropertyBuilder
     {
         var attribute = AttributeBuilder.For(name);
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -306,7 +310,7 @@ public readonly struct PropertyBuilder
     {
         var attribute = configure(AttributeBuilder.For(name));
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _usings, _xmlDoc);
     }
 
     /// <summary>
@@ -315,8 +319,27 @@ public readonly struct PropertyBuilder
     public PropertyBuilder WithAttribute(AttributeBuilder attribute)
     {
         return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
-            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _xmlDoc);
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes.Add(attribute), _usings, _xmlDoc);
     }
+
+    #endregion
+
+    #region Usings
+
+    /// <summary>
+    /// Adds a using directive that will be collected by the containing TypeBuilder.
+    /// </summary>
+    /// <param name="namespace">The namespace to add (e.g., "System.Linq", "static System.Math").</param>
+    public PropertyBuilder AddUsing(string @namespace)
+    {
+        return new PropertyBuilder(_name, _type, _accessibility, _isStatic, _isVirtual, _isOverride,
+            _isAbstract, _accessorStyle, _getterBody, _setterBody, _initializer, _backingFieldName, _attributes, _usings.Add(@namespace), _xmlDoc);
+    }
+
+    /// <summary>
+    /// Gets the using directives for this property.
+    /// </summary>
+    internal ImmutableArray<string> Usings => _usings;
 
     #endregion
 

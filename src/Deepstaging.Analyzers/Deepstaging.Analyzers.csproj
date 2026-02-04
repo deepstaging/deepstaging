@@ -8,9 +8,12 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         
+        <!-- Disable release tracking for now -->
+        <NoWarn>$(NoWarn);RS2008</NoWarn>
+        
         <!-- Package metadata -->
-        <PackageId>Deepstaging.Effects.Analyzers</PackageId>
-        <Title>Deepstaging.Effects.Analyzers</Title>
+        <PackageId>Deepstaging.Analyzers</PackageId>
+        <Title>Deepstaging.Analyzers</Title>
         <Description>Roslyn analyzers for Deepstaging.Effects.</Description>
         <PackageTags>deepstaging;effects;analyzers;roslyn</PackageTags>
     </PropertyGroup>
@@ -21,6 +24,12 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\roslyn\Deepstaging.Roslyn\Deepstaging.Roslyn.csproj" />
+      <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj" />
+      <ProjectReference Include="..\Deepstaging\Deepstaging.csproj" />
     </ItemGroup>
 
 </Project>

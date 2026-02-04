@@ -140,11 +140,12 @@ internal static class SignatureParser
         var hasOut = param.Modifiers.Any(m => m.IsKind(SyntaxKind.OutKeyword));
         var hasIn = param.Modifiers.Any(m => m.IsKind(SyntaxKind.InKeyword));
         var hasParams = param.Modifiers.Any(m => m.IsKind(SyntaxKind.ParamsKeyword));
+        var hasThis = param.Modifiers.Any(m => m.IsKind(SyntaxKind.ThisKeyword));
 
         // Check for default value
         var hasDefault = param.Default != null;
 
-        if (!hasRef && !hasOut && !hasIn && !hasParams && !hasDefault)
+        if (!hasRef && !hasOut && !hasIn && !hasParams && !hasThis && !hasDefault)
         {
             return builder.AddParameter(paramName, paramType);
         }
@@ -155,6 +156,7 @@ internal static class SignatureParser
             if (hasOut) p = p.AsOut();
             if (hasIn) p = p.AsIn();
             if (hasParams) p = p.AsParams();
+            if (hasThis) p = p.AsThis();
             if (hasDefault) p = p.WithDefaultValue(param.Default!.Value.ToString());
             return p;
         });

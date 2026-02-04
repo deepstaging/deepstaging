@@ -5,7 +5,6 @@ public class CompleteExampleTests : RoslynTestBase
     [Test]
     public async Task Can_emit_complete_service_class()
     {
-        // Build from design document example
         var repositoryField = FieldBuilder
             .For("_repository", "ICustomerRepository")
             .WithAccessibility(Accessibility.Private)

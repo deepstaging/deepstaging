@@ -38,7 +38,7 @@ internal static class CompilationHelper
     /// </summary>
     private static ImmutableArray<MetadataReference> GetDefaultReferences() =>
     [
-        ..Net80.ReferenceInfos.All
+        ..Net100.ReferenceInfos.All
             .Select(x => x.Reference)
             .Concat(ReferenceConfiguration.GetAdditionalReferences())
     ];

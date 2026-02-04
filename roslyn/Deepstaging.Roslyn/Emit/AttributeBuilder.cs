@@ -10,15 +10,18 @@ public readonly struct AttributeBuilder
     private readonly string _name;
     private readonly ImmutableArray<string> _arguments;
     private readonly ImmutableArray<(string Name, string Value)> _namedArguments;
+    private readonly ImmutableArray<string> _usings;
 
     private AttributeBuilder(
         string name,
         ImmutableArray<string> arguments,
-        ImmutableArray<(string Name, string Value)> namedArguments)
+        ImmutableArray<(string Name, string Value)> namedArguments,
+        ImmutableArray<string> usings)
     {
         _name = name;
         _arguments = arguments.IsDefault ? ImmutableArray<string>.Empty : arguments;
         _namedArguments = namedArguments.IsDefault ? ImmutableArray<(string, string)>.Empty : namedArguments;
+        _usings = usings.IsDefault ? ImmutableArray<string>.Empty : usings;
     }
 
     #region Factory Methods
@@ -35,7 +38,8 @@ public readonly struct AttributeBuilder
         return new AttributeBuilder(
             name,
             ImmutableArray<string>.Empty,
-            ImmutableArray<(string, string)>.Empty);
+            ImmutableArray<(string, string)>.Empty,
+            ImmutableArray<string>.Empty);
     }
 
     #endregion
@@ -51,7 +55,7 @@ public readonly struct AttributeBuilder
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Argument value cannot be null or empty.", nameof(value));
 
-        return new AttributeBuilder(_name, _arguments.Add(value), _namedArguments);
+        return new AttributeBuilder(_name, _arguments.Add(value), _namedArguments, _usings);
     }
 
     /// <summary>
@@ -80,8 +84,26 @@ public readonly struct AttributeBuilder
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Argument value cannot be null or empty.", nameof(value));
 
-        return new AttributeBuilder(_name, _arguments, _namedArguments.Add((name, value)));
+        return new AttributeBuilder(_name, _arguments, _namedArguments.Add((name, value)), _usings);
     }
+
+    #endregion
+
+    #region Usings
+
+    /// <summary>
+    /// Adds a using directive that will be collected by the containing TypeBuilder.
+    /// </summary>
+    /// <param name="namespace">The namespace to add (e.g., "System.Linq", "static System.Math").</param>
+    public AttributeBuilder AddUsing(string @namespace)
+    {
+        return new AttributeBuilder(_name, _arguments, _namedArguments, _usings.Add(@namespace));
+    }
+
+    /// <summary>
+    /// Gets the using directives for this attribute.
+    /// </summary>
+    internal ImmutableArray<string> Usings => _usings;
 
     #endregion
 
