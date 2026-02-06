@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-﻿using Deepstaging.Projection.Models;
+using Deepstaging.Projection.Models;
 
 namespace Deepstaging.Projection;
 
@@ -26,8 +26,7 @@ public static class Runtime
                 AccessibilityModifier = runtime.AccessibilityString,
                 Capabilities =
                 [
-                    ..runtime.GetAttributes<UsesAttribute>()
-                        .Select(attr => attr.QueryUsesAttribute())
+                    ..runtime.UsesAttributes()
                         .SelectMany(attr => attr.EffectsModules)
                         .Select(model => model.Capability)
                 ]

@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 using Deepstaging.Generators.Writers;
 using Deepstaging.Roslyn.Generators;
 
@@ -22,8 +23,13 @@ public sealed class DeepstagingGenerator : IIncrementalGenerator
         {
             var hint = new HintName(module.Namespace);
 
-            ctx.AddFromEmit(hint.Filename("Runtime", module.Capability.Interface), module.WriteCapabilityInterface());
-            ctx.AddFromEmit(hint.Filename("Effects", $"{module.Name}Effects"), module.WriteEffectsModule());
+            module
+                .WriteCapabilityInterface()
+                .RegisterSourceWith(ctx, hint.Filename("Runtime", module.Capability.Interface));
+            
+            module
+                .WriteEffectsModule()
+                .RegisterSourceWith(ctx, hint.Filename("Effects", $"{module.Name}Effects"));
         });
 
         var runtimes = context.ForAttribute<RuntimeAttribute>()
@@ -32,9 +38,14 @@ public sealed class DeepstagingGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(runtimes, static (ctx, module) =>
         {
             var hint = new HintName($"{module.Namespace}.Runtime");
-            ctx.AddFromEmit(hint.Filename(module.RuntimeTypeName), module.WriteRuntimeClass());
-            ctx.AddFromEmit(hint.Filename($"{module.RuntimeTypeName}Bootstrapper"),
-                module.WriteRuntimeBootstrapperClass());
+
+            module
+                .WriteRuntimeClass()
+                .RegisterSourceWith(ctx, hint.Filename(module.RuntimeTypeName));
+
+            module
+                .WriteRuntimeBootstrapperClass()
+                .RegisterSourceWith(ctx, hint.Filename($"{module.RuntimeTypeName}Bootstrapper"));
         });
     }
 }

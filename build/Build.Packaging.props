@@ -44,7 +44,6 @@
       Package assets (README and icon)
       These files are included in the NuGet package for display on nuget.org
     -->
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
 
     <!-- 

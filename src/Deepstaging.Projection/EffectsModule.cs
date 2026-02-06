@@ -79,7 +79,7 @@ public static class EffectsModule
                         ..method.Parameters.Select(param => new EffectParameterModel
                         {
                             Name = param.Name,
-                            Type = param.Type.FullyQualifiedName,
+                            Type = param.Type?.FullyQualifiedName!,
                             HasDefaultValue = param.HasExplicitDefaultValue,
                             DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
                         })
