@@ -14,20 +14,14 @@ public static class Queries
         /// <summary>
         /// Converts a <see cref="ValidAttribute"/> to a <see cref="UsesAttributeQuery"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when the attribute is not a <see cref="UsesAttribute"/>.</exception>
         public UsesAttributeQuery QueryUsesAttribute() =>
-            attribute.Value.As<UsesAttribute>()
-                .Map(attr => new UsesAttributeQuery(attr.Value))
-                .OrThrow($"attribute must be a valid {nameof(UsesAttribute)}.");
+            attribute.AsQuery<UsesAttributeQuery>();
 
         /// <summary>
         /// Converts a <see cref="ValidAttribute"/> to an <see cref="EffectsModuleAttributeQuery"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException">Thrown when the attribute is not an <see cref="EffectsModuleAttribute"/>.</exception>
         public EffectsModuleAttributeQuery QueryEffectsModuleAttribute() =>
-            attribute.Value.As<EffectsModuleAttribute>()
-                .Map(attr => new EffectsModuleAttributeQuery(attr.Value))
-                .OrThrow($"attribute must be a valid {nameof(EffectsModuleAttribute)}.");
+            attribute.AsQuery<EffectsModuleAttributeQuery>();
     }
 
     extension(ValidSymbol<INamedTypeSymbol> symbol)
@@ -39,7 +33,7 @@ public static class Queries
         public ImmutableArray<EffectsModuleAttributeQuery> EffectsModuleAttributes() =>
         [
             ..symbol.GetAttributes<EffectsModuleAttribute>()
-                .Select(attr => attr.QueryEffectsModuleAttribute())
+                .Select(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
         ];
         
         /// <summary>
@@ -49,7 +43,7 @@ public static class Queries
         public ImmutableArray<UsesAttributeQuery> UsesAttributes() =>
         [
             ..symbol.GetAttributes<UsesAttribute>()
-                .Select(attr => attr.QueryUsesAttribute())
+                .Select(attr => attr.AsQuery<UsesAttributeQuery>())
         ];
     }
 }
