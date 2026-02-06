@@ -8,10 +8,10 @@
   <ItemGroup>
     <!-- Deepstaging.Roslyn packages -->
     <PackageVersion Include="Deepstaging" Version="1.0.0-dev-20260205141028" />
-    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev-20260205144503" />
-    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev-20260205144503" />
-    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev-20260205144503" />
-    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev-20260205144503" />
+    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev-20260206122753" />
+    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev-20260206122753" />
+    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev-20260206122753" />
+    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev-20260206122753" />
     <!-- Core Roslyn -->
     <PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />

@@ -25,11 +25,11 @@ public sealed class DeepstagingGenerator : IIncrementalGenerator
 
             module
                 .WriteCapabilityInterface()
-                .RegisterSourceWith(ctx, hint.Filename("Runtime", module.Capability.Interface));
+                .AddSourceTo(ctx, hint.Filename("Runtime", module.Capability.Interface));
             
             module
                 .WriteEffectsModule()
-                .RegisterSourceWith(ctx, hint.Filename("Effects", $"{module.Name}Effects"));
+                .AddSourceTo(ctx, hint.Filename("Effects", $"{module.Name}Effects"));
         });
 
         var runtimes = context.ForAttribute<RuntimeAttribute>()
@@ -41,11 +41,11 @@ public sealed class DeepstagingGenerator : IIncrementalGenerator
 
             module
                 .WriteRuntimeClass()
-                .RegisterSourceWith(ctx, hint.Filename(module.RuntimeTypeName));
+                .AddSourceTo(ctx, hint.Filename(module.RuntimeTypeName));
 
             module
                 .WriteRuntimeBootstrapperClass()
-                .RegisterSourceWith(ctx, hint.Filename($"{module.RuntimeTypeName}Bootstrapper"));
+                .AddSourceTo(ctx, hint.Filename($"{module.RuntimeTypeName}Bootstrapper"));
         });
     }
 }
