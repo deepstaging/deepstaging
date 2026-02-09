@@ -43,10 +43,10 @@
         At pack time, these become PackageReferences.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\Deepstaging.Config\Deepstaging.Config.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\Deepstaging.Ids\Deepstaging.Ids.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj" PrivateAssets="all" />
     </ItemGroup>
 
     <!-- 

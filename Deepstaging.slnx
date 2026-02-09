@@ -3,36 +3,36 @@
   <Project Path="src/Deepstaging/Deepstaging.csproj" />
   
   <Folder Name="/Effects/">
-    <Project Path="src/Deepstaging.Effects/Deepstaging.Effects.csproj" />
-    <Project Path="src/Deepstaging.Effects.Analyzers/Deepstaging.Effects.Analyzers.csproj" />
-    <Project Path="src/Deepstaging.Effects.CodeFixes/Deepstaging.Effects.CodeFixes.csproj" />
-    <Project Path="src/Deepstaging.Effects.Generators/Deepstaging.Effects.Generators.csproj" />
-    <Project Path="src/Deepstaging.Effects.Projection/Deepstaging.Effects.Projection.csproj" />
-    <Project Path="src/Deepstaging.Effects.Runtime/Deepstaging.Effects.Runtime.csproj" />
-    <Project Path="src/Deepstaging.Effects.Tests/Deepstaging.Effects.Tests.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects/Deepstaging.Effects.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Analyzers/Deepstaging.Effects.Analyzers.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.CodeFixes/Deepstaging.Effects.CodeFixes.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Generators/Deepstaging.Effects.Generators.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Projection/Deepstaging.Effects.Projection.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Runtime/Deepstaging.Effects.Runtime.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Tests/Deepstaging.Effects.Tests.csproj" />
   </Folder>
   <Folder Name="/Config/">
-    <Project Path="src/Deepstaging.Config/Deepstaging.Config.csproj" />
-    <Project Path="src/Deepstaging.Config.Analyzers/Deepstaging.Config.Analyzers.csproj" />
-    <Project Path="src/Deepstaging.Config.CodeFixes/Deepstaging.Config.CodeFixes.csproj" />
-    <Project Path="src/Deepstaging.Config.Generators/Deepstaging.Config.Generators.csproj" />
-    <Project Path="src/Deepstaging.Config.Projection/Deepstaging.Config.Projection.csproj" />
-    <Project Path="src/Deepstaging.Config.Tests/Deepstaging.Config.Tests.csproj" />
+    <Project Path="src/Config/Deepstaging.Config/Deepstaging.Config.csproj" />
+    <Project Path="src/Config/Deepstaging.Config.Analyzers/Deepstaging.Config.Analyzers.csproj" />
+    <Project Path="src/Config/Deepstaging.Config.CodeFixes/Deepstaging.Config.CodeFixes.csproj" />
+    <Project Path="src/Config/Deepstaging.Config.Generators/Deepstaging.Config.Generators.csproj" />
+    <Project Path="src/Config/Deepstaging.Config.Projection/Deepstaging.Config.Projection.csproj" />
+    <Project Path="src/Config/Deepstaging.Config.Tests/Deepstaging.Config.Tests.csproj" />
   </Folder>
   <Folder Name="/Ids/">
-    <Project Path="src/Deepstaging.Ids/Deepstaging.Ids.csproj" />
-    <Project Path="src/Deepstaging.Ids.Analyzers/Deepstaging.Ids.Analyzers.csproj" />
-    <Project Path="src/Deepstaging.Ids.CodeFixes/Deepstaging.Ids.CodeFixes.csproj" />
-    <Project Path="src/Deepstaging.Ids.Generators/Deepstaging.Ids.Generators.csproj" />
-    <Project Path="src/Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj" />
-    <Project Path="src/Deepstaging.Ids.Tests/Deepstaging.Ids.Tests.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids/Deepstaging.Ids.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids.Analyzers/Deepstaging.Ids.Analyzers.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids.CodeFixes/Deepstaging.Ids.CodeFixes.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids.Generators/Deepstaging.Ids.Generators.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj" />
+    <Project Path="src/Ids/Deepstaging.Ids.Tests/Deepstaging.Ids.Tests.csproj" />
   </Folder>
   <Folder Name="/HttpClient/">
-    <Project Path="src/Deepstaging.HttpClient/Deepstaging.HttpClient.csproj" />
-    <Project Path="src/Deepstaging.HttpClient.Analyzers/Deepstaging.HttpClient.Analyzers.csproj" />
-    <Project Path="src/Deepstaging.HttpClient.CodeFixes/Deepstaging.HttpClient.CodeFixes.csproj" />
-    <Project Path="src/Deepstaging.HttpClient.Generators/Deepstaging.HttpClient.Generators.csproj" />
-    <Project Path="src/Deepstaging.HttpClient.Projection/Deepstaging.HttpClient.Projection.csproj" />
-    <Project Path="src/Deepstaging.HttpClient.Tests/Deepstaging.HttpClient.Tests.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient/Deepstaging.HttpClient.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient.Analyzers/Deepstaging.HttpClient.Analyzers.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient.CodeFixes/Deepstaging.HttpClient.CodeFixes.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient.Generators/Deepstaging.HttpClient.Generators.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient.Projection/Deepstaging.HttpClient.Projection.csproj" />
+    <Project Path="src/HttpClient/Deepstaging.HttpClient.Tests/Deepstaging.HttpClient.Tests.csproj" />
   </Folder>
 </Solution>
