@@ -1,0 +1,29 @@
+﻿<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common"/>
+        <PackageReference Include="Deepstaging.Roslyn"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Attributes\EventQueueHandlerAttributeQuery.cs"/>
+        <Compile Remove="Attributes\EventQueueModuleAttributeQuery.cs"/>
+        <Compile Remove="Attributes\DependencyLifetimeAttributeQuery.cs"/>
+        <Compile Remove="Attributes\ExposeEffectsFromAttributeQuery.cs"/>
+        <Compile Remove="Attributes\DispatcherModuleAttributeQuery.cs"/>
+        <Compile Remove="DispatcherModule.cs"/>
+        <Compile Remove="EventQueueHandler.cs"/>
+        <Compile Remove="EventQueueModule.cs"/>
+    </ItemGroup>
+
+</Project>

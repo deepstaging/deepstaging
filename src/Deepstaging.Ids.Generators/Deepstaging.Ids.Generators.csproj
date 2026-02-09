@@ -1,0 +1,95 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Deepstaging.Ids/Deepstaging.Ids.csproj" />
+    <ProjectReference Include="../Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Deepstaging.Roslyn" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="StrongIdWriter.Core.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.Converters.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.Factory.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IComparable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IEquatable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IFormattable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IParsable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.ISpanFormattable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.ISpanParsable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IUtf8SpanFormattable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.IUtf8SpanParsable.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.DapperTypeHandler.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.EfCoreValueConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.JsonConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.NewtonsoftJsonConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="StrongIdWriter.TypeConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.Converters.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.Core.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.DapperTypeHandler.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.EfCoreValueConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.Factory.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.JsonConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.NewtonsoftJsonConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Writers\StrongIdWriter.TypeConverter.cs">
+      <DependentUpon>StrongIdWriter.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

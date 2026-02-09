@@ -7,7 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- Deepstaging.Roslyn packages -->
-    <PackageVersion Include="Deepstaging" Version="1.0.0-dev-20260208212209" />
     <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev-20260208212209" />
     <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev-20260208212209" />
     <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev-20260208212209" />
@@ -60,5 +59,8 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
+    <!-- Ids Feature Dependencies -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Dapper" Version="2.1.66" />
   </ItemGroup>
 </Project>

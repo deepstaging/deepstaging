@@ -1,15 +1,38 @@
 <Solution>
+  <!-- Umbrella Package -->
   <Project Path="src/Deepstaging/Deepstaging.csproj" />
-  <Project Path="src/Deepstaging.CodeFixes/Deepstaging.CodeFixes.csproj" />
-  <Project Path="src/Deepstaging.Projection/Deepstaging.Projection.csproj" />
-  <Project Path="src/Deepstaging.Generators/Deepstaging.Generators.csproj" />
-  <Folder Name="/Samples/" />
-  <Folder Name="/Samples/ToDo/">
-    <Project Path="samples/ToDo/Deepstaging.ToDo/Deepstaging.ToDo.csproj" />
-    <Project Path="samples\ToDo\AspireApp1\Deepstaging.ToDo.AppHost\Deepstaging.ToDo.AppHost.csproj" />
-    <Project Path="samples\ToDo\AspireApp1\Deepstaging.ToDo.Server\Deepstaging.ToDo.Server.csproj" />
+  
+  <Folder Name="/Effects/">
+    <Project Path="src/Deepstaging.Effects/Deepstaging.Effects.csproj" />
+    <Project Path="src/Deepstaging.Effects.Analyzers/Deepstaging.Effects.Analyzers.csproj" />
+    <Project Path="src/Deepstaging.Effects.CodeFixes/Deepstaging.Effects.CodeFixes.csproj" />
+    <Project Path="src/Deepstaging.Effects.Generators/Deepstaging.Effects.Generators.csproj" />
+    <Project Path="src/Deepstaging.Effects.Projection/Deepstaging.Effects.Projection.csproj" />
+    <Project Path="src/Deepstaging.Effects.Runtime/Deepstaging.Effects.Runtime.csproj" />
+    <Project Path="src/Deepstaging.Effects.Tests/Deepstaging.Effects.Tests.csproj" />
   </Folder>
-  <Project Path="src/Deepstaging.Analyzers/Deepstaging.Analyzers.csproj" />
-  <Project Path="src/Deepstaging.Runtime/Deepstaging.Runtime.csproj" />
-  <Project Path="src/Deepstaging.Tests/Deepstaging.Tests.csproj" />
+  <Folder Name="/Config/">
+    <Project Path="src/Deepstaging.Config/Deepstaging.Config.csproj" />
+    <Project Path="src/Deepstaging.Config.Analyzers/Deepstaging.Config.Analyzers.csproj" />
+    <Project Path="src/Deepstaging.Config.CodeFixes/Deepstaging.Config.CodeFixes.csproj" />
+    <Project Path="src/Deepstaging.Config.Generators/Deepstaging.Config.Generators.csproj" />
+    <Project Path="src/Deepstaging.Config.Projection/Deepstaging.Config.Projection.csproj" />
+    <Project Path="src/Deepstaging.Config.Tests/Deepstaging.Config.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Ids/">
+    <Project Path="src/Deepstaging.Ids/Deepstaging.Ids.csproj" />
+    <Project Path="src/Deepstaging.Ids.Analyzers/Deepstaging.Ids.Analyzers.csproj" />
+    <Project Path="src/Deepstaging.Ids.CodeFixes/Deepstaging.Ids.CodeFixes.csproj" />
+    <Project Path="src/Deepstaging.Ids.Generators/Deepstaging.Ids.Generators.csproj" />
+    <Project Path="src/Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj" />
+    <Project Path="src/Deepstaging.Ids.Tests/Deepstaging.Ids.Tests.csproj" />
+  </Folder>
+  <Folder Name="/HttpClient/">
+    <Project Path="src/Deepstaging.HttpClient/Deepstaging.HttpClient.csproj" />
+    <Project Path="src/Deepstaging.HttpClient.Analyzers/Deepstaging.HttpClient.Analyzers.csproj" />
+    <Project Path="src/Deepstaging.HttpClient.CodeFixes/Deepstaging.HttpClient.CodeFixes.csproj" />
+    <Project Path="src/Deepstaging.HttpClient.Generators/Deepstaging.HttpClient.Generators.csproj" />
+    <Project Path="src/Deepstaging.HttpClient.Projection/Deepstaging.HttpClient.Projection.csproj" />
+    <Project Path="src/Deepstaging.HttpClient.Tests/Deepstaging.HttpClient.Tests.csproj" />
+  </Folder>
 </Solution>

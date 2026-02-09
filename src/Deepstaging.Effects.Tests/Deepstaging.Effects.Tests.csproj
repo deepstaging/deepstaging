@@ -1,0 +1,34 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Suppress CS1591 for test project (no docs needed) -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Deepstaging.Roslyn" />
+        <PackageReference Include="LanguageExt.Core" />
+        <PackageReference Include="TUnit" />
+        <PackageReference Include="TUnit.Engine" />
+        <PackageReference Include="Basic.Reference.Assemblies.Net100" />
+        <!-- Scriban needed for generator template rendering at test time -->
+        <PackageReference Include="Scriban" />
+        <!-- EF Core for DbContext tests -->
+        <PackageReference Include="Microsoft.EntityFrameworkCore" />
+        <PackageReference Include="Deepstaging.Roslyn.Testing" />
+    </ItemGroup>
+
+    <!-- Reference Deepstaging.Effects projects -->
+    <ItemGroup>
+        <ProjectReference Include="..\Deepstaging.Effects.Analyzers\Deepstaging.Effects.Analyzers.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.CodeFixes\Deepstaging.Effects.CodeFixes.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Generators\Deepstaging.Effects.Generators.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Runtime\Deepstaging.Effects.Runtime.csproj" />
+    </ItemGroup>
+
+</Project>

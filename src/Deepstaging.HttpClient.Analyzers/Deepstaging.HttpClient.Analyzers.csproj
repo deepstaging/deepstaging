@@ -1,0 +1,20 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Deepstaging.HttpClient/Deepstaging.HttpClient.csproj" />
+    <ProjectReference Include="../Deepstaging.HttpClient.Projection/Deepstaging.HttpClient.Projection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Deepstaging.Roslyn" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+    <PackageReference Include="PolySharp" PrivateAssets="all" />
+  </ItemGroup>
+</Project>
