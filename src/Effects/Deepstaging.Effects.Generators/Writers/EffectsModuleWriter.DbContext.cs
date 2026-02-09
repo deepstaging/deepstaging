@@ -1,5 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 namespace Deepstaging.Generators.Writers;
 
 /// <summary>
@@ -57,7 +58,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, int> SaveChangesAsync<RT>(CancellationToken token = default) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, int> SaveChangesAsync<RT>(
+                    CancellationToken token = default
+                 ) where RT : {model.Capability.Interface} 
+                 """
+            )
             .WithXmlDoc("Saves all changes made in this context to the database asynchronously.")
             .WithExpressionBody(
                 $"""liftEff<RT, int>(async rt => await rt.{model.Capability.PropertyName}.SaveChangesAsync(token))"""
@@ -70,11 +76,17 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static DbSetQuery<RT, {dbSet.EntityType}> Query<RT>() where RT : {model.Capability.Interface}")
-            .WithXmlDoc("""
-                        Returns a composable query builder for this entity set.
-                        Chain LINQ methods and call a terminal operation (ToListAsync, FirstOrNoneAsync, etc.) to execute.
-                        """)
+                $"""
+                 public static DbSetQuery<RT, {dbSet.EntityType}> Query<RT>() 
+                    where RT : {model.Capability.Interface}
+                 """
+            )
+            .WithXmlDoc(
+                """
+                Returns a composable query builder for this entity set.
+                Chain LINQ methods and call a terminal operation (ToListAsync, FirstOrNoneAsync, etc.) to execute.
+                """
+            )
             .WithExpressionBody($"new(rt => rt.{model.Capability.PropertyName}.{dbSet.PropertyName})");
     }
 
@@ -82,7 +94,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Option<{dbSet.EntityType}>> FindAsync<RT>(params object[] keyValues) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Option<{dbSet.EntityType}>> FindAsync<RT>(
+                    params object[] keyValues
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Finds an entity by its primary key values, returning None if not found.")
             .WithExpressionBody(
                 $"""liftEff<RT, Option<{dbSet.EntityType}>>(async rt => Optional(await rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.FindAsync(keyValues)))"""
@@ -93,7 +110,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, List<{dbSet.EntityType}>> ToListAsync<RT>(CancellationToken token = default) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, List<{dbSet.EntityType}>> ToListAsync<RT>(
+                    CancellationToken token = default
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Returns all entities as a list.")
             .WithExpressionBody("Query<RT>().ToListAsync(token)");
     }
@@ -102,7 +124,13 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Option<{dbSet.EntityType}>> FirstOrNoneAsync<RT>(Expression<Func<{dbSet.EntityType}, bool>> predicate, CancellationToken token = default) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Option<{dbSet.EntityType}>> FirstOrNoneAsync<RT>(
+                    Expression<Func<{dbSet.EntityType}, bool>> predicate,
+                    CancellationToken token = default
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Returns the first entity matching the predicate, or None.")
             .WithExpressionBody("Query<RT>().FirstOrNoneAsync(predicate, token)");
     }
@@ -111,7 +139,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, int> CountAsync<RT>(CancellationToken token = default) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, int> CountAsync<RT>(
+                    CancellationToken token = default
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Returns the count of entities.")
             .WithExpressionBody("Query<RT>().CountAsync(token)");
     }
@@ -120,7 +153,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, bool> AnyAsync<RT>(CancellationToken token = default) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, bool> AnyAsync<RT>(
+                    CancellationToken token = default
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Returns true if any entities exist.")
             .WithExpressionBody("Query<RT>().AnyAsync(token)");
     }
@@ -131,7 +169,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Unit> Add<RT>({dbSet.EntityType} entity) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Unit> Add<RT>(
+                    {dbSet.EntityType} entity
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Begins tracking the entity in the Added state.")
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Add(entity); return unit; })"""
@@ -142,7 +185,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Unit> AddRange<RT>(params {dbSet.EntityType}[] entities) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Unit> AddRange<RT>(
+                    params {dbSet.EntityType}[] entities
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Begins tracking the entities in the Added state.")
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.AddRange(entities); return unit; })"""
@@ -153,7 +201,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Unit> Update<RT>({dbSet.EntityType} entity) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Unit> Update<RT>(
+                    {dbSet.EntityType} entity
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Begins tracking the entity in the Modified state.")
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Update(entity); return unit; })"""
@@ -164,7 +217,12 @@ public static partial class EffectsModuleWriter
     {
         return MethodBuilder
             .Parse(
-                $"public static Eff<RT, Unit> Remove<RT>({dbSet.EntityType} entity) where RT : {model.Capability.Interface}")
+                $"""
+                 public static Eff<RT, Unit> Remove<RT>(
+                    {dbSet.EntityType} entity
+                 ) where RT : {model.Capability.Interface}
+                 """
+            )
             .WithXmlDoc("Begins tracking the entity in the Deleted state.")
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Remove(entity); return unit; })"""
