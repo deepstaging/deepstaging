@@ -17,10 +17,7 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var userTemplates = context.AdditionalTextsProvider
-            .Where(static t => t.Path.EndsWith(".scriban-cs"))
-            .Collect()
-            .Select(static (texts, _) => UserTemplates.From(texts));
+        var userTemplates = context.UserTemplatesProvider;
 
         var models = context.ForAttribute<StrongIdAttribute>()
             .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel))
@@ -30,6 +27,7 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
         {
             var (model, templates) = pair;
             var map = new TemplateMap<StrongIdModel>();
+            
             model.WriteStrongId(map)
                 .WithUserTemplate("Deepstaging.Ids/StrongId", model, map)
                 .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName), templates);
