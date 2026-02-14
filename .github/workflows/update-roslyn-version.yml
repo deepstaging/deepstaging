@@ -34,7 +34,7 @@ jobs:
           grep "Deepstaging.Roslyn" Directory.Packages.props
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.DISPATCH_TOKEN }}
           commit-message: "chore(deps): update Deepstaging.Roslyn to ${{ github.event.client_payload.version }}"
