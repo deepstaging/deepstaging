@@ -29,8 +29,9 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(models, static (ctx, pair) =>
         {
             var (model, templates) = pair;
-            model.WriteStrongId()
-                .DefineUserTemplate("Deepstaging.Ids/StrongId", model)
+            var map = new TemplateMap<StrongIdModel>();
+            model.WriteStrongId(map)
+                .WithUserTemplate("Deepstaging.Ids/StrongId", model, map)
                 .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName), templates);
         });
     }

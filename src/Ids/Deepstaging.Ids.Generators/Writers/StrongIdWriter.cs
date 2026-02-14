@@ -7,6 +7,7 @@ using Deepstaging.Roslyn.Emit.Interfaces.Formatting;
 using Deepstaging.Roslyn.Emit.Interfaces.Parsing;
 using Deepstaging.Roslyn.Emit.Operators.Conversions;
 using Deepstaging.Roslyn.Emit.Patterns;
+using Deepstaging.Roslyn.Scriban;
 
 namespace Deepstaging.Ids.Generators.Writers;
 
@@ -20,10 +21,11 @@ public static class StrongIdWriter
     {
         /// <summary>
         /// Generates the complete strongly-typed ID struct implementation.
+        /// Records explicit template bindings via the provided <paramref name="map"/>.
         /// </summary>
-        public OptionalEmit WriteStrongId()
+        public OptionalEmit WriteStrongId(TemplateMap<StrongIdModel> map)
         {
-            var typeName = model.TypeName;
+            var typeName = map.Bind(model.TypeName, m => m.TypeName);
             var backingType = model.BackingTypeSnapshot;
 
             var valueProperty = PropertyBuilder
