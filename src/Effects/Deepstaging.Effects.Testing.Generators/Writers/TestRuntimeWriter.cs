@@ -30,11 +30,11 @@ public static class TestRuntimeWriter
 
                 // Add static Create() factory method
                 .AddMethod(MethodBuilder
-                    .Parse($"public static {model.TestRuntimeType} Create()")
+                    .Parse($"public static {model.TestRuntimeType.CodeName} Create()")
                     .WithEach(model.Capabilities, (method, capability) => method
                         .AddParameter(capability.ParameterName, TypeRef.From(capability.DependencyType).Nullable(), pb => pb.WithDefaultValue("null")))
                     .WithBody(body => body
-                        .AddStatement($"var runtime = new {model.TestRuntimeType}()")
+                        .AddStatement($"var runtime = new {model.TestRuntimeType.CodeName}()")
                         .WithEach(model.Capabilities, (bod, capability) => bod
                             .AddStatement($"runtime.{capability.ParameterName.ToBackingFieldName()} = {capability.ParameterName}"))
                         .AddReturn("runtime")))
@@ -47,7 +47,7 @@ public static class TestRuntimeWriter
 
         return type
             .AddMethod(MethodBuilder
-                .Parse($"public {type.Name} With{capability.PropertyName}({capability.DependencyType} {capability.ParameterName})")
+                .Parse($"public {type.Name} With{capability.PropertyName}({capability.DependencyType.CodeName} {capability.ParameterName})")
                 .WithBody(body => body
                     .AddStatement($"{capability.FieldName} = {capability.ParameterName}")
                     .AddReturn("this")));
@@ -79,7 +79,7 @@ public static class TestRuntimeWriter
             .AddField(FieldBuilder
                 .For(stub.FieldName, stub.NullableDependencyType))
             .AddProperty(PropertyBuilder
-                .For(stub.PropertyName, stub.DependencyType)
+                .For(stub.PropertyName, stub.DependencyType.CodeName)
                 .WithGetter($"{stub.FieldName} ?? throw new InvalidOperationException(\"{exceptionMessage}\")"));
     }
 
@@ -90,8 +90,9 @@ public static class TestRuntimeWriter
         public string FieldName => capability.ParameterName.ToBackingFieldName();
         public string PropertyName => capability.PropertyName;
         public string ParameterName => capability.ParameterName;
-        public ValidSymbol<INamedTypeSymbol> DependencyType => capability.DependencyType;
-        public TypeRef NullableDependencyType => TypeRef.From(capability.DependencyType).Nullable();
+        public TypeSnapshot DependencyType => capability.DependencyType;
+        public string NullableDependencyType => $"{capability.DependencyType.CodeName}?";
         public TypeRef ConfigureDelegate => TypeRef.Func(RecordName, RecordName);
+        public EquatableArray<CapabilityMethodModel> Methods => capability.Methods;
     }
 }

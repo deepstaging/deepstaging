@@ -72,6 +72,7 @@ public sealed record EffectsModuleModel
 /// <summary>
 /// Model for a DbSet within a DbContext module.
 /// </summary>
+[PipelineModel]
 public sealed record DbSetModel
 {
     /// <summary>

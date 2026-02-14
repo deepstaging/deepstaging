@@ -26,35 +26,27 @@ public static class StubWriter
 
     private static TypeBuilder CreateStubType(this TestRuntimeWriter.StubInfo stub)
     {
-        var methods = stub.DependencyType.QueryMethods().GetAll();
-
         return TypeBuilder
-            .Parse($"public partial record {stub.RecordName} : {stub.DependencyType}")
+            .Parse($"public partial record {stub.RecordName} : {stub.DependencyType.CodeName}")
             .IfNot(string.IsNullOrEmpty(stub.DependencyType.Namespace), b => b.AddUsing(stub.DependencyType.Namespace!))
-            .WithEach(methods, (builder, method) => builder
-                .AddProperty($"On{method.Name}", method.AsDelegate().Nullable(), p => p.WithAutoPropertyAccessors().WithInitOnlySetter())
+            .WithEach(stub.Methods, (builder, method) => builder
+                .AddProperty($"On{method.Name}", $"{method.DelegateType}?", p => p.WithAutoPropertyAccessors().WithInitOnlySetter())
                 .AddMethod(MethodBuilder
                     .Parse($"public {method.ReturnType} {method.Name}()")
                     .WithEach(method.Parameters, (m, param) => m
-                        .AddParameter(param.ParameterName, param.Type)
+                        .AddParameter(param.Name, param.Type)
                     )
                     .WithExpressionBody(TypeRef
-                        .From($"On{method}")
-                        .Invoke([..method.Parameters.Select(x => x.ParameterName)])
-                        .OrDefault(method.ReturnType switch
+                        .From($"On{method.Name}")
+                        .Invoke([..method.Parameters.Select(x => x.Name)])
+                        .OrDefault(method switch
                         {
                             { IsNonGenericTask: true } => TypeRef.CompletedTask,
                             { IsNonGenericValueTask: true } => "default",
-                            { IsGenericTask: true } => $"global::System.Threading.Tasks.Task.FromResult<{method.ReturnType.InnerTaskType}>(default!)",
-                            { IsGenericValueTask: true } => $"new global::System.Threading.Tasks.ValueTask<{method.ReturnType.InnerTaskType}>(default!)",
+                            { IsGenericTask: true } => $"global::System.Threading.Tasks.Task.FromResult<{method.InnerTaskType}>(default!)",
+                            { IsGenericValueTask: true } => $"new global::System.Threading.Tasks.ValueTask<{method.InnerTaskType}>(default!)",
                             _ => "default!"
                         }))
                 ));
     }
-
-    private static TypeRef AsDelegate(this ValidSymbol<IMethodSymbol> method) => method switch
-    {
-        { ReturnsVoid: true } => TypeRef.Action([..method.Parameters.Select(param => TypeRef.From(param.Type))]),
-        _ => TypeRef.Func([..method.Parameters.Select(param => TypeRef.From(param.Type)), TypeRef.From(method.ReturnType)])
-    };
 }

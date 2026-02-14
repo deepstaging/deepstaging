@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
+using Deepstaging.Roslyn;
 
 namespace Deepstaging.HttpClient.Projection.Models;
 
 /// <summary>
 /// Model representing an HTTP client class.
 /// </summary>
+[PipelineModel]
 public sealed record HttpClientModel
 {
     /// <summary>
@@ -39,7 +39,7 @@ public sealed record HttpClientModel
     /// <summary>
     /// The HTTP requests defined on this client.
     /// </summary>
-    public required ImmutableArray<HttpRequestModel> Requests { get; init; }
+    public required EquatableArray<HttpRequestModel> Requests { get; init; }
 
     /// <summary>
     /// The interface name for this client.

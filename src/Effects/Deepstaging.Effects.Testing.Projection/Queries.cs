@@ -28,9 +28,9 @@ public static class Queries
 
             return new TestRuntimeModel
             {
-                TestRuntimeType = symbol,
+                TestRuntimeType = symbol.ToSnapshot(),
                 Namespace = symbol.Namespace ?? throw new InvalidOperationException("Symbol must have a namespace."),
-                RuntimeType = attribute.RuntimeType,
+                RuntimeType = attribute.RuntimeType.ToSnapshot(),
                 AccessibilityModifier = symbol.AccessibilityString,
                 Capabilities =
                 [

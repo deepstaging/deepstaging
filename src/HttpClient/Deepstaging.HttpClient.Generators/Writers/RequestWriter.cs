@@ -55,7 +55,7 @@ public static class RequestWriter
                 var pathExpr = BuildPathExpression(request);
 
                 // Build query string if needed
-                if (request.QueryParameters.Length > 0)
+                if (request.QueryParameters.Count > 0)
                 {
                     b = b.AddStatement("var queryParams = new global::System.Collections.Generic.List<string>();");
                     foreach (var qp in request.QueryParameters)

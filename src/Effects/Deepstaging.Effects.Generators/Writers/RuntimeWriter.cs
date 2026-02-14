@@ -18,7 +18,7 @@ public static class RuntimeWriter
             var constructor = ConstructorBuilder
                 .For(model.RuntimeTypeName)
                 .WithEach(model.Capabilities,
-                    (b, capability) => b.AddParameter(capability.DependencyType.ParameterName, capability.DependencyType));
+                    (b, capability) => b.AddParameter(capability.ParameterName, capability.DependencyType.CodeName));
 
             return TypeBuilder
                 .Parse($"{model.AccessibilityModifier} partial class {model.RuntimeTypeName}")
@@ -27,8 +27,8 @@ public static class RuntimeWriter
                 .InNamespace(model.Namespace)
                 .WithPrimaryConstructor(constructor)
                 .WithEach(model.Capabilities, (builder, capability) => builder
-                    .AddProperty(capability.DependencyType.PropertyName, capability.DependencyType, prop => prop
-                        .WithGetter(capability.DependencyType.ParameterName)))
+                    .AddProperty(capability.PropertyName, capability.DependencyType.CodeName, prop => prop
+                        .WithGetter(capability.ParameterName)))
                 .Emit();
         }
 

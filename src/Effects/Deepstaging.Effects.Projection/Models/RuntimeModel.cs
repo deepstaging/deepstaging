@@ -5,6 +5,7 @@ namespace Deepstaging.Effects.Projection.Models;
 /// <summary>
 /// Model for the runtime class discovered via [Runtime] attribute.
 /// </summary>
+[PipelineModel]
 public sealed record RuntimeModel
 {
     /// <summary>
@@ -30,12 +31,13 @@ public sealed record RuntimeModel
     /// <summary>
     /// Names of capability interfaces this runtime implements (e.g., ["IHasEmail", "IHasDatabase"]).
     /// </summary>
-    public ImmutableArray<RuntimeCapabilityModel> Capabilities { get; init; } = [];
+    public EquatableArray<RuntimeCapabilityModel> Capabilities { get; init; } = [];
 }
 
 /// <summary>
 /// Model for a capability dependency required by the runtime.
 /// </summary>
+[PipelineModel]
 public sealed record RuntimeCapabilityModel
 {
     /// <summary>
@@ -54,7 +56,62 @@ public sealed record RuntimeCapabilityModel
     public required string ParameterName { get; init; }
 
     /// <summary>
-    ///  The symbol of the dependency type required by this capability (e.g., the symbol for "MyApp.Services.EmailService").
+    /// Pipeline-safe snapshot of the dependency type required by this capability.
     /// </summary>
-    public required ValidSymbol<INamedTypeSymbol> DependencyType { get; set; }
+    public required TypeSnapshot DependencyType { get; init; }
+
+    /// <summary>
+    /// Pre-extracted methods from the dependency type, used by StubWriter for test runtime generation.
+    /// </summary>
+    public EquatableArray<CapabilityMethodModel> Methods { get; init; } = [];
+}
+
+/// <summary>
+/// Pipeline-safe model for a method on a capability interface.
+/// </summary>
+[PipelineModel]
+public sealed record CapabilityMethodModel
+{
+    /// <summary>The method name.</summary>
+    public required string Name { get; init; }
+
+    /// <summary>The fully qualified return type.</summary>
+    public required string ReturnType { get; init; }
+
+    /// <summary>Whether the method returns void.</summary>
+    public required bool ReturnsVoid { get; init; }
+
+    /// <summary>Whether the return type is a non-generic Task.</summary>
+    public required bool IsNonGenericTask { get; init; }
+
+    /// <summary>Whether the return type is a non-generic ValueTask.</summary>
+    public required bool IsNonGenericValueTask { get; init; }
+
+    /// <summary>Whether the return type is a generic Task.</summary>
+    public required bool IsGenericTask { get; init; }
+
+    /// <summary>Whether the return type is a generic ValueTask.</summary>
+    public required bool IsGenericValueTask { get; init; }
+
+    /// <summary>The inner type argument of Task/ValueTask, if generic.</summary>
+    public string? InnerTaskType { get; init; }
+
+    /// <summary>The method parameters.</summary>
+    public required EquatableArray<CapabilityParameterModel> Parameters { get; init; }
+
+    /// <summary>Pre-computed delegate type string (e.g., "System.Func&lt;int, string&gt;").</summary>
+    public required string DelegateType { get; init; }
+}
+
+/// <summary>
+/// Pipeline-safe model for a parameter on a capability method.
+/// </summary>
+[PipelineModel]
+public sealed record CapabilityParameterModel
+{
+    /// <summary>The parameter name.</summary>
+    public required string Name { get; init; }
+
+    /// <summary>The fully qualified parameter type.</summary>
+    public required string Type { get; init; }
 }

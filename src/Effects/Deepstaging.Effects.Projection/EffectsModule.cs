@@ -3,6 +3,7 @@
 
 using Deepstaging.Effects.Projection.Attributes;
 using Deepstaging.Effects.Projection.Models;
+using Deepstaging.Roslyn.Emit;
 using static Deepstaging.Effects.Projection.Models.EffectLiftingStrategy;
 
 namespace Deepstaging.Effects.Projection;
@@ -31,13 +32,7 @@ public static class EffectsModule
 
                         return new EffectsModuleModel
                         {
-                            Capability = new RuntimeCapabilityModel
-                            {
-                                Interface = $"IHas{attribute.TargetType.PropertyName}",
-                                PropertyName = attribute.TargetType.PropertyName,
-                                ParameterName = attribute.TargetType.ParameterName,
-                                DependencyType = attribute.TargetType
-                            },
+                            Capability = attribute.TargetType.CreateCapabilityModel(),
                             EffectsContainerName = container.Name,
                             Accessibility = attribute.TargetType.AccessibilityString,
                             Methods = attribute.CreateEffectMethods(),
@@ -89,7 +84,7 @@ public static class EffectsModule
             });
     }
 
-    private static ImmutableArray<DbSetModel> CreateDbSets(this EffectsModuleAttributeQuery attribute)
+    private static EquatableArray<DbSetModel> CreateDbSets(this EffectsModuleAttributeQuery attribute)
     {
         return attribute.TargetType
             .QueryProperties()
@@ -151,6 +146,48 @@ public static class EffectsModule
                 .OrThrow("Expected a property argument for async value return property."),
 
             _ => "Unit"
+        };
+    }
+
+    private static RuntimeCapabilityModel CreateCapabilityModel(this ValidSymbol<INamedTypeSymbol> targetType)
+    {
+        var methods = targetType.QueryMethods().GetAll();
+
+        return new RuntimeCapabilityModel
+        {
+            Interface = $"IHas{targetType.PropertyName}",
+            PropertyName = targetType.PropertyName,
+            ParameterName = targetType.ParameterName,
+            DependencyType = targetType.ToSnapshot(),
+            Methods =
+            [
+                ..methods.Select(method => new CapabilityMethodModel
+                {
+                    Name = method.Name,
+                    ReturnType = method.ReturnType.GloballyQualifiedName,
+                    ReturnsVoid = method.ReturnsVoid,
+                    IsNonGenericTask = method.ReturnType.IsNonGenericTask,
+                    IsNonGenericValueTask = method.ReturnType.IsNonGenericValueTask,
+                    IsGenericTask = method.ReturnType.IsGenericTask,
+                    IsGenericValueTask = method.ReturnType.IsGenericValueTask,
+                    InnerTaskType = method.ReturnType.InnerTaskType switch
+                    {
+                        { IsEmpty: false } inner => inner.GloballyQualifiedName,
+                        _ => null
+                    },
+                    Parameters =
+                    [
+                        ..method.Parameters.Select(p => new CapabilityParameterModel
+                        {
+                            Name = p.Name,
+                            Type = p.Type.GloballyQualifiedName
+                        })
+                    ],
+                    DelegateType = method.ReturnsVoid
+                        ? TypeRef.Action([..method.Parameters.Select(p => TypeRef.From(p.Type))]).ToString()
+                        : TypeRef.Func([..method.Parameters.Select(p => TypeRef.From(p.Type)), TypeRef.From(method.ReturnType)]).ToString()
+                })
+            ]
         };
     }
 }

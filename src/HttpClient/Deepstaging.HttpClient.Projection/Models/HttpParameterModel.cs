@@ -1,11 +1,14 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
+using Deepstaging.Roslyn;
+
 namespace Deepstaging.HttpClient.Projection.Models;
 
 /// <summary>
 /// Model representing a parameter of an HTTP request method.
 /// </summary>
+[PipelineModel]
 public sealed record HttpParameterModel
 {
     /// <summary>

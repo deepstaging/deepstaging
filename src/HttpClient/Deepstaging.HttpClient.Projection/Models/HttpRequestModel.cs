@@ -1,13 +1,14 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
-using System.Collections.Immutable;
+using Deepstaging.Roslyn;
 
 namespace Deepstaging.HttpClient.Projection.Models;
 
 /// <summary>
 /// Model representing an HTTP request method.
 /// </summary>
+[PipelineModel]
 public sealed record HttpRequestModel
 {
     /// <summary>
@@ -38,7 +39,7 @@ public sealed record HttpRequestModel
     /// <summary>
     /// The method parameters.
     /// </summary>
-    public required ImmutableArray<HttpParameterModel> Parameters { get; init; }
+    public required EquatableArray<HttpParameterModel> Parameters { get; init; }
 
     /// <summary>
     /// The async method name (MethodName + "Async").
@@ -53,19 +54,19 @@ public sealed record HttpRequestModel
     /// <summary>
     /// Parameters that are path parameters.
     /// </summary>
-    public ImmutableArray<HttpParameterModel> PathParameters =>
+    public EquatableArray<HttpParameterModel> PathParameters =>
         [.. Parameters.Where(p => p.Kind == ParameterKind.Path)];
 
     /// <summary>
     /// Parameters that are query parameters.
     /// </summary>
-    public ImmutableArray<HttpParameterModel> QueryParameters =>
+    public EquatableArray<HttpParameterModel> QueryParameters =>
         [.. Parameters.Where(p => p.Kind == ParameterKind.Query)];
 
     /// <summary>
     /// Parameters that are header parameters.
     /// </summary>
-    public ImmutableArray<HttpParameterModel> HeaderParameters =>
+    public EquatableArray<HttpParameterModel> HeaderParameters =>
         [.. Parameters.Where(p => p.Kind == ParameterKind.Header)];
 
     /// <summary>

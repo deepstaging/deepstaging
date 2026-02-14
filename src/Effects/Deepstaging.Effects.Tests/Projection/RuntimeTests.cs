@@ -42,7 +42,7 @@ public class RuntimeTests : RoslynTestBase
         await Assert.That(model.RuntimeTypeName).IsEqualTo("Runtime");
         await Assert.That(model.Namespace).IsEqualTo("TestApp");
         await Assert.That(model.AccessibilityModifier).IsEqualTo("public");
-        await Assert.That(model.Capabilities.Length).IsEqualTo(2);
+        await Assert.That(model.Capabilities.Count).IsEqualTo(2);
         await Assert.That(model.Capabilities[0].Interface).IsEqualTo("IHasEmailService");
         await Assert.That(model.Capabilities[1].Interface).IsEqualTo("IHasSlackService");
     }
