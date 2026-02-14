@@ -1,9 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
-using Deepstaging.Generators.Writers;
 
-namespace Deepstaging.Tests.Generators.Writers;
+namespace Deepstaging.Effects.Tests.Generators.Writers;
 
 public class RuntimeWriterTests : RoslynTestBase
 {

@@ -27,5 +27,8 @@
         <ProjectReference Include="..\Deepstaging.Config.CodeFixes\Deepstaging.Config.CodeFixes.csproj"/>
         <ProjectReference Include="..\Deepstaging.Config.Generators\Deepstaging.Config.Generators.csproj"/>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Projection\" />
+    </ItemGroup>
 
 </Project>

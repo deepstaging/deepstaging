@@ -34,3 +34,11 @@ Symbol → Projection Query → Validation → Diagnostic
 - [RoslynKit.CodeFixes](../Deepstaging.Config.CodeFixes/) - Code fixes for these diagnostics
 - [RoslynKit.Tests](../Deepstaging.Config.Tests/) - Analyzer tests
 - [Project README](../../README.md) - Full documentation
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+See [LICENSE](../../../LICENSE) for the full legal text.

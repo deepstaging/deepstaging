@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using System.Runtime.CompilerServices;
 
-namespace Deepstaging.Tests;
+using System.Runtime.CompilerServices;
+using Deepstaging.Effects.Runtime;
+
+namespace Deepstaging.Effects.Tests;
 
 internal static class TestInitializer
 {
@@ -10,8 +12,8 @@ internal static class TestInitializer
     public static void Initialize()
     {
         ReferenceConfiguration.AddReferencesFromTypes(
-            typeof(Deepstaging.EffectsModuleAttribute),
-            typeof(Deepstaging.Runtime.ActivityEffectExtensions),
+            typeof(EffectsModuleAttribute),
+            typeof(ActivityEffectExtensions),
             typeof(LanguageExt.Seq),
             typeof(Microsoft.Extensions.Logging.ILogger),
             typeof(Microsoft.Extensions.DependencyInjection.IServiceCollection),

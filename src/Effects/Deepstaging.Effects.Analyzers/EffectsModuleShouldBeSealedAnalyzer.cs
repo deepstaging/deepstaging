@@ -1,11 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Roslyn;
-using Deepstaging.Roslyn.Analyzers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Deepstaging.Analyzers;
+namespace Deepstaging.Effects.Analyzers;
 
 /// <summary>
 /// Reports a diagnostic when a class with [EffectsModule] is not declared as sealed.

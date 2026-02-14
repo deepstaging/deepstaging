@@ -21,17 +21,14 @@ internal static class DapperTypeHandlerWriter
         return builder.AddNestedType(dapperHandler);
     }
 
-    private static MethodBuilder SetValueMethod(StrongIdModel model, PropertyBuilder valueProperty)
-    {
-        return MethodBuilder
-            .Parse($$"""
-                     public override void SetValue(
-                         global::System.Data.IDbDataParameter parameter,
-                         {{model.TypeName}} value)
-                     """)
-            .WithBody(b => b
-                .AddStatements($"parameter.Value = value.{valueProperty.Name};"));
-    }
+    private static MethodBuilder SetValueMethod(StrongIdModel model, PropertyBuilder valueProperty) => MethodBuilder
+        .Parse($$"""
+                 public override void SetValue(
+                     global::System.Data.IDbDataParameter parameter,
+                     {{model.TypeName}} value)
+                 """)
+        .WithBody(b => b
+            .AddStatements($"parameter.Value = value.{valueProperty.Name};"));
 
     private static MethodBuilder ParseMethod(StrongIdModel model)
     {

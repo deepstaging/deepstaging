@@ -1,28 +1,18 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
-using Deepstaging.Roslyn;
-using Deepstaging.Roslyn.Analyzers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Deepstaging.Analyzers;
+namespace Deepstaging.Effects.Analyzers;
 
 /// <summary>
 /// Reports a diagnostic when [EffectsModule] IncludeOnly references a method that doesn't exist on the target type.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-[Reports(DiagnosticId, "IncludeOnly method not found",
+[Reports("DS0007", "IncludeOnly method not found",
     Message = "Method '{0}' specified in IncludeOnly does not exist on target type '{1}'",
     Description =
         "The IncludeOnly property references a method name that cannot be found on the target type. Check for typos or remove the invalid entry.")]
 public sealed class EffectsModuleIncludeOnlyMethodNotFoundAnalyzer : TypeAnalyzer
 {
-    /// <summary>
-    /// Diagnostic ID for IncludeOnly method not found.
-    /// </summary>
-    public const string DiagnosticId = "DS0007";
-
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
         GetFirstInvalidIncludeOnly(type) is not null;

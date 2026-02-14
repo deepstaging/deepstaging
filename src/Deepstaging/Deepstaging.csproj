@@ -12,7 +12,7 @@
         Individual features can also be installed separately if needed.
         
         During development, we use ProjectReferences.
-        At pack time, we replace them with PackageReferences via the targets below.
+        At pack time, they flow as PackageReference dependencies automatically.
     -->
 
     <PropertyGroup>
@@ -30,8 +30,8 @@
         <!-- This package has no code - it's just a meta-package -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
         
-        <!-- Override icon requirement from shared props (no icon yet) -->
-        <PackageIcon></PackageIcon>
+        <!-- Suppress NU5128: meta-package intentionally has no lib output -->
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,21 +40,13 @@
 
     <!-- 
         Reference feature packages via ProjectReference for development.
-        At pack time, these become PackageReferences.
+        At pack time, these flow as PackageReference dependencies automatically.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj" PrivateAssets="all" />
-        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj" PrivateAssets="all" />
-    </ItemGroup>
-
-    <!-- 
-        During pack, we add dependencies to the nuspec so consumers get the feature packages.
-        The ProjectReferences above don't flow as dependencies, so we add them explicitly.
-    -->
-    <ItemGroup>
-        <_PackageFiles Include="$(MSBuildThisFileDirectory)Deepstaging.nuspec.props" PackagePath="build" />
+        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj" />
+        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj" />
+        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj" />
+        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj" />
     </ItemGroup>
 
 </Project>

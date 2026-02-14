@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection.Attributes;
-using Deepstaging.Projection.Models;
-using static Deepstaging.Projection.Models.EffectLiftingStrategy;
 
-namespace Deepstaging.Projection;
+using Deepstaging.Effects.Projection.Attributes;
+using Deepstaging.Effects.Projection.Models;
+using static Deepstaging.Effects.Projection.Models.EffectLiftingStrategy;
+
+namespace Deepstaging.Effects.Projection;
 
 /// <summary>
 /// Extension methods for building effects module models from symbols decorated with <see cref="EffectsModuleAttribute"/>.
@@ -26,7 +27,7 @@ public static class EffectsModule
                     .GetAttributes<EffectsModuleAttribute>()
                     .Select(attr =>
                     {
-                        var attribute = attr.QueryEffectsModuleAttribute();
+                        var attribute = attr.AsQuery<EffectsModuleAttributeQuery>();
 
                         return new EffectsModuleModel
                         {
@@ -35,7 +36,7 @@ public static class EffectsModule
                                 Interface = $"IHas{attribute.TargetType.PropertyName}",
                                 PropertyName = attribute.TargetType.PropertyName,
                                 ParameterName = attribute.TargetType.ParameterName,
-                                DependencyType = attribute.TargetType.GloballyQualifiedName
+                                DependencyType = attribute.TargetType
                             },
                             EffectsContainerName = container.Name,
                             Accessibility = attribute.TargetType.AccessibilityString,
@@ -70,6 +71,7 @@ public static class EffectsModule
                 return new EffectMethodModel
                 {
                     EffectName = method.Name,
+                    SourceMethodSymbol = method,
                     SourceMethodName = method.Name,
                     EffResultType = method.EffectResultType(liftingStrategy),
                     LiftingStrategy = liftingStrategy,
@@ -79,7 +81,7 @@ public static class EffectsModule
                         ..method.Parameters.Select(param => new EffectParameterModel
                         {
                             Name = param.Name,
-                            Type = param.Type?.FullyQualifiedName!,
+                            Type = param.Type.FullyQualifiedName,
                             HasDefaultValue = param.HasExplicitDefaultValue,
                             DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
                         })
@@ -136,17 +138,17 @@ public static class EffectsModule
         {
             SyncVoid => "Unit",
             AsyncVoid => "Unit",
-            SyncValue => method.ReturnType.FullyQualifiedName,
-            SyncNullableToOption => $"Option<{method.ReturnType.FullyQualifiedName}>",
+            SyncValue => method.ReturnType.GloballyQualifiedName,
+            SyncNullableToOption => $"Option<{method.ReturnType}>",
 
             AsyncValue => method.ReturnType
                 .GetFirstTypeArgument()
-                .Map(x => x.FullyQualifiedName)
+                .Map(type => type.GloballyQualifiedName)
                 .OrThrow("Expected a property argument for async value return property."),
 
             AsyncNullableToOption => method.ReturnType
                 .GetFirstTypeArgument()
-                .Map(x => $"Option<{x.FullyQualifiedName}>")
+                .Map(type => $"Option<{type}>")
                 .OrThrow("Expected a property argument for async value return property."),
 
             _ => "Unit"

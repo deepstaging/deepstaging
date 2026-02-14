@@ -4,15 +4,13 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
-using Deepstaging;
-using Deepstaging.Runtime;
+using Deepstaging.Effects;
+using Deepstaging.Effects.Runtime;
 using LanguageExt;
 using LanguageExt.Effects;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static LanguageExt.Prelude;
@@ -41,13 +39,4 @@ public static partial class EmailEffects
         public static Eff<RT, bool> ValidateAsync<RT>(string email)
             where RT : IHasEmailService => liftEff<RT, bool>(async rt => await rt.EmailService.ValidateAsync(email)).WithActivity("EmailService.ValidateAsync", ActivitySource);
     }
-}
-
-/// <summary>
-/// Runtime capability interface for the global::TestApp.IEmailService dependency of the EmailService effects module.
-/// </summary>
-/// <seealso cref="global::TestApp.EmailEffects.EmailService"/>
-public interface IHasEmailService
-{
-    public global::TestApp.IEmailService EmailService { get; }
 }

@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Projection.Models;
+namespace Deepstaging.Effects.Projection.Models;
 
 /// <summary>
 /// Model for the runtime class discovered via [Runtime] attribute.
@@ -54,7 +54,7 @@ public sealed record RuntimeCapabilityModel
     public required string ParameterName { get; init; }
 
     /// <summary>
-    ///  The fully qualified type name of the dependency (e.g., "MyApp.Services.EmailService").
+    ///  The symbol of the dependency type required by this capability (e.g., the symbol for "MyApp.Services.EmailService").
     /// </summary>
-    public required string DependencyType { get; set; }
+    public required ValidSymbol<INamedTypeSymbol> DependencyType { get; set; }
 }

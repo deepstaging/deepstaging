@@ -1,14 +1,15 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 using System.Composition;
-using Deepstaging.Analyzers;
+using Deepstaging.Effects.Analyzers;
 using Deepstaging.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Deepstaging.CodeFixes;
+namespace Deepstaging.Effects.CodeFixes;
 
 /// <summary>
 /// Code fix provider that adds the [Runtime] attribute to classes with [Uses].

@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection.Models;
 
-namespace Deepstaging.Projection.Attributes;
+using Deepstaging.Effects.Projection.Models;
+
+namespace Deepstaging.Effects.Projection.Attributes;
 
 /// <summary>
 /// A queryable wrapper over <see cref="UsesAttribute"/> data.

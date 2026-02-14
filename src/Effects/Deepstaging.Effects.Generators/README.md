@@ -59,3 +59,11 @@ public class DeepstagingGenerator : IIncrementalGenerator
   - [Queries](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Queries.md) — Symbol query API
   - [Emit](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Emit.md) — Code generation API
 - **[Deepstaging.Roslyn.Scriban](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Scriban/README.md)** — Template infrastructure
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+See [LICENSE](../../../LICENSE) for the full legal text.

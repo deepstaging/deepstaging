@@ -1,30 +1,29 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
-using Deepstaging.Projection.Models;
 
-namespace Deepstaging.Tests.Projection;
+namespace Deepstaging.Effects.Tests.Projection;
 
 public class EffectsModuleTests : RoslynTestBase
 {
     [Test]
     public async Task Name_UsesCustomName_WhenSpecified()
     {
-        var model = SymbolsFor("""
-                               using Deepstaging;
-                               using System.Threading.Tasks;
+        var model = SymbolsFor(
+                """
+                using Deepstaging;
+                using System.Threading.Tasks;
 
-                               namespace TestApp;
+                namespace TestApp;
 
-                               public interface IEmailService
-                               {
-                                    Task SendAsync(string to, string body);
-                                    Task<bool> ValidateAsync(string email);
-                               }
+                public interface IEmailService
+                {
+                     Task SendAsync(string to, string body);
+                     Task<bool> ValidateAsync(string email);
+                }
 
-                               [EffectsModule(typeof(IEmailService), Name = "Emails")]
-                               public partial class EmailEffects;
-                               """)
+                [EffectsModule(typeof(IEmailService), Name = "Emails")]
+                public partial class EmailEffects;
+                """)
             .RequireNamedType("EmailEffects")
             .QueryEffectsModules()
             .First();
@@ -38,7 +37,7 @@ public class EffectsModuleTests : RoslynTestBase
         await Assert.That(model.IsDbContext).IsFalse();
         await Assert.That(model.DbSets).IsEmpty();
         await Assert.That(model.Methods.Length).IsEqualTo(2);
-        await Assert.That(model.Capability.PropertyName).IsEqualTo("EmailService");
+        await Assert.That(model.Capability.DependencyType.PropertyName).IsEqualTo("EmailService");
         await Assert.That(model.Capability.Interface).IsEqualTo("IHasEmailService");
 
         var sendMethod = model.Methods.First(m => m.EffectName == "SendAsync");

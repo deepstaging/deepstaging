@@ -102,7 +102,7 @@ public static class HttpClientQueries
             return new HttpParameterModel
             {
                 Name = param.Name,
-                TypeFqn = param.Type!.Value.FullyQualifiedName,
+                TypeFqn = param.Type.FullyQualifiedName,
                 Kind = kind,
                 CustomName = customName,
                 HasDefaultValue = param.HasExplicitDefaultValue,

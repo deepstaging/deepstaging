@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 using System.Diagnostics.Metrics;
 
-namespace Deepstaging.Runtime;
+namespace Deepstaging.Effects.Runtime;
 
 /// <summary>
 /// OpenTelemetry metrics for effect operations.

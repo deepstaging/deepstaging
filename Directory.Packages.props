@@ -5,12 +5,23 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+  <!-- Deepstaging.Roslyn package versions (CI version, committed) -->
+  <Import Project="$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.props')" />
+  <!-- Local override (gitignored, written by roslyn/build/pack.sh) -->
+  <Import Project="$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.local.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.local.props')" />
+
+  <!-- Fallback: used in CI when roslyn/ is not checked out side-by-side.
+       Cross-repo dispatch updates these versions after roslyn publishes. -->
+  <ItemGroup Condition="'$(DeepstagingRoslynVersion)' == ''">
+    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.74" />
+    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev.74" />
+    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.74" />
+    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev.74" />
+  </ItemGroup>
+
   <ItemGroup>
-    <!-- Deepstaging.Roslyn packages -->
-    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev-20260208212209" />
-    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev-20260208212209" />
-    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev-20260208212209" />
-    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev-20260208212209" />
     <!-- Core Roslyn -->
     <PackageVersion Include="Basic.Reference.Assemblies.Net100" Version="1.8.4" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />

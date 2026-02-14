@@ -1,6 +1,14 @@
 <Solution>
   <!-- Umbrella Package -->
   <Project Path="src/Deepstaging/Deepstaging.csproj" />
+  <Folder Name="/Effects.Testing/">
+    <Project Path="src/Effects/Deepstaging.Effects.Testing.Analyzers/Deepstaging.Effects.Testing.Analyzers.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Testing.CodeFixes/Deepstaging.Effects.Testing.CodeFixes.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Testing.Generators/Deepstaging.Effects.Testing.Generators.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Testing.Projection/Deepstaging.Effects.Testing.Projection.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Testing.Tests/Deepstaging.Effects.Testing.Tests.csproj" />
+    <Project Path="src/Effects/Deepstaging.Effects.Testing/Deepstaging.Effects.Testing.csproj" />
+  </Folder>
   
   <Folder Name="/Effects/">
     <Project Path="src/Effects/Deepstaging.Effects/Deepstaging.Effects.csproj" />

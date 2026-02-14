@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Projection.Models;
+namespace Deepstaging.Effects.Projection.Models;
 
 /// <summary>
 /// Represents a parameter for an effect method.

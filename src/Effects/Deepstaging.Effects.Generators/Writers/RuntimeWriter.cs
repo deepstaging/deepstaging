@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Generators.Writers;
+
+namespace Deepstaging.Effects.Generators.Writers;
 
 /// <summary>
 /// Provides extension methods for generating runtime-related source code from a <see cref="RuntimeModel"/>.
@@ -17,7 +18,7 @@ public static class RuntimeWriter
             var constructor = ConstructorBuilder
                 .For(model.RuntimeTypeName)
                 .WithEach(model.Capabilities,
-                    (b, capability) => b.AddParameter(capability.ParameterName, capability.DependencyType));
+                    (b, capability) => b.AddParameter(capability.DependencyType.ParameterName, capability.DependencyType));
 
             return TypeBuilder
                 .Parse($"{model.AccessibilityModifier} partial class {model.RuntimeTypeName}")
@@ -26,8 +27,8 @@ public static class RuntimeWriter
                 .InNamespace(model.Namespace)
                 .WithPrimaryConstructor(constructor)
                 .WithEach(model.Capabilities, (builder, capability) => builder
-                    .AddProperty(capability.PropertyName, capability.DependencyType, prop => prop
-                        .WithGetter(capability.ParameterName)))
+                    .AddProperty(capability.DependencyType.PropertyName, capability.DependencyType, prop => prop
+                        .WithGetter(capability.DependencyType.ParameterName)))
                 .Emit();
         }
 

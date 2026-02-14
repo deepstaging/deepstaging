@@ -1,16 +1,15 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Analyzers;
-using Deepstaging.CodeFixes;
 
-namespace Deepstaging.Tests.Analyzers;
+namespace Deepstaging.Effects.Tests.CodeFixes;
 
 public class UsesAttributeMustTargetRuntimeCodeFixTests : RoslynTestBase
 {
     [Test]
     public async Task AddsRuntimeAttribute()
     {
-        const string source = """
+        const string source =
+            """
             namespace TestApp;
 
             public interface IEmailService { }
@@ -22,7 +21,8 @@ public class UsesAttributeMustTargetRuntimeCodeFixTests : RoslynTestBase
             public partial class AppRuntime;
             """;
 
-        const string expected = """
+        const string expected =
+            """
             namespace TestApp;
 
             public interface IEmailService { }
@@ -36,7 +36,7 @@ public class UsesAttributeMustTargetRuntimeCodeFixTests : RoslynTestBase
             """;
 
         await AnalyzeAndFixWith<UsesAttributeMustTargetRuntimeAnalyzer, UsesAttributeMustTargetRuntimeCodeFix>(source)
-            .ForDiagnostic("DS0003")
+            .ForDiagnostic(UsesAttributeMustTargetRuntimeAnalyzer.DiagnosticId)
             .ShouldProduce(expected);
     }
 }

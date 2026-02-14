@@ -1,28 +1,31 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
 
-namespace Deepstaging.Tests.Projection.Attributes;
+using Deepstaging.Effects.Projection.Attributes;
+using Deepstaging.Roslyn;
+
+namespace Deepstaging.Effects.Tests.Projection.Attributes;
 
 public class EffectsModuleAttributeQueryTests : RoslynTestBase
 {
     [Test]
     public async Task Name_DefaultsToTargetTypeName_WhenNotSpecified()
     {
-        var query = SymbolsFor("""
-                               using Deepstaging;
-                               using System.Threading.Tasks;
+        var query = SymbolsFor(
+                """
+                using Deepstaging;
+                using System.Threading.Tasks;
 
-                               namespace TestApp;
+                namespace TestApp;
 
-                               public interface IEmailService;
+                public interface IEmailService;
 
-                               [EffectsModule(typeof(IEmailService))]
-                               public partial class EmailEffects;
-                               """)
+                [EffectsModule(typeof(IEmailService))]
+                public partial class EmailEffects;
+                """)
             .RequireNamedType("EmailEffects")
             .GetAttribute<EffectsModuleAttribute>()
-            .Map(attr => attr.QueryEffectsModuleAttribute())
+            .Map(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
             .OrThrow("Expected EffectsModuleAttribute");
 
         await Assert.That(query.Name).IsEqualTo("EmailService");
@@ -31,40 +34,42 @@ public class EffectsModuleAttributeQueryTests : RoslynTestBase
     [Test]
     public async Task Name_UsesCustomName_WhenSpecified()
     {
-        var query = SymbolsFor("""
-                               using Deepstaging;
-                               using System.Threading.Tasks;
+        var query = SymbolsFor(
+                """
+                using Deepstaging;
+                using System.Threading.Tasks;
 
-                               namespace TestApp;
+                namespace TestApp;
 
-                               public interface IEmailService;
+                public interface IEmailService;
 
-                               [EffectsModule(typeof(IEmailService), Name = "Emails")]
-                               public partial class EmailEffects;
-                               """)
+                [EffectsModule(typeof(IEmailService), Name = "Emails")]
+                public partial class EmailEffects;
+                """)
             .RequireNamedType("EmailEffects")
             .GetAttribute<EffectsModuleAttribute>()
-            .Map(attr => attr.QueryEffectsModuleAttribute())
+            .Map(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
             .OrThrow("Expected EffectsModuleAttribute");
-        
+
         await Assert.That(query.Name).IsEqualTo("Emails");
     }
 
     [Test]
     public async Task TargetType_Throws_When_TypeNotFound()
     {
-        var query = SymbolsFor("""
-                               using Deepstaging;
-                               using System.Threading.Tasks;
+        var query = SymbolsFor(
+                """
+                using Deepstaging;
+                using System.Threading.Tasks;
 
-                               namespace TestApp;
+                namespace TestApp;
 
-                               [EffectsModule(typeof(IEmailService))]
-                               public partial class EmailEffects;
-                               """)
+                [EffectsModule(typeof(IEmailService))]
+                public partial class EmailEffects;
+                """)
             .RequireNamedType("EmailEffects")
             .GetAttribute<EffectsModuleAttribute>()
-            .Map(attr => attr.QueryEffectsModuleAttribute())
+            .Map(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
             .OrThrow("Expected EffectsModuleAttribute");
 
         await Assert.ThrowsAsync<InvalidOperationException>(() =>

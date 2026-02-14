@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Generators.Writers;
+
+namespace Deepstaging.Effects.Generators.Writers;
 
 /// <summary>
 /// Emits code for standalone [EffectsModule] decorated classes.
@@ -17,11 +18,11 @@ public static partial class EffectsModuleWriter
             return TypeBuilder
                 .Interface(model.Capability.Interface)
                 .InNamespace(model.Namespace)
-                .AddUsings("Deepstaging", "Deepstaging.Runtime", "System.Threading.Tasks")
+                .AddUsings("Deepstaging.Effects", "Deepstaging.Effects.Runtime", "System.Threading.Tasks")
                 .AddProperty(model.Capability.PropertyName, model.TargetType, builder => builder.AsReadOnly())
                 .WithXmlDoc(xml => xml
                     .WithSummary(
-                        $"Runtime capability interface for the {model.Capability.DependencyType} dependency of the {model.Name} effects module.")
+                        $"Runtime capability interface for the {model.Capability.DependencyType.Name} dependency of the {model.Name} effects module.")
                     .AddSeeAlso($"global::{model.Namespace}.{model.EffectsContainerName}.{model.Name}")
                 ).Emit();
         }
@@ -33,13 +34,11 @@ public static partial class EffectsModuleWriter
         {
             var usings = new[]
             {
-                "Deepstaging",
-                "Deepstaging.Runtime",
+                "Deepstaging.Effects",
+                "Deepstaging.Effects.Runtime",
                 "LanguageExt",
                 "LanguageExt.Effects",
-                "Microsoft.Extensions.Logging",
                 "System.Diagnostics",
-                "System.Linq.Expressions",
                 "System",
                 "System.Collections.Generic",
                 "System.Threading",
@@ -47,13 +46,15 @@ public static partial class EffectsModuleWriter
                 "static LanguageExt.Prelude"
             };
 
-            var module = TypeBuilder.Parse($"public static partial class {model.Name}")
+            var module = TypeBuilder
+                .Parse($"public static partial class {model.Name}")
                 .AddInstrumentationActivitySource(model)
                 .AddEffectMethods(model)
                 .AddDbContextEffects(model)
                 .WithXmlDoc(model.XmlDocumentation);
 
-            return TypeBuilder.Parse($"public static partial class {model.EffectsContainerName}")
+            return TypeBuilder
+                .Parse($"public static partial class {model.EffectsContainerName}")
                 .AddUsings(usings)
                 .InNamespace(model.Namespace)
                 .AddNestedType(module)
@@ -61,11 +62,9 @@ public static partial class EffectsModuleWriter
         }
     }
 
-    internal static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module)
-    {
-        return builder.If(module.Instrumented, b => b
+    internal static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) => builder
+        .If(module.Instrumented, b => b
             .AddUsing("System.Diagnostics")
             .AddField(FieldBuilder.Parse("private static readonly ActivitySource ActivitySource")
                 .WithInitializer($"""new("{module.Namespace}.{module.Name}", "1.0.0")""")));
-    }
 }

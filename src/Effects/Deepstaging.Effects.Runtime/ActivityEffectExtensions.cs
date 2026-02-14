@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 using System.Diagnostics;
 using LanguageExt;
 using Microsoft.Extensions.Logging;
 
-namespace Deepstaging.Runtime;
+namespace Deepstaging.Effects.Runtime;
 
 /// <summary>
 /// Extension methods for adding OpenTelemetry activity tracing to LanguageExt effects.

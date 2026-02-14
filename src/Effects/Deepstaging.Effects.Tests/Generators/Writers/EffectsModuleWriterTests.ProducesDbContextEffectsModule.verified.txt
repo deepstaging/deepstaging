@@ -4,16 +4,14 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
-using Deepstaging;
-using Deepstaging.Runtime;
+using Deepstaging.Effects;
+using Deepstaging.Effects.Runtime;
 using LanguageExt;
 using LanguageExt.Effects;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static LanguageExt.Prelude;
@@ -24,13 +22,11 @@ public static partial class MyEffects
     public static partial class Database
     {
         private static readonly ActivitySource ActivitySource = new("TestApp.Database", "1.0.0");
-
         /// <summary>
         /// Saves all changes made in this context to the database asynchronously.
         /// </summary>
         public static Eff<RT, int> SaveChangesAsync<RT>(CancellationToken token = default)
             where RT : IHasAppDbContext => liftEff<RT, int>(async rt => await rt.AppDbContext.SaveChangesAsync(token)).WithActivity("Database.SaveChangesAsync", ActivitySource);
-
         public static partial class Users
         {
             /// <summary>
@@ -39,37 +35,31 @@ public static partial class MyEffects
             /// </summary>
             public static DbSetQuery<RT, global::TestApp.User> Query<RT>()
                 where RT : IHasAppDbContext => new(rt => rt.AppDbContext.Users);
-
             /// <summary>
             /// Finds an entity by its primary key values, returning None if not found.
             /// </summary>
             public static Eff<RT, Option<global::TestApp.User>> FindAsync<RT>(params object[] keyValues)
                 where RT : IHasAppDbContext => liftEff<RT, Option<global::TestApp.User>>(async rt => Optional(await rt.AppDbContext.Users.FindAsync(keyValues))).WithActivity("Database.Users.FindAsync", ActivitySource);
-
             /// <summary>
             /// Returns all entities as a list.
             /// </summary>
             public static Eff<RT, List<global::TestApp.User>> ToListAsync<RT>(CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().ToListAsync(token).WithActivity("Database.Users.ToListAsync", ActivitySource);
-
             /// <summary>
             /// Returns the first entity matching the predicate, or None.
             /// </summary>
             public static Eff<RT, Option<global::TestApp.User>> FirstOrNoneAsync<RT>(Expression<Func<global::TestApp.User, bool>> predicate, CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().FirstOrNoneAsync(predicate, token).WithActivity("Database.Users.FirstOrNoneAsync", ActivitySource);
-
             /// <summary>
             /// Returns the count of entities.
             /// </summary>
             public static Eff<RT, int> CountAsync<RT>(CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().CountAsync(token).WithActivity("Database.Users.CountAsync", ActivitySource);
-
             /// <summary>
             /// Returns true if any entities exist.
             /// </summary>
             public static Eff<RT, bool> AnyAsync<RT>(CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().AnyAsync(token).WithActivity("Database.Users.AnyAsync", ActivitySource);
-
             /// <summary>
             /// Begins tracking the entity in the Added state.
             /// </summary>
@@ -79,7 +69,6 @@ public static partial class MyEffects
                 rt.AppDbContext.Users.Add(entity);
                 return unit;
             }).WithActivity("Database.Users.Add", ActivitySource);
-
             /// <summary>
             /// Begins tracking the entities in the Added state.
             /// </summary>
@@ -89,7 +78,6 @@ public static partial class MyEffects
                 rt.AppDbContext.Users.AddRange(entities);
                 return unit;
             }).WithActivity("Database.Users.AddRange", ActivitySource);
-
             /// <summary>
             /// Begins tracking the entity in the Modified state.
             /// </summary>
@@ -99,7 +87,6 @@ public static partial class MyEffects
                 rt.AppDbContext.Users.Update(entity);
                 return unit;
             }).WithActivity("Database.Users.Update", ActivitySource);
-
             /// <summary>
             /// Begins tracking the entity in the Deleted state.
             /// </summary>

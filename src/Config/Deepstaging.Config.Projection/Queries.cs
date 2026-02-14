@@ -18,7 +18,7 @@ public static class Queries
         /// <returns>An immutable array of <see cref="ExposesAttributeQuery"/> instances.</returns>
         public ImmutableArray<ExposesAttributeQuery> ExposesAttributes() =>
         [
-            ..symbol.GetAttributes("ExposesAttribute")
+            ..symbol.GetAttributes(typeof(ExposesAttribute<>))
                 .Select(x => x.AsQuery<ExposesAttributeQuery>())
         ];
     }

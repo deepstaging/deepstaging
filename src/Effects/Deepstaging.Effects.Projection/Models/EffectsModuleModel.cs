@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Projection.Models;
+namespace Deepstaging.Effects.Projection.Models;
 
 /// <summary>
 /// Model for a standalone effects module discovered via [EffectsModule] attribute.

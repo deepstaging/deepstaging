@@ -1,0 +1,85 @@
+# SPDX-FileCopyrightText: 2024-present Deepstaging
+# SPDX-License-Identifier: RPL-1.5
+name: Publish NuGet Packages
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+    inputs:
+      version-suffix:
+        description: 'Version suffix (leave empty for release)'
+        required: false
+        default: ''
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC Trusted Publishing
+      contents: write  # Required for committing Versions.props
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for accurate commit count
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Create artifacts directory
+        run: mkdir -p ./artifacts/packages
+
+      - name: Build and Pack
+        run: |
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            ./build/pack.sh --no-version-suffix --update-versions --output ./artifacts/packages
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            ./build/pack.sh --ci --output ./artifacts/packages
+          elif [[ -n "${{ github.event.inputs.version-suffix }}" ]]; then
+            ./build/pack.sh --version-suffix "${{ github.event.inputs.version-suffix }}" --update-versions --output ./artifacts/packages
+          else
+            ./build/pack.sh --no-version-suffix --update-versions --output ./artifacts/packages
+          fi
+
+      - name: Upload packages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./artifacts/packages/*.nupkg
+
+      # Trusted Publishing: Exchange OIDC token for temporary NuGet API key
+      - name: NuGet Login (Trusted Publishing)
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
+      - name: Push to NuGet.org
+        run: |
+          for package in ./artifacts/packages/*.nupkg; do
+            echo "Pushing $package..."
+            dotnet nuget push "$package" \
+              --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done
+
+      - name: Commit updated Versions.props
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet Deepstaging.Versions.props; then
+            echo "Versions.props unchanged, skipping commit"
+          else
+            git add Deepstaging.Versions.props
+            VERSION=$(grep -oP '(?<=<DeepstagingVersion>).*(?=</DeepstagingVersion>)' Deepstaging.Versions.props)
+            git commit -m "chore: update Versions.props to $VERSION [skip ci]"
+            git push
+          fi

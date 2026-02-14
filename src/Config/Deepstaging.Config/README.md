@@ -42,3 +42,11 @@ public partial class PersonViewModel
 - [RoslynKit.Generators](../Deepstaging.Config.Generators/) - Source generators that consume these attributes
 - [RoslynKit.Analyzers](../Deepstaging.Config.Analyzers/) - Analyzers that validate attribute usage
 - [Project README](../../README.md) - Full documentation
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+See [LICENSE](../../../LICENSE) for the full legal text.

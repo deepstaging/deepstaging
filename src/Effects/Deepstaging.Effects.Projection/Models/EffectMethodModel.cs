@@ -1,6 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Projection.Models;
+namespace Deepstaging.Effects.Projection.Models;
 
 /// <summary>
 /// Represents a single effect method derived from an interface method.
@@ -36,4 +36,9 @@ public sealed record EffectMethodModel
     /// XML documentation from the source method (if available).
     /// </summary>
     public XmlDocumentation XmlDocumentation { get; init; }
+    
+    /// <summary>
+    /// The source method symbol from Roslyn, used for code generation and analysis.
+    /// </summary>
+    public required ValidSymbol<IMethodSymbol> SourceMethodSymbol { get; init; }
 }

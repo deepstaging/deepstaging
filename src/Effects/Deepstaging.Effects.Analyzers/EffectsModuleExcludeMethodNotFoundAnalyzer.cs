@@ -1,28 +1,18 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
-using Deepstaging.Roslyn;
-using Deepstaging.Roslyn.Analyzers;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Deepstaging.Analyzers;
+namespace Deepstaging.Effects.Analyzers;
 
 /// <summary>
 /// Reports a diagnostic when [EffectsModule] Exclude references a method that doesn't exist on the target type.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-[Reports(DiagnosticId, "Excluded method not found",
+[Reports("DS0006", "Excluded method not found",
     Message = "Method '{0}' specified in Exclude does not exist on target type '{1}'",
     Description =
         "The Exclude property references a method name that cannot be found on the target type. Check for typos or remove the invalid entry.")]
 public sealed class EffectsModuleExcludeMethodNotFoundAnalyzer : TypeAnalyzer
 {
-    /// <summary>
-    /// Diagnostic ID for excluded method not found.
-    /// </summary>
-    public const string DiagnosticId = "DS0006";
-
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type)
     {

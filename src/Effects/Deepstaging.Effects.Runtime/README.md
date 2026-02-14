@@ -51,3 +51,11 @@ OpenTelemetry metrics collection for success/failure tracking:
 - **[Main README](../../README.md)** — Project overview and quick start
 - **[Core Attributes](../Deepstaging/README.md)** — `[Runtime]`, `[EffectsModule]`, `[Uses]`
 - **[Source Generators](../Deepstaging.Generators/README.md)** — Code generation details
+
+## License
+
+**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
+
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+
+See [LICENSE](../../../LICENSE) for the full legal text.

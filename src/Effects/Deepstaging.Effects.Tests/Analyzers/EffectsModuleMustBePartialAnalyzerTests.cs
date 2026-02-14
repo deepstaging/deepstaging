@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Analyzers;
 
-namespace Deepstaging.Tests.Analyzers;
+namespace Deepstaging.Effects.Tests.Analyzers;
 
 public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
 {

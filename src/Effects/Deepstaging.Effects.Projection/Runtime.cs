@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection.Models;
 
-namespace Deepstaging.Projection;
+using Deepstaging.Effects.Projection.Models;
+
+namespace Deepstaging.Effects.Projection;
 
 /// <summary>
 /// Extension methods for querying runtime class information from symbols decorated with <see cref="RuntimeAttribute"/>.

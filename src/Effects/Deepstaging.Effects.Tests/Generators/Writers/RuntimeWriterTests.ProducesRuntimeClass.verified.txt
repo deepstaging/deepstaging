@@ -10,6 +10,5 @@ namespace TestApp;
 public partial class Runtime(global::TestApp.IEmailService emailService, global::TestApp.ISlackService slackService) : IHasEmailService, IHasSlackService
 {
     public global::TestApp.IEmailService EmailService => emailService;
-
     public global::TestApp.ISlackService SlackService => slackService;
 }

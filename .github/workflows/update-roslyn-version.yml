@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: 2024-present Deepstaging
+# SPDX-License-Identifier: RPL-1.5
+name: Update Roslyn Version
+
+on:
+  repository_dispatch:
+    types: [roslyn-published]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update roslyn package versions
+        run: |
+          VERSION="${{ github.event.client_payload.version }}"
+          if [ -z "$VERSION" ]; then
+            echo "Error: No version in dispatch payload"
+            exit 1
+          fi
+          echo "Updating Deepstaging.Roslyn packages to $VERSION..."
+
+          # Update fallback versions in Directory.Packages.props
+          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn\" Version=\"$VERSION\"|g" Directory.Packages.props
+          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Scriban\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Scriban\" Version=\"$VERSION\"|g" Directory.Packages.props
+          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Testing\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Testing\" Version=\"$VERSION\"|g" Directory.Packages.props
+          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Workspace\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Workspace\" Version=\"$VERSION\"|g" Directory.Packages.props
+
+          echo "Updated Directory.Packages.props:"
+          grep "Deepstaging.Roslyn" Directory.Packages.props
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          commit-message: "chore(deps): update Deepstaging.Roslyn to ${{ github.event.client_payload.version }}"
+          title: "chore(deps): update Deepstaging.Roslyn to ${{ github.event.client_payload.version }}"
+          body: |
+            Automated update triggered by [roslyn publish](https://github.com/deepstaging/roslyn/commit/${{ github.event.client_payload.sha }}).
+
+            Updates `Deepstaging.Roslyn.*` packages to `${{ github.event.client_payload.version }}`.
+          branch: deps/roslyn-${{ github.event.client_payload.version }}
+          labels: dependencies
+          delete-branch: true

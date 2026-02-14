@@ -1,16 +1,15 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Analyzers;
-using Deepstaging.CodeFixes;
 
-namespace Deepstaging.Tests.Analyzers;
+namespace Deepstaging.Effects.Tests.CodeFixes;
 
-public class EffectsModuleShouldBeSealedCodeFixTests : RoslynTestBase
+public class ClassShouldBeSealedCodeFixTests : RoslynTestBase
 {
     [Test]
     public async Task AddsSealedModifier()
     {
-        const string source = """
+        const string source =
+            """
             namespace TestApp;
 
             public interface IEmailService { }
@@ -19,7 +18,8 @@ public class EffectsModuleShouldBeSealedCodeFixTests : RoslynTestBase
             public partial class EmailEffects;
             """;
 
-        const string expected = """
+        const string expected =
+            """
             namespace TestApp;
 
             public interface IEmailService { }
@@ -28,8 +28,8 @@ public class EffectsModuleShouldBeSealedCodeFixTests : RoslynTestBase
             public sealed partial class EmailEffects;
             """;
 
-        await AnalyzeAndFixWith<EffectsModuleShouldBeSealedAnalyzer, EffectsModuleShouldBeSealedCodeFix>(source)
-            .ForDiagnostic("DS0009")
+        await AnalyzeAndFixWith<EffectsModuleShouldBeSealedAnalyzer, ClassShouldBeSealedCodeFix>(source)
+            .ForDiagnostic(EffectsModuleShouldBeSealedAnalyzer.DiagnosticId)
             .ShouldProduce(expected);
     }
 }

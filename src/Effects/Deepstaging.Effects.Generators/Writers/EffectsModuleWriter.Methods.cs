@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-namespace Deepstaging.Generators.Writers;
+
+namespace Deepstaging.Effects.Generators.Writers;
 
 /// <summary>
 /// Vanilla effect method emissions (non-DbContext effect methods).

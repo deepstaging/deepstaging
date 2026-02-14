@@ -20,7 +20,7 @@ public sealed class ConfigGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         // Find all types with [Config] attribute and map to model
-        var models = context.ForAttribute<ConfigAttribute>()
+        var models = context.ForAttribute<ConfigRootAttribute>()
             .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().QueryConfigModel());
 
         // Register source output for each model

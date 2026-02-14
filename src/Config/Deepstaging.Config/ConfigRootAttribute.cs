@@ -7,7 +7,7 @@ namespace Deepstaging.Config;
 /// 
 /// </summary>
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-public sealed class ConfigAttribute : Attribute;
+public sealed class ConfigRootAttribute : Attribute;
 
 /// <summary>
 /// 

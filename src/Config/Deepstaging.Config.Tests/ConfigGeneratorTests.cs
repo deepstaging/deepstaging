@@ -21,7 +21,7 @@ public class ConfigGeneratorTests : RoslynTestBase
 
                               public sealed record SlackConfig(string ApiKey);
 
-                              [Config]
+                              [ConfigRoot]
                               [Exposes<SlackConfig>]
                               public partial class Configuration;
                               """;

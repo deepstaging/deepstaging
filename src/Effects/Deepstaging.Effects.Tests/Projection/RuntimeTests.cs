@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection;
 
-namespace Deepstaging.Tests.Projection;
+namespace Deepstaging.Effects.Tests.Projection;
 
 public class RuntimeTests : RoslynTestBase
 {
@@ -17,7 +16,7 @@ public class RuntimeTests : RoslynTestBase
             Task SendAsync(string to, string subject, string body);
             Task<bool> ValidateAsync(string email);
         }
-        
+
         public interface ISlackService
         {
             Task PostMessageAsync(string channel, string message);
@@ -26,19 +25,19 @@ public class RuntimeTests : RoslynTestBase
         [Deepstaging.EffectsModule(typeof(IEmailService))]
         [Deepstaging.EffectsModule(typeof(ISlackService))]
         public partial class EmailEffects;
-        
+
         [Deepstaging.Runtime]
         [Deepstaging.Uses(typeof(EmailEffects))]
         public partial class Runtime;
         """;
-    
+
     [Test]
     public async Task QueriesRuntimeModel()
     {
         var model = SymbolsFor(Source)
             .RequireNamedType("Runtime")
             .QueryRuntimeModel();
-        
+
         await Assert.That(model.RuntimeType).IsEqualTo("TestApp.Runtime");
         await Assert.That(model.RuntimeTypeName).IsEqualTo("Runtime");
         await Assert.That(model.Namespace).IsEqualTo("TestApp");

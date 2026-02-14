@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
 using System.Linq.Expressions;
 using LanguageExt;
 using Microsoft.EntityFrameworkCore;
 using static LanguageExt.Prelude;
 
-namespace Deepstaging.Runtime;
+namespace Deepstaging.Effects.Runtime;
 
 /// <summary>
 /// A composable query builder for DbSet that accumulates LINQ expressions
-/// and materializes to an Eff only on terminal operations.
+    /// and materializes to an Eff only on terminal operations.
 /// </summary>
 /// <typeparam name="RT">The runtime type.</typeparam>
 /// <typeparam name="T">The entity type.</typeparam>

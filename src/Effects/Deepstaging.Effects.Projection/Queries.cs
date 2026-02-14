@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
-using Deepstaging.Projection.Attributes;
 
-namespace Deepstaging.Projection;
+using Deepstaging.Effects.Projection.Attributes;
+
+namespace Deepstaging.Effects.Projection;
 
 /// <summary>
 /// Extension methods for querying Deepstaging attributes on symbols.
@@ -16,12 +17,6 @@ public static class Queries
         /// </summary>
         public UsesAttributeQuery QueryUsesAttribute() =>
             attribute.AsQuery<UsesAttributeQuery>();
-
-        /// <summary>
-        /// Converts a <see cref="ValidAttribute"/> to an <see cref="EffectsModuleAttributeQuery"/>.
-        /// </summary>
-        public EffectsModuleAttributeQuery QueryEffectsModuleAttribute() =>
-            attribute.AsQuery<EffectsModuleAttributeQuery>();
     }
 
     extension(ValidSymbol<INamedTypeSymbol> symbol)

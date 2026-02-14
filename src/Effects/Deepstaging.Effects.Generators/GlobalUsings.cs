@@ -3,8 +3,8 @@
 global using System.Collections.Generic;
 global using System.Collections.Immutable;
 global using System.Linq;
-global using Deepstaging.Projection;
-global using Deepstaging.Projection.Models;
+global using Deepstaging.Effects.Projection;
+global using Deepstaging.Effects.Projection.Models;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
 global using Deepstaging.Roslyn;
