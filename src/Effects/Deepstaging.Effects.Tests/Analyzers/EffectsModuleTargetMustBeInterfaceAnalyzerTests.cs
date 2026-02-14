@@ -9,13 +9,13 @@ public class EffectsModuleTargetMustBeInterfaceAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenTargetIsConcreteClass()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public class EmailService { }
+                              public class EmailService { }
 
-            [Deepstaging.EffectsModule(typeof(EmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(EmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleTargetMustBeInterfaceAnalyzer>(source)
             .ShouldReportDiagnostic("DS0004")
@@ -27,13 +27,13 @@ public class EffectsModuleTargetMustBeInterfaceAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenTargetIsInterface()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleTargetMustBeInterfaceAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -43,15 +43,15 @@ public class EffectsModuleTargetMustBeInterfaceAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenTargetIsDbContext()
     {
         const string source = """
-            using Microsoft.EntityFrameworkCore;
+                              using Microsoft.EntityFrameworkCore;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            public class AppDbContext : DbContext { }
+                              public class AppDbContext : DbContext { }
 
-            [Deepstaging.EffectsModule(typeof(AppDbContext))]
-            public sealed partial class DatabaseEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(AppDbContext))]
+                              public sealed partial class DatabaseEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleTargetMustBeInterfaceAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -61,10 +61,10 @@ public class EffectsModuleTargetMustBeInterfaceAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenNoEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public sealed partial class RegularClass;
-            """;
+                              public sealed partial class RegularClass;
+                              """;
 
         await AnalyzeWith<EffectsModuleTargetMustBeInterfaceAnalyzer>(source)
             .ShouldHaveNoDiagnostics();

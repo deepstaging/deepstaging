@@ -20,25 +20,25 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IsPackable>true</IsPackable>
-        
+
         <!-- 
             Suppress NU5128: We deliberately bundle libs for multiple TFMs.
             This is intentional for a package that bundles generators.
         -->
         <NoWarn>$(NoWarn);NU5128</NoWarn>
-        
+
         <!-- 
             Enable embedded sources for consumer debugging.
             Sources are embedded directly in the DLL via DebugType=embedded in Build.SourceLink.props.
         -->
-        
+
         <!-- Package metadata -->
         <PackageId>Deepstaging.Effects.Testing</PackageId>
         <Title>Deepstaging.Effects.Testing</Title>
         <Description>Test helpers for Deepstaging.Effects. Generates test runtime implementations with configurable service mocks.</Description>
         <PackageTags>deepstaging;effects;testing;source-generator;functional;csharp</PackageTags>
         <RootNamespace>Deepstaging</RootNamespace>
-        
+
 
     </PropertyGroup>
 
@@ -47,7 +47,7 @@
         that the testing generators read. This ProjectReference flows as a PackageReference at pack time.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
     </ItemGroup>
 
     <!-- 
@@ -55,7 +55,7 @@
         This is imported automatically when a project references this package.
     -->
     <ItemGroup>
-        <None Include="build\Deepstaging.Effects.Testing.props" Pack="true" PackagePath="build" />
+        <None Include="build\Deepstaging.Effects.Testing.props" Pack="true" PackagePath="build"/>
     </ItemGroup>
 
     <!-- 
@@ -86,29 +86,29 @@
     <!-- Analyzers and generators in analyzers folder (with PDBs for debugging) -->
     <ItemGroup>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Testing.Generators.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+
         <!-- Generator dependencies (copied from Generators output) -->
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Testing.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Testing.Projection.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Projection.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <!-- Analyzers -->
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.Analyzers/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Testing.Analyzers.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <!-- Code fixes -->
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Effects.Testing.CodeFixes.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Effects.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.Workspace.dll"
-              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>

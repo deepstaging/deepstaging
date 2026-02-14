@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
+using static Deepstaging.Effects.Generators.Writers.Types;
+
 namespace Deepstaging.Effects.Generators.Writers;
 
 /// <summary>
@@ -54,12 +56,11 @@ public static partial class EffectsModuleWriter
 
     // ========== DbContext Methods ==========
 
-    private static MethodBuilder SaveChangesAsyncMethod(this EffectsModuleModel model)
-    {
-        return MethodBuilder
+    private static MethodBuilder SaveChangesAsyncMethod(this EffectsModuleModel model) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, int> SaveChangesAsync<RT>(
+                 public static {EffOf("int")} SaveChangesAsync<RT>(
                     CancellationToken token = default
                  ) where RT : {model.Capability.Interface} 
                  """
@@ -68,16 +69,14 @@ public static partial class EffectsModuleWriter
             .WithExpressionBody(
                 $"""liftEff<RT, int>(async rt => await rt.{model.Capability.PropertyName}.SaveChangesAsync(token))"""
             );
-    }
 
     // ========== DbSet Query Methods ==========
 
-    private static MethodBuilder QueryMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder QueryMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static DbSetQuery<RT, {dbSet.EntityType}> Query<RT>() 
+                 public static {QueryOf(dbSet.EntityType)} Query<RT>() 
                     where RT : {model.Capability.Interface}
                  """
             )
@@ -88,89 +87,77 @@ public static partial class EffectsModuleWriter
                 """
             )
             .WithExpressionBody($"new(rt => rt.{model.Capability.PropertyName}.{dbSet.PropertyName})");
-    }
 
-    private static MethodBuilder FindAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder FindAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Option<{dbSet.EntityType}>> FindAsync<RT>(
+                 public static {EffOf(Option(dbSet.EntityType))} FindAsync<RT>(
                     params object[] keyValues
                  ) where RT : {model.Capability.Interface}
                  """
             )
             .WithXmlDoc("Finds an entity by its primary key values, returning None if not found.")
             .WithExpressionBody(
-                $"""liftEff<RT, Option<{dbSet.EntityType}>>(async rt => Optional(await rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.FindAsync(keyValues)))"""
+                $"""liftEff<RT, {Option(dbSet.EntityType)}>(async rt => Optional(await rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.FindAsync(keyValues)))"""
             );
-    }
 
-    private static MethodBuilder ToListAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder ToListAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, List<{dbSet.EntityType}>> ToListAsync<RT>(
+                 public static {EffOf(TypeRef.List(dbSet.EntityType))} ToListAsync<RT>(
                     CancellationToken token = default
                  ) where RT : {model.Capability.Interface}
                  """
             )
             .WithXmlDoc("Returns all entities as a list.")
             .WithExpressionBody("Query<RT>().ToListAsync(token)");
-    }
 
-    private static MethodBuilder FirstOrNoneAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder FirstOrNoneAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Option<{dbSet.EntityType}>> FirstOrNoneAsync<RT>(
-                    Expression<Func<{dbSet.EntityType}, bool>> predicate,
+                 public static {EffOf(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
+                    {Expression(dbSet.EntityType, "bool")} predicate,
                     CancellationToken token = default
                  ) where RT : {model.Capability.Interface}
                  """
             )
             .WithXmlDoc("Returns the first entity matching the predicate, or None.")
             .WithExpressionBody("Query<RT>().FirstOrNoneAsync(predicate, token)");
-    }
 
-    private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, int> CountAsync<RT>(
+                 public static {EffOf("int")} CountAsync<RT>(
                     CancellationToken token = default
                  ) where RT : {model.Capability.Interface}
                  """
             )
             .WithXmlDoc("Returns the count of entities.")
             .WithExpressionBody("Query<RT>().CountAsync(token)");
-    }
 
-    private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, bool> AnyAsync<RT>(
+                 public static {EffOf("bool")} AnyAsync<RT>(
                     CancellationToken token = default
                  ) where RT : {model.Capability.Interface}
                  """
             )
             .WithXmlDoc("Returns true if any entities exist.")
             .WithExpressionBody("Query<RT>().AnyAsync(token)");
-    }
 
     // ========== DbSet Modification Methods ==========
 
-    private static MethodBuilder AddMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder AddMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Unit> Add<RT>(
+                 public static {EffUnit} Add<RT>(
                     {dbSet.EntityType} entity
                  ) where RT : {model.Capability.Interface}
                  """
@@ -179,14 +166,12 @@ public static partial class EffectsModuleWriter
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Add(entity); return unit; })"""
             );
-    }
 
-    private static MethodBuilder AddRangeMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder AddRangeMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Unit> AddRange<RT>(
+                 public static {EffUnit} AddRange<RT>(
                     params {dbSet.EntityType}[] entities
                  ) where RT : {model.Capability.Interface}
                  """
@@ -195,14 +180,12 @@ public static partial class EffectsModuleWriter
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.AddRange(entities); return unit; })"""
             );
-    }
 
-    private static MethodBuilder UpdateMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder UpdateMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Unit> Update<RT>(
+                 public static {EffUnit} Update<RT>(
                     {dbSet.EntityType} entity
                  ) where RT : {model.Capability.Interface}
                  """
@@ -211,14 +194,12 @@ public static partial class EffectsModuleWriter
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Update(entity); return unit; })"""
             );
-    }
 
-    private static MethodBuilder RemoveMethod(this EffectsModuleModel model, DbSetModel dbSet)
-    {
-        return MethodBuilder
+    private static MethodBuilder RemoveMethod(this EffectsModuleModel model, DbSetModel dbSet) =>
+        MethodBuilder
             .Parse(
                 $"""
-                 public static Eff<RT, Unit> Remove<RT>(
+                 public static {EffUnit} Remove<RT>(
                     {dbSet.EntityType} entity
                  ) where RT : {model.Capability.Interface}
                  """
@@ -227,5 +208,4 @@ public static partial class EffectsModuleWriter
             .WithExpressionBody(
                 $$"""liftEff<RT, Unit>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Remove(entity); return unit; })"""
             );
-    }
 }

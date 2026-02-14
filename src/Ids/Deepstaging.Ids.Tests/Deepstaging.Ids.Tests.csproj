@@ -1,36 +1,36 @@
 <!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
 <!-- SPDX-License-Identifier: RPL-1.5 -->
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <OutputType>Exe</OutputType>
-    <IsPackable>false</IsPackable>
-    <IsTestProject>true</IsTestProject>
-    <!-- Suppress CS1591 for test project (no docs needed) -->
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Suppress CS1591 for test project (no docs needed) -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="../Deepstaging.Ids/Deepstaging.Ids.csproj" />
-    <ProjectReference Include="../Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj" />
-    <ProjectReference Include="../Deepstaging.Ids.Generators/Deepstaging.Ids.Generators.csproj" />
-    <ProjectReference Include="../Deepstaging.Ids.Analyzers/Deepstaging.Ids.Analyzers.csproj" />
-    <ProjectReference Include="../Deepstaging.Ids.CodeFixes/Deepstaging.Ids.CodeFixes.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../Deepstaging.Ids/Deepstaging.Ids.csproj"/>
+        <ProjectReference Include="../Deepstaging.Ids.Projection/Deepstaging.Ids.Projection.csproj"/>
+        <ProjectReference Include="../Deepstaging.Ids.Generators/Deepstaging.Ids.Generators.csproj"/>
+        <ProjectReference Include="../Deepstaging.Ids.Analyzers/Deepstaging.Ids.Analyzers.csproj"/>
+        <ProjectReference Include="../Deepstaging.Ids.CodeFixes/Deepstaging.Ids.CodeFixes.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Deepstaging.Roslyn" />
-    <PackageReference Include="Deepstaging.Roslyn.Testing" />
-    <PackageReference Include="TUnit" />
-    <PackageReference Include="TUnit.Engine" />
-    <PackageReference Include="Basic.Reference.Assemblies.Net100" />
-    <PackageReference Include="Microsoft.Testing.Platform" />
-    <PackageReference Include="Microsoft.Testing.Platform.MSBuild" />
-    <PackageReference Include="Verify" />
-    <PackageReference Include="Verify.TUnit" />
-    <!-- References for compilation verification of generated converters -->
-    <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Dapper" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Testing"/>
+        <PackageReference Include="TUnit"/>
+        <PackageReference Include="TUnit.Engine"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100"/>
+        <PackageReference Include="Microsoft.Testing.Platform"/>
+        <PackageReference Include="Microsoft.Testing.Platform.MSBuild"/>
+        <PackageReference Include="Verify"/>
+        <PackageReference Include="Verify.TUnit"/>
+        <!-- References for compilation verification of generated converters -->
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Dapper"/>
+    </ItemGroup>
 </Project>

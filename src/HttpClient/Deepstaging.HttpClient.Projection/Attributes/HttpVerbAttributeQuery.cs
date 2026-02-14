@@ -16,7 +16,7 @@ public sealed record HttpVerbAttributeQuery(AttributeData AttributeData) : Attri
     /// The request path from the attribute constructor.
     /// </summary>
     public string Path => ConstructorArg<string>(0).OrDefault("");
-    
+
     /// <summary>
     /// 
     /// </summary>

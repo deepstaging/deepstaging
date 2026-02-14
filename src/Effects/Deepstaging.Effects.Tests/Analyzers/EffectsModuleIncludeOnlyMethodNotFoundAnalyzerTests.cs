@@ -9,16 +9,16 @@ public class EffectsModuleIncludeOnlyMethodNotFoundAnalyzerTests : RoslynTestBas
     public async Task ReportsDiagnostic_WhenIncludeOnlyMethodDoesNotExist()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService
-            {
-                void SendAsync();
-            }
+                              public interface IEmailService
+                              {
+                                  void SendAsync();
+                              }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["NonExistentMethod"])]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["NonExistentMethod"])]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleIncludeOnlyMethodNotFoundAnalyzer>(source)
             .ShouldReportDiagnostic("DS0007")
@@ -30,17 +30,17 @@ public class EffectsModuleIncludeOnlyMethodNotFoundAnalyzerTests : RoslynTestBas
     public async Task NoDiagnostic_WhenIncludeOnlyMethodExists()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService
-            {
-                void SendAsync();
-                void Ping();
-            }
+                              public interface IEmailService
+                              {
+                                  void SendAsync();
+                                  void Ping();
+                              }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["SendAsync"])]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["SendAsync"])]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleIncludeOnlyMethodNotFoundAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -50,16 +50,16 @@ public class EffectsModuleIncludeOnlyMethodNotFoundAnalyzerTests : RoslynTestBas
     public async Task NoDiagnostic_WhenNoIncludeOnlySpecified()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService
-            {
-                void SendAsync();
-            }
+                              public interface IEmailService
+                              {
+                                  void SendAsync();
+                              }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleIncludeOnlyMethodNotFoundAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -69,10 +69,10 @@ public class EffectsModuleIncludeOnlyMethodNotFoundAnalyzerTests : RoslynTestBas
     public async Task NoDiagnostic_WhenNoEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public sealed partial class RegularClass;
-            """;
+                              public sealed partial class RegularClass;
+                              """;
 
         await AnalyzeWith<EffectsModuleIncludeOnlyMethodNotFoundAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -82,17 +82,17 @@ public class EffectsModuleIncludeOnlyMethodNotFoundAnalyzerTests : RoslynTestBas
     public async Task ReportsDiagnostic_WhenOneOfMultipleIncludeOnlyMethodsDoesNotExist()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService
-            {
-                void SendAsync();
-                void ValidateAsync();
-            }
+                              public interface IEmailService
+                              {
+                                  void SendAsync();
+                                  void ValidateAsync();
+                              }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["SendAsync", "DoesNotExist"])]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService), IncludeOnly = ["SendAsync", "DoesNotExist"])]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleIncludeOnlyMethodNotFoundAnalyzer>(source)
             .ShouldReportDiagnostic("DS0007")

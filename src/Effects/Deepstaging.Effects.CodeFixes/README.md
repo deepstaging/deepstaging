@@ -8,12 +8,12 @@ Provides CodeFixProviders that offer quick fixes in the IDE for violations detec
 
 ## Code Fixes
 
-| Diagnostic | Fix |
-|------------|-----|
-| DS0001 - EffectsModule must be partial | Adds `partial` modifier |
-| DS0002 - Runtime must be partial | Adds `partial` modifier |
-| DS0003 - EffectsModule should be sealed | Adds `sealed` modifier |
-| DS0008 - Uses must target runtime | Suggests correct attribute target |
+| Diagnostic                              | Fix                               |
+|-----------------------------------------|-----------------------------------|
+| DS0001 - EffectsModule must be partial  | Adds `partial` modifier           |
+| DS0002 - Runtime must be partial        | Adds `partial` modifier           |
+| DS0003 - EffectsModule should be sealed | Adds `sealed` modifier            |
+| DS0008 - Uses must target runtime       | Suggests correct attribute target |
 
 ## CodeFix Classes
 
@@ -30,7 +30,8 @@ public class EffectsModuleMustBePartialCodeFix : CodeFixProvider
 
 ## Usage
 
-Code fixes appear automatically in IDEs (Visual Studio, Rider, VS Code) when the corresponding analyzer diagnostic is triggered. Use `Ctrl+.` or the lightbulb menu to apply fixes.
+Code fixes appear automatically in IDEs (Visual Studio, Rider, VS Code) when the corresponding analyzer diagnostic is
+triggered. Use `Ctrl+.` or the lightbulb menu to apply fixes.
 
 ### Before Fix
 
@@ -57,12 +58,15 @@ public partial class EmailModule;  // Fixed
 - **[Analyzers](../Deepstaging.Analyzers/README.md)** — Diagnostics that trigger these fixes
 - **[Core Attributes](../Deepstaging/README.md)** — Attribute definitions
 - **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Roslyn toolkit
-- **[Deepstaging.Roslyn.Workspace](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Workspace/README.md)** — Code fix provider infrastructure
+- *
+  *[Deepstaging.Roslyn.Workspace](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Workspace/README.md)
+  ** — Code fix provider infrastructure
 
 ## License
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

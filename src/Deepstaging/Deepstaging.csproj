@@ -20,22 +20,22 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <IsPackable>true</IsPackable>
-        
+
         <!-- Package metadata -->
         <PackageId>Deepstaging</PackageId>
         <Title>Deepstaging</Title>
         <Description>Complete Deepstaging toolkit - effects system, config generators, ID types, and HTTP client generators. Install this single package to get all features.</Description>
         <PackageTags>deepstaging;effects;source-generator;analyzer;roslyn;csharp</PackageTags>
-        
+
         <!-- This package has no code - it's just a meta-package -->
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        
+
         <!-- Suppress NU5128: meta-package intentionally has no lib output -->
         <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <!-- 
@@ -43,10 +43,10 @@
         At pack time, these flow as PackageReference dependencies automatically.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj" />
-        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj" />
-        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj" />
-        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj" />
+        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
+        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj"/>
+        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj"/>
+        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj"/>
     </ItemGroup>
 
 </Project>

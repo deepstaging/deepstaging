@@ -11,18 +11,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Deepstaging.Roslyn" />
-        <PackageReference Include="LanguageExt.Core" />
-        <PackageReference Include="TUnit" />
-        <PackageReference Include="TUnit.Engine" />
-        <PackageReference Include="Basic.Reference.Assemblies.Net100" />
-        <PackageReference Include="Deepstaging.Roslyn.Testing" />
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="LanguageExt.Core"/>
+        <PackageReference Include="TUnit"/>
+        <PackageReference Include="TUnit.Engine"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100"/>
+        <PackageReference Include="Deepstaging.Roslyn.Testing"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects.Testing.Generators\Deepstaging.Effects.Testing.Generators.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Testing.Generators\Deepstaging.Effects.Testing.Generators.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj"/>
     </ItemGroup>
 
 </Project>

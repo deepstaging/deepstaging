@@ -4,7 +4,9 @@ Source-generated HTTP clients for C#/.NET — declarative, type-safe, zero boile
 
 ## Overview
 
-This package provides attributes that mark partial classes as HTTP clients. The source generator produces full `HttpClient`-based implementations from interface-style declarations, including path/query/header parameter binding and authentication.
+This package provides attributes that mark partial classes as HTTP clients. The source generator produces full
+`HttpClient`-based implementations from interface-style declarations, including path/query/header parameter binding and
+authentication.
 
 ## Usage
 
@@ -34,49 +36,49 @@ public partial class TodoClient
 
 Marks a partial class as an HTTP client.
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property      | Type      | Description               |
+|---------------|-----------|---------------------------|
 | `BaseAddress` | `string?` | Base URL for all requests |
 
 A generic variant `[HttpClient<TConfiguration>]` supports typed configuration injection.
 
 ### HTTP Verb Attributes
 
-| Attribute | HTTP Method |
-|-----------|-------------|
-| `[Get]` | GET |
-| `[Post]` | POST |
-| `[Put]` | PUT |
-| `[Patch]` | PATCH |
-| `[Delete]` | DELETE |
+| Attribute  | HTTP Method |
+|------------|-------------|
+| `[Get]`    | GET         |
+| `[Post]`   | POST        |
+| `[Put]`    | PUT         |
+| `[Patch]`  | PATCH       |
+| `[Delete]` | DELETE      |
 
 All verb attributes accept a route template (e.g., `"/todos/{id}"`).
 
 ### Parameter Attributes
 
-| Attribute | Description |
-|-----------|-------------|
-| `[Path]` | Substituted into the route template (e.g., `{id}`) |
-| `[Query]` | Appended as a query string parameter; optional `Name` override |
-| `[Header]` | Sent as an HTTP header; requires header name |
-| `[Body]` | Serialized as the request body |
+| Attribute  | Description                                                    |
+|------------|----------------------------------------------------------------|
+| `[Path]`   | Substituted into the route template (e.g., `{id}`)             |
+| `[Query]`  | Appended as a query string parameter; optional `Name` override |
+| `[Header]` | Sent as an HTTP header; requires header name                   |
+| `[Body]`   | Serialized as the request body                                 |
 
 ### Authentication Attributes
 
-| Attribute | Description |
-|-----------|-------------|
-| `[BearerAuth]` | Bearer token via `ITokenProvider` |
-| `[ApiKeyAuth]` | API key with configurable header name |
-| `[BasicAuth]` | Basic authentication with username/password |
+| Attribute      | Description                                 |
+|----------------|---------------------------------------------|
+| `[BearerAuth]` | Bearer token via `ITokenProvider`           |
+| `[ApiKeyAuth]` | API key with configurable header name       |
+| `[BasicAuth]`  | Basic authentication with username/password |
 
 ## Analyzers
 
-| ID | Severity | Description |
-|----|----------|-------------|
-| `HTTP001` | Error | HttpClient class must be partial |
-| `HTTP002` | Error | HTTP method must be partial |
-| `HTTP003` | Error | HTTP method must not return Task (use a typed return) |
-| `HTTP004` | Error | HTTP path must not be empty |
+| ID        | Severity | Description                                           |
+|-----------|----------|-------------------------------------------------------|
+| `HTTP001` | Error    | HttpClient class must be partial                      |
+| `HTTP002` | Error    | HTTP method must be partial                           |
+| `HTTP003` | Error    | HTTP method must not return Task (use a typed return) |
+| `HTTP004` | Error    | HTTP path must not be empty                           |
 
 ## Installation
 
@@ -95,6 +97,7 @@ dotnet add package Deepstaging.HttpClient
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

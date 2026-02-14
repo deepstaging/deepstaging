@@ -29,9 +29,9 @@ public class ExposesAttributeQueryTests : RoslynTestBase
 
         await Assert.That(attribute.ConfigurationType).IsRecordSymbol();
         await Assert.That(attribute.ConfigurationType.Name).IsEqualTo("SlackConfig");
-        
+
         var props = attribute.ConfigurationType.QueryProperties().GetAll();
-        
+
         await Assert.That(props.Length).IsEqualTo(1);
         await Assert.That(props[0].Name).IsEqualTo("ApiKey");
         await Assert.That(props[0].ReturnType.FullyQualifiedName).IsEqualTo("string");

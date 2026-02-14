@@ -4,7 +4,8 @@ Core attributes for marking classes for Deepstaging code generation.
 
 ## Overview
 
-This package provides the attribute definitions that drive the Deepstaging source generators. Apply these attributes to partial classes to generate effects-based runtime infrastructure.
+This package provides the attribute definitions that drive the Deepstaging source generators. Apply these attributes to
+partial classes to generate effects-based runtime infrastructure.
 
 ## Attributes
 
@@ -55,6 +56,7 @@ public partial class AppRuntime;
 ```
 
 The source generators will produce:
+
 - Capability interfaces for each module
 - Effects wrapper methods
 - DI registration extensions
@@ -70,6 +72,7 @@ The source generators will produce:
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

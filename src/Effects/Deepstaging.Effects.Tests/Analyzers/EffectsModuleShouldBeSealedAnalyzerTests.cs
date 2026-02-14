@@ -9,13 +9,13 @@ public class EffectsModuleShouldBeSealedAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenClassIsNotSealed()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleShouldBeSealedAnalyzer>(source)
             .ShouldReportDiagnostic("DS0009")
@@ -27,13 +27,13 @@ public class EffectsModuleShouldBeSealedAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenClassIsSealed()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleShouldBeSealedAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -43,13 +43,13 @@ public class EffectsModuleShouldBeSealedAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenClassIsStatic()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public static partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public static partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleShouldBeSealedAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -59,10 +59,10 @@ public class EffectsModuleShouldBeSealedAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenClassHasNoEffectsModuleAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public partial class RegularClass;
-            """;
+                              public partial class RegularClass;
+                              """;
 
         await AnalyzeWith<EffectsModuleShouldBeSealedAnalyzer>(source)
             .ShouldHaveNoDiagnostics();

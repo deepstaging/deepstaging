@@ -4,14 +4,15 @@ Roslyn analyzers that enforce strongly-typed ID best practices at compile time.
 
 ## Overview
 
-Provides diagnostic analyzers that validate `[StrongId]` attribute usage, ensuring correct struct declarations before source generation runs.
+Provides diagnostic analyzers that validate `[StrongId]` attribute usage, ensuring correct struct declarations before
+source generation runs.
 
 ## Diagnostics
 
-| ID | Severity | Description |
-|----|----------|-------------|
-| `ID0001` | Error | StrongId struct must be declared as `partial` |
-| `ID0002` | Warning | StrongId struct should be declared as `readonly` |
+| ID       | Severity | Description                                      |
+|----------|----------|--------------------------------------------------|
+| `ID0001` | Error    | StrongId struct must be declared as `partial`    |
+| `ID0002` | Warning  | StrongId struct should be declared as `readonly` |
 
 ## Example Error
 
@@ -22,6 +23,7 @@ public struct UserId;  // ❌ Missing 'partial'
 ```
 
 Fix:
+
 ```csharp
 [StrongId]
 public readonly partial struct UserId;  // ✅
@@ -43,6 +45,7 @@ public readonly partial struct UserId;  // ✅
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

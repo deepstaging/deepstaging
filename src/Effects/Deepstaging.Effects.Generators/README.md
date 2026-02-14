@@ -4,7 +4,8 @@ Incremental source generator that produces runtime classes and effects modules f
 
 ## Overview
 
-This Roslyn source generator triggers on `[Runtime]` and `[EffectsModule]` attributes, generating capability interfaces, effects wrapper methods, and dependency injection bootstrapping code.
+This Roslyn source generator triggers on `[Runtime]` and `[EffectsModule]` attributes, generating capability interfaces,
+effects wrapper methods, and dependency injection bootstrapping code.
 
 ## Generated Output
 
@@ -56,14 +57,19 @@ public class DeepstagingGenerator : IIncrementalGenerator
 - **[Projection Models](../Deepstaging.Projection/README.md)** — Semantic analysis layer
 - **[Analyzers](../Deepstaging.Analyzers/README.md)** — Compile-time validation
 - **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Roslyn toolkit for queries, projections, and emit
-  - [Queries](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Queries.md) — Symbol query API
-  - [Emit](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Emit.md) — Code generation API
-- **[Deepstaging.Roslyn.Scriban](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Scriban/README.md)** — Template infrastructure
+    - [Queries](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Queries.md) — Symbol query
+      API
+    - [Emit](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Emit.md) — Code generation API
+-
+    *
+*[Deepstaging.Roslyn.Scriban](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Scriban/README.md)
+** — Template infrastructure
 
 ## License
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

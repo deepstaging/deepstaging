@@ -36,9 +36,7 @@ public sealed class HttpPathMustNotBeEmptyAnalyzer : MethodAnalyzer
         {
             var attrName = attr.AttributeClass?.Name;
             if (attrName is "GetAttribute" or "PostAttribute" or "PutAttribute" or "PatchAttribute" or "DeleteAttribute")
-            {
                 return attr.ConstructorArguments.FirstOrDefault().Value?.ToString();
-            }
         }
         return null;
     }

@@ -11,13 +11,13 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenStructIsNotPartial()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public struct UserId;
-            """;
+                              [StrongId]
+                              public struct UserId;
+                              """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
             .ShouldReportDiagnostic("ID0001")
@@ -29,13 +29,13 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenStructIsPartial()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public partial struct UserId;
-            """;
+                              [StrongId]
+                              public partial struct UserId;
+                              """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -45,10 +45,10 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenStructHasNoStrongIdAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public struct RegularStruct;
-            """;
+                              public struct RegularStruct;
+                              """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -58,16 +58,16 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_ForMultipleNonPartialStructs()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public struct UserId;
+                              [StrongId]
+                              public struct UserId;
 
-            [StrongId]
-            public struct OrderId;
-            """;
+                              [StrongId]
+                              public struct OrderId;
+                              """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
             .ShouldReportDiagnostic("ID0001");

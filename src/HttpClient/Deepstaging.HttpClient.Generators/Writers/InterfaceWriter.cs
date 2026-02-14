@@ -43,7 +43,7 @@ public static class InterfaceWriter
             var method = MethodBuilder
                 .For(request.AsyncMethodName)
                 .WithReturnType(returnType)
-                .AsAbstract();  // Interface methods have no body
+                .AsAbstract(); // Interface methods have no body
 
             // Add parameters
             foreach (var param in request.Parameters)

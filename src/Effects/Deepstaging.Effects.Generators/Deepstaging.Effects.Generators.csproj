@@ -30,14 +30,14 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true"/>
-        <PackageReference Include="Deepstaging.Roslyn" />
-        <PackageReference Include="Deepstaging.Roslyn.Scriban" />
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Scriban"/>
     </ItemGroup>
 
     <!-- Reference Deepstaging.Effects projects -->
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj"/>
     </ItemGroup>
 
     <!-- Embed templates as resources -->
@@ -45,12 +45,12 @@
         <EmbeddedResource Include="Templates/**/*.scriban-cs"/>
     </ItemGroup>
     <ItemGroup>
-      <Compile Update="Writers\EffectsModuleWriter.DbContext.cs">
-        <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Writers\EffectsModuleWriter.Methods.cs">
-        <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
-      </Compile>
+        <Compile Update="Writers\EffectsModuleWriter.DbContext.cs">
+            <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Writers\EffectsModuleWriter.Methods.cs">
+            <DependentUpon>EffectsModuleWriter.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <!-- 

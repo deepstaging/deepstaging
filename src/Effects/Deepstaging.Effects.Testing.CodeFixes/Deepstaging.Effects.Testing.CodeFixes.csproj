@@ -7,29 +7,29 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        
+
         <!-- Package metadata -->
         <PackageId>Deepstaging.Effects.Testing.CodeFixes</PackageId>
         <Title>Deepstaging.Effects.Testing.CodeFixes</Title>
         <Description>Roslyn code fixes for Deepstaging.Effects.Testing.</Description>
         <PackageTags>deepstaging;effects;testing;codefixes;roslyn</PackageTags>
-        
+
         <!-- Copy local dependencies so they can be bundled with the analyzer -->
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Deepstaging.Roslyn" />
-        <PackageReference Include="Deepstaging.Roslyn.Workspace" />
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Workspace"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects.Testing.Analyzers\Deepstaging.Effects.Testing.Analyzers.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Testing.Analyzers\Deepstaging.Effects.Testing.Analyzers.csproj"/>
     </ItemGroup>
 
 </Project>

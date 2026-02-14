@@ -30,7 +30,7 @@ public static class Queries
             ..symbol.GetAttributes<EffectsModuleAttribute>()
                 .Select(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
         ];
-        
+
         /// <summary>
         /// Gets all <see cref="UsesAttribute"/> instances applied to this symbol as queryable wrappers.
         /// </summary>

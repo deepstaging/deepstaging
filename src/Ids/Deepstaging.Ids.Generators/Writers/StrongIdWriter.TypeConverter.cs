@@ -13,15 +13,13 @@ internal static class TypeConverterWriter
     internal static TypeBuilder AddTypeConverterClass(
         this TypeBuilder builder,
         StrongIdModel model,
-        PropertyBuilder valueProperty)
-    {
-        return builder.WithTypeConverter(
+        PropertyBuilder valueProperty) =>
+        builder.WithTypeConverter(
             $"{model.TypeName}TypeConverter",
             CanConvertFromBody(model),
             ConvertFromBody(model),
             CanConvertToBody(model),
             ConvertToBody(model, valueProperty));
-    }
 
     private static string CanConvertFromBody(StrongIdModel model) =>
         model.BackingType switch
@@ -56,39 +54,39 @@ internal static class TypeConverterWriter
         model.BackingType switch
         {
             BackingType.Guid => $$"""
-                return value switch
-                {
-                    global::System.Guid guidValue => new {{model.TypeName}}(guidValue),
-                    string stringValue when !string.IsNullOrEmpty(stringValue)
-                        && global::System.Guid.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
-                    _ => base.ConvertFrom(context, culture, value),
-                };
-                """,
+                                  return value switch
+                                  {
+                                      global::System.Guid guidValue => new {{model.TypeName}}(guidValue),
+                                      string stringValue when !string.IsNullOrEmpty(stringValue)
+                                          && global::System.Guid.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
+                                      _ => base.ConvertFrom(context, culture, value),
+                                  };
+                                  """,
             BackingType.Int => $$"""
-                return value switch
-                {
-                    int intValue => new {{model.TypeName}}(intValue),
-                    string stringValue when !string.IsNullOrEmpty(stringValue)
-                        && int.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
-                    _ => base.ConvertFrom(context, culture, value),
-                };
-                """,
+                                 return value switch
+                                 {
+                                     int intValue => new {{model.TypeName}}(intValue),
+                                     string stringValue when !string.IsNullOrEmpty(stringValue)
+                                         && int.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
+                                     _ => base.ConvertFrom(context, culture, value),
+                                 };
+                                 """,
             BackingType.Long => $$"""
-                return value switch
-                {
-                    long longValue => new {{model.TypeName}}(longValue),
-                    string stringValue when !string.IsNullOrEmpty(stringValue)
-                        && long.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
-                    _ => base.ConvertFrom(context, culture, value),
-                };
-                """,
+                                  return value switch
+                                  {
+                                      long longValue => new {{model.TypeName}}(longValue),
+                                      string stringValue when !string.IsNullOrEmpty(stringValue)
+                                          && long.TryParse(stringValue, out var result) => new {{model.TypeName}}(result),
+                                      _ => base.ConvertFrom(context, culture, value),
+                                  };
+                                  """,
             BackingType.String => $$"""
-                return value switch
-                {
-                    string stringValue => new {{model.TypeName}}(stringValue),
-                    _ => base.ConvertFrom(context, culture, value),
-                };
-                """,
+                                    return value switch
+                                    {
+                                        string stringValue => new {{model.TypeName}}(stringValue),
+                                        _ => base.ConvertFrom(context, culture, value),
+                                    };
+                                    """,
             _ => "return base.ConvertFrom(context, culture, value);"
         };
 
@@ -125,50 +123,50 @@ internal static class TypeConverterWriter
         model.BackingType switch
         {
             BackingType.Guid => $$"""
-                if (value is {{model.TypeName}} idValue)
-                {
-                    if (destinationType == typeof(global::System.Guid))
-                        return idValue.{{valueProperty.Name}};
+                                  if (value is {{model.TypeName}} idValue)
+                                  {
+                                      if (destinationType == typeof(global::System.Guid))
+                                          return idValue.{{valueProperty.Name}};
 
-                    if (destinationType == typeof(string))
-                        return idValue.{{valueProperty.Name}}.ToString();
-                }
+                                      if (destinationType == typeof(string))
+                                          return idValue.{{valueProperty.Name}}.ToString();
+                                  }
 
-                return base.ConvertTo(context, culture, value, destinationType);
-                """,
+                                  return base.ConvertTo(context, culture, value, destinationType);
+                                  """,
             BackingType.Int => $$"""
-                if (value is {{model.TypeName}} idValue)
-                {
-                    if (destinationType == typeof(int))
-                        return idValue.{{valueProperty.Name}};
+                                 if (value is {{model.TypeName}} idValue)
+                                 {
+                                     if (destinationType == typeof(int))
+                                         return idValue.{{valueProperty.Name}};
 
-                    if (destinationType == typeof(string))
-                        return idValue.{{valueProperty.Name}}.ToString();
-                }
+                                     if (destinationType == typeof(string))
+                                         return idValue.{{valueProperty.Name}}.ToString();
+                                 }
 
-                return base.ConvertTo(context, culture, value, destinationType);
-                """,
+                                 return base.ConvertTo(context, culture, value, destinationType);
+                                 """,
             BackingType.Long => $$"""
-                if (value is {{model.TypeName}} idValue)
-                {
-                    if (destinationType == typeof(long))
-                        return idValue.{{valueProperty.Name}};
+                                  if (value is {{model.TypeName}} idValue)
+                                  {
+                                      if (destinationType == typeof(long))
+                                          return idValue.{{valueProperty.Name}};
 
-                    if (destinationType == typeof(string))
-                        return idValue.{{valueProperty.Name}}.ToString();
-                }
+                                      if (destinationType == typeof(string))
+                                          return idValue.{{valueProperty.Name}}.ToString();
+                                  }
 
-                return base.ConvertTo(context, culture, value, destinationType);
-                """,
+                                  return base.ConvertTo(context, culture, value, destinationType);
+                                  """,
             BackingType.String => $$"""
-                if (value is {{model.TypeName}} idValue)
-                {
-                    if (destinationType == typeof(string))
-                        return idValue.{{valueProperty.Name}};
-                }
+                                    if (value is {{model.TypeName}} idValue)
+                                    {
+                                        if (destinationType == typeof(string))
+                                            return idValue.{{valueProperty.Name}};
+                                    }
 
-                return base.ConvertTo(context, culture, value, destinationType);
-                """,
+                                    return base.ConvertTo(context, culture, value, destinationType);
+                                    """,
             _ => "return base.ConvertTo(context, culture, value, destinationType);"
         };
 }

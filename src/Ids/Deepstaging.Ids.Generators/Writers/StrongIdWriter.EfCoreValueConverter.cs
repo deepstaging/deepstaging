@@ -13,11 +13,9 @@ internal static class EfCoreValueConverterWriter
     internal static TypeBuilder AddEfCoreValueConverterClass(
         this TypeBuilder builder,
         StrongIdModel model,
-        PropertyBuilder valueProperty)
-    {
-        return builder.WithEfCoreValueConverter(
+        PropertyBuilder valueProperty) =>
+        builder.WithEfCoreValueConverter(
             model.BackingTypeSymbol.FullyQualifiedName,
             $"id => id.{valueProperty.Name}",
             $"value => new {builder.Name}(value)");
-    }
 }

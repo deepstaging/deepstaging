@@ -14,7 +14,7 @@ public sealed class EffectMetrics : IDisposable
     private readonly Counter<long> _operationsSucceeded;
     private readonly Counter<long> _operationsFailed;
     private readonly Histogram<double> _operationDuration;
-    
+
     /// <summary>
     /// Creates a new EffectMetrics instance with the specified meter name.
     /// </summary>
@@ -22,23 +22,23 @@ public sealed class EffectMetrics : IDisposable
     public EffectMetrics(string meterName = "Deepstaging.Effects")
     {
         _meter = new Meter(meterName, "1.0.0");
-        
+
         _operationsSucceeded = _meter.CreateCounter<long>(
             "effects.succeeded",
             "operations",
             "Number of successful effect operations");
-            
+
         _operationsFailed = _meter.CreateCounter<long>(
-            "effects.failed", 
+            "effects.failed",
             "operations",
             "Number of failed effect operations");
-            
+
         _operationDuration = _meter.CreateHistogram<double>(
             "effects.duration",
             "ms",
             "Duration of effect operations in milliseconds");
     }
-    
+
     /// <summary>
     /// Records a successful operation.
     /// </summary>
@@ -51,7 +51,7 @@ public sealed class EffectMetrics : IDisposable
         _operationsSucceeded.Add(1, allTags);
         _operationDuration.Record(durationMs, allTags);
     }
-    
+
     /// <summary>
     /// Records a failed operation.
     /// </summary>
@@ -63,19 +63,17 @@ public sealed class EffectMetrics : IDisposable
     {
         var allTags = CreateTags(operationName, tags);
         if (errorType != null)
-        {
             allTags = [..allTags, new KeyValuePair<string, object?>("error.type", errorType)];
-        }
         _operationsFailed.Add(1, allTags);
         _operationDuration.Record(durationMs, allTags);
     }
-    
+
     private static KeyValuePair<string, object?>[] CreateTags(string operationName, KeyValuePair<string, object?>[] additionalTags)
     {
         var baseTags = new[] { new KeyValuePair<string, object?>("operation", operationName) };
         return additionalTags.Length > 0 ? [..baseTags, ..additionalTags] : baseTags;
     }
-    
+
     /// <inheritdoc/>
     public void Dispose()
     {

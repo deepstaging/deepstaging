@@ -29,14 +29,14 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Deepstaging.Roslyn" />
+        <PackageReference Include="Deepstaging.Roslyn"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Deepstaging.Effects.Testing\Deepstaging.Effects.Testing.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects.Testing.Projection\Deepstaging.Effects.Testing.Projection.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj" />
-        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Testing\Deepstaging.Effects.Testing.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects.Testing.Projection\Deepstaging.Effects.Testing.Projection.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects.Projection\Deepstaging.Effects.Projection.csproj"/>
     </ItemGroup>
 
     <PropertyGroup>

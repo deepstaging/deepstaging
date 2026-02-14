@@ -48,7 +48,7 @@ public static class EffectsModule
                             TargetTypeName = attribute.TargetType.Name,
                             XmlDocumentation = attribute.TargetType.XmlDocumentation,
                             IsDbContext = attribute.TargetType.IsEfDbContext(),
-                            DbSets = attribute.CreateDbSets(),
+                            DbSets = attribute.CreateDbSets()
                         };
                     })
             ];

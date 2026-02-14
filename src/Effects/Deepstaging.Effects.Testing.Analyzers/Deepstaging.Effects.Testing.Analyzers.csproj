@@ -9,10 +9,10 @@
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <IsRoslynComponent>true</IsRoslynComponent>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        
+
         <!-- Disable release tracking for now -->
         <NoWarn>$(NoWarn);RS2008</NoWarn>
-        
+
         <!-- Package metadata -->
         <PackageId>Deepstaging.Effects.Testing.Analyzers</PackageId>
         <Title>Deepstaging.Effects.Testing.Analyzers</Title>
@@ -21,17 +21,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Deepstaging.Roslyn" />
+        <PackageReference Include="Deepstaging.Roslyn"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Deepstaging.Effects.Testing.Projection\Deepstaging.Effects.Testing.Projection.csproj" />
-      <ProjectReference Include="..\Deepstaging.Effects.Testing\Deepstaging.Effects.Testing.csproj" />
+        <ProjectReference Include="..\Deepstaging.Effects.Testing.Projection\Deepstaging.Effects.Testing.Projection.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Effects.Testing\Deepstaging.Effects.Testing.csproj"/>
     </ItemGroup>
 
 </Project>

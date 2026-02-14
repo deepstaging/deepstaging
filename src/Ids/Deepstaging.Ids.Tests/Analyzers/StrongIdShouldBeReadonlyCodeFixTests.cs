@@ -12,22 +12,22 @@ public class StrongIdShouldBeReadonlyCodeFixTests : RoslynTestBase
     public async Task AddsReadonlyModifier()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public partial struct UserId;
-            """;
+                              [StrongId]
+                              public partial struct UserId;
+                              """;
 
         const string expected = """
-            using Deepstaging.Ids;
+                                using Deepstaging.Ids;
 
-            namespace TestApp;
+                                namespace TestApp;
 
-            [StrongId]
-            public readonly partial struct UserId;
-            """;
+                                [StrongId]
+                                public readonly partial struct UserId;
+                                """;
 
         await AnalyzeAndFixWith<StrongIdShouldBeReadonlyAnalyzer, StrongIdShouldBeReadonlyCodeFix>(source)
             .ForDiagnostic("ID0002")

@@ -4,7 +4,8 @@ Incremental source generator that produces HTTP client implementations from `[Ht
 
 ## Overview
 
-This Roslyn source generator triggers on `[HttpClient]` attributes and generates complete `HttpClient`-based implementations, including request construction, parameter binding, serialization, and authentication.
+This Roslyn source generator triggers on `[HttpClient]` attributes and generates complete `HttpClient`-based
+implementations, including request construction, parameter binding, serialization, and authentication.
 
 ## Generated Output
 
@@ -38,15 +39,16 @@ The generator produces:
 public class HttpClientGenerator : IIncrementalGenerator
 ```
 
-Entry point that registers syntax providers for `[HttpClient]` and transforms symbols into models via `Deepstaging.HttpClient.Projection`.
+Entry point that registers syntax providers for `[HttpClient]` and transforms symbols into models via
+`Deepstaging.HttpClient.Projection`.
 
 ### Writers
 
-| File | Responsibility |
-|------|---------------|
-| `ClientWriter.cs` | Client class with constructor and configuration |
-| `RequestWriter.cs` | Individual HTTP request method implementations |
-| `InterfaceWriter.cs` | Extracted interface for DI registration |
+| File                 | Responsibility                                  |
+|----------------------|-------------------------------------------------|
+| `ClientWriter.cs`    | Client class with constructor and configuration |
+| `RequestWriter.cs`   | Individual HTTP request method implementations  |
+| `InterfaceWriter.cs` | Extracted interface for DI registration         |
 
 ## Dependencies
 
@@ -60,12 +62,13 @@ Entry point that registers syntax providers for `[HttpClient]` and transforms sy
 - **[Projection Models](../Deepstaging.HttpClient.Projection/README.md)** — Semantic analysis layer
 - **[Analyzers](../Deepstaging.HttpClient.Analyzers/README.md)** — Compile-time validation
 - **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Roslyn toolkit
-  - [Emit](https://deepstaging.github.io/roslyn/api/emit/) — Code generation API
+    - [Emit](https://deepstaging.github.io/roslyn/api/emit/) — Code generation API
 
 ## License
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

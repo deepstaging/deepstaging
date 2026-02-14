@@ -23,7 +23,7 @@ public sealed class HttpClientGenerator : IIncrementalGenerator
         context.RegisterSourceOutput(models, static (ctx, model) =>
         {
             var hint = new HintName(model.Namespace);
-            
+
             // Generate client class
             model.WriteClient()
                 .AddSourceTo(ctx, hint.Filename(model.TypeName));

@@ -28,7 +28,7 @@
         <ProjectReference Include="..\Deepstaging.Config.Generators\Deepstaging.Config.Generators.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Projection\" />
+        <Folder Include="Projection\"/>
     </ItemGroup>
 
 </Project>

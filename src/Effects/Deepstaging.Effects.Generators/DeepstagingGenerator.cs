@@ -53,7 +53,8 @@ public sealed class DeepstagingGenerator : IIncrementalGenerator
             if (modules.IsDefaultOrEmpty)
                 return;
 
-            // TODO: generate single DbContext file from modules
+            modules.WriteDbSetQueryHelper()
+                .AddSourceTo(ctx, HintName.From("Deepstaging.Effects", "DbSetQuery"));
         });
 
         context.RegisterSourceOutput(allEffectsModules, static (ctx, effectsModule) =>

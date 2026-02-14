@@ -11,13 +11,13 @@ public class StrongIdShouldBeReadonlyAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenStructIsNotReadonly()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public partial struct UserId;
-            """;
+                              [StrongId]
+                              public partial struct UserId;
+                              """;
 
         await AnalyzeWith<StrongIdShouldBeReadonlyAnalyzer>(source)
             .ShouldReportDiagnostic("ID0002")
@@ -29,13 +29,13 @@ public class StrongIdShouldBeReadonlyAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenStructIsReadonly()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public readonly partial struct UserId;
-            """;
+                              [StrongId]
+                              public readonly partial struct UserId;
+                              """;
 
         await AnalyzeWith<StrongIdShouldBeReadonlyAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -45,10 +45,10 @@ public class StrongIdShouldBeReadonlyAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenStructHasNoStrongIdAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public partial struct RegularStruct;
-            """;
+                              public partial struct RegularStruct;
+                              """;
 
         await AnalyzeWith<StrongIdShouldBeReadonlyAnalyzer>(source)
             .ShouldHaveNoDiagnostics();

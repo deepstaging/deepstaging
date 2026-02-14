@@ -19,12 +19,10 @@ internal static class CoreWriter
         var backingTypeName = model.BackingTypeSymbol.FullyQualifiedName;
 
         if (model.BackingType != BackingType.String)
-        {
             return builder
                 .AddConstructor(c => c
                     .AddParameter("value", backingTypeName)
                     .WithBody(b => b.AddStatement("Value = value;")));
-        }
 
         return builder
             .AddConstructor(c => c
@@ -34,7 +32,7 @@ internal static class CoreWriter
                     .AddStatement("Value = value;")))
             .AddConstructor(c => c
                 .When(Directives.NotNet7OrGreater)
-                .AddParameter("value",backingTypeName)
+                .AddParameter("value", backingTypeName)
                 .WithBody(b => b
                     .AddStatement(
                         "Value = value ?? throw new global::System.ArgumentNullException(nameof(value));")));

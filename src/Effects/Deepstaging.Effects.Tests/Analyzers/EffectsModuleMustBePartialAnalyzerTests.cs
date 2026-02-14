@@ -9,13 +9,13 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenClassIsNotPartial()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
             .ShouldReportDiagnostic("DS0001")
@@ -27,13 +27,13 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenClassIsPartial()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -43,10 +43,10 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenClassHasNoEffectsModuleAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public class RegularClass;
-            """;
+                              public class RegularClass;
+                              """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -56,17 +56,17 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_ForMultipleNonPartialClasses()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
-            public interface ISlackService { }
+                              public interface IEmailService { }
+                              public interface ISlackService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public class EmailEffects;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public class EmailEffects;
 
-            [Deepstaging.EffectsModule(typeof(ISlackService))]
-            public class SlackEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(ISlackService))]
+                              public class SlackEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
             .ShouldReportDiagnostic("DS0001");

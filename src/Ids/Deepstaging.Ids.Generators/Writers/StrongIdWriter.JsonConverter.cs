@@ -20,12 +20,12 @@ internal static class JsonConverterWriter
         var typeName = builder.Name;
 
         return builder.WithJsonConverter(
-            converterName: $"{model.TypeName}SystemTextJsonConverter",
-            readExpression: GetReadExpression(model.BackingType),
-            writeExpression: GetWriteExpression(model.BackingType, valueProperty),
-            readAsPropertyNameExpression: GetReadAsPropertyNameExpression(typeName, model.BackingType),
-            writeAsPropertyNameExpression: GetWriteAsPropertyNameExpression(model.BackingType, valueProperty),
-            addAttribute: true
+            $"{model.TypeName}SystemTextJsonConverter",
+            GetReadExpression(model.BackingType),
+            GetWriteExpression(model.BackingType, valueProperty),
+            GetReadAsPropertyNameExpression(typeName, model.BackingType),
+            GetWriteAsPropertyNameExpression(model.BackingType, valueProperty),
+            true
         );
     }
 

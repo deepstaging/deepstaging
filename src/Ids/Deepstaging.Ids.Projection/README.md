@@ -4,7 +4,8 @@ Projection layer for the Deepstaging.Ids feature — the single source of truth 
 
 ## Overview
 
-Provides attribute queries and strongly-typed models that bridge Roslyn symbols and the generators/analyzers. All attribute reading and validation logic lives here, ensuring consistent behavior across the toolchain.
+Provides attribute queries and strongly-typed models that bridge Roslyn symbols and the generators/analyzers. All
+attribute reading and validation logic lives here, ensuring consistent behavior across the toolchain.
 
 ## Key Types
 
@@ -48,12 +49,13 @@ public record StrongIdModel(
 - **[Generators](../Deepstaging.Ids.Generators/README.md)** — Consumes projection models
 - **[Analyzers](../Deepstaging.Ids.Analyzers/README.md)** — Consumes projection models
 - **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Roslyn toolkit
-  - [Projections](https://deepstaging.github.io/roslyn/api/projections/) — Projection pattern
+    - [Projections](https://deepstaging.github.io/roslyn/api/projections/) — Projection pattern
 
 ## License
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

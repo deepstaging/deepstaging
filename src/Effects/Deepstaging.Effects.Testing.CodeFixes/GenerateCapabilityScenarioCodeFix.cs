@@ -22,8 +22,7 @@ namespace Deepstaging.Effects.Testing.CodeFixes;
 public sealed class GenerateCapabilityScenarioCodeFix : ClassCodeFix
 {
     /// <inheritdoc />
-    protected override CodeAction? CreateFix(Document document, ValidSyntax<ClassDeclarationSyntax> syntax)
-    {
+    protected override CodeAction? CreateFix(Document document, ValidSyntax<ClassDeclarationSyntax> syntax) =>
         // TODO: Implement using Emit API + AddMembersFromSourceAction
         //
         // 1. Resolve which capability this diagnostic is for (from diagnostic properties or re-query)
@@ -44,9 +43,5 @@ public sealed class GenerateCapabilityScenarioCodeFix : ClassCodeFix
         //       });
         //
         // 3. Return: document.AddMembersFromSourceAction(syntax, title, emittedSource);
-        
-        
-
-        return null;
-    }
+        null;
 }

@@ -15,7 +15,7 @@ public sealed record TestRuntimeModel
     ///  The production runtime type that this test runtime is based on, referenced from the attribute's type argument.
     /// </summary>
     public required ValidSymbol<INamedTypeSymbol> RuntimeType { get; set; }
-    
+
     /// <summary>
     /// The name of the test runtime class (e.g., "TestAppRuntime").
     /// </summary>

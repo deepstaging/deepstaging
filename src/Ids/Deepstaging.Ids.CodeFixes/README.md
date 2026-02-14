@@ -4,13 +4,14 @@ Code fix providers for Deepstaging.Ids analyzer diagnostics.
 
 ## Overview
 
-Provides automatic code fixes for violations detected by `Deepstaging.Ids.Analyzers`, enabling one-click resolution in IDEs.
+Provides automatic code fixes for violations detected by `Deepstaging.Ids.Analyzers`, enabling one-click resolution in
+IDEs.
 
 ## Code Fixes
 
-| Diagnostic | Fix |
-|------------|-----|
-| `ID0001` — Struct must be partial | Adds `partial` modifier to the struct declaration |
+| Diagnostic                           | Fix                                                |
+|--------------------------------------|----------------------------------------------------|
+| `ID0001` — Struct must be partial    | Adds `partial` modifier to the struct declaration  |
 | `ID0002` — Struct should be readonly | Adds `readonly` modifier to the struct declaration |
 
 ## Dependencies
@@ -29,6 +30,7 @@ Provides automatic code fixes for violations detected by `Deepstaging.Ids.Analyz
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

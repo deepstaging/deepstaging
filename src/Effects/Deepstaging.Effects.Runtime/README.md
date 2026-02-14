@@ -4,7 +4,8 @@ Runtime utilities for LanguageExt effects, including OpenTelemetry instrumentati
 
 ## Overview
 
-Provides infrastructure for executing effects with observability (tracing, metrics, logging) and fluent database query APIs that return composable `Eff<RT, T>` effects.
+Provides infrastructure for executing effects with observability (tracing, metrics, logging) and fluent database query
+APIs that return composable `Eff<RT, T>` effects.
 
 ## Key Components
 
@@ -39,12 +40,12 @@ OpenTelemetry metrics collection for success/failure tracking:
 
 ## Classes
 
-| Class | Description |
-|-------|-------------|
-| `DbSetQuery<RT, T>` | Fluent query builder for EF Core DbSets |
-| `DbSetOrderedQuery<RT, T>` | Ordered query continuation |
-| `ActivityEffectExtensions` | OpenTelemetry activity tracing |
-| `EffectMetrics` | Metrics instrumentation |
+| Class                      | Description                             |
+|----------------------------|-----------------------------------------|
+| `DbSetQuery<RT, T>`        | Fluent query builder for EF Core DbSets |
+| `DbSetOrderedQuery<RT, T>` | Ordered query continuation              |
+| `ActivityEffectExtensions` | OpenTelemetry activity tracing          |
+| `EffectMetrics`            | Metrics instrumentation                 |
 
 ## Related Documentation
 
@@ -56,6 +57,7 @@ OpenTelemetry metrics collection for success/failure tracking:
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

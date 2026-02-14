@@ -37,7 +37,7 @@ public class RuntimeWriterTests : RoslynTestBase
                  """)
             .RequireNamedType("Runtime")
             .QueryRuntimeModel();
-        
+
         var runtime = model.WriteRuntimeClass();
 
         await Assert.That(runtime).IsSuccessful();
@@ -56,7 +56,7 @@ public class RuntimeWriterTests : RoslynTestBase
                  """)
             .RequireNamedType("Runtime")
             .QueryRuntimeModel();
-        
+
         var bootstrapper = model.WriteRuntimeBootstrapperClass();
         await Assert.That(bootstrapper).IsSuccessful();
         await Verify(bootstrapper.Code);
@@ -66,7 +66,7 @@ public class RuntimeWriterTests : RoslynTestBase
               {{bootstrapper.Code!}}               
               {{Source}}
               """;
-        
+
         await Assert.That(CompilationFor(fullSource)).IsSuccessful();
 
     }

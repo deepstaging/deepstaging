@@ -14,10 +14,8 @@ namespace Deepstaging.Effects.Analyzers;
 public sealed class EffectsModuleExcludeMethodNotFoundAnalyzer : TypeAnalyzer
 {
     /// <inheritdoc />
-    protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type)
-    {
-        return GetFirstInvalidExclude(type) is not null;
-    }
+    protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
+        GetFirstInvalidExclude(type) is not null;
 
     /// <inheritdoc />
     protected override object[] GetMessageArgs(ValidSymbol<INamedTypeSymbol> type)

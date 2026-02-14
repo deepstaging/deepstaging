@@ -31,8 +31,6 @@ public static class ConfigWriter
         }
     }
 
-    private static TypeBuilder AddConfigType(TypeBuilder builder, ValidSymbol<INamedTypeSymbol> configType)
-    {
-        return builder;
-    }
+    private static TypeBuilder AddConfigType(TypeBuilder builder, ValidSymbol<INamedTypeSymbol> configType) =>
+        builder;
 }

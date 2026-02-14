@@ -4,12 +4,13 @@ Test suite for the Deepstaging.HttpClient source generator and analyzers.
 
 ## Overview
 
-Uses TUnit and the `Deepstaging.Roslyn.Testing` infrastructure to verify generator output (via snapshot testing) and analyzer/code fix behavior.
+Uses TUnit and the `Deepstaging.Roslyn.Testing` infrastructure to verify generator output (via snapshot testing) and
+analyzer/code fix behavior.
 
 ## Test Categories
 
-| Test Class | Covers |
-|------------|--------|
+| Test Class                 | Covers                                                                                       |
+|----------------------------|----------------------------------------------------------------------------------------------|
 | `HttpClientGeneratorTests` | Generator output for client declarations with various verb, parameter, and auth combinations |
 
 ## Running
@@ -34,6 +35,7 @@ dotnet test deepstaging/src/HttpClient/Deepstaging.HttpClient.Tests
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

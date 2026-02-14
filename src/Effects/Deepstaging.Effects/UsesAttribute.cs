@@ -22,7 +22,7 @@ public sealed class UsesAttribute : Attribute
     /// Must be a partial class decorated with <see cref="EffectsModuleAttribute"/>.
     /// </summary>
     public Type ModuleType { get; }
-    
+
     /// <summary>
     /// Creates a new Uses attribute declaring a module dependency.
     /// </summary>
@@ -30,8 +30,6 @@ public sealed class UsesAttribute : Attribute
     /// The effects module type to include in the runtime.
     /// Must be a partial class with at least one <see cref="EffectsModuleAttribute"/>.
     /// </param>
-    public UsesAttribute(Type moduleType)
-    {
+    public UsesAttribute(Type moduleType) =>
         ModuleType = moduleType;
-    }
 }

@@ -4,14 +4,15 @@ Code fix providers for Deepstaging.HttpClient analyzer diagnostics.
 
 ## Overview
 
-Provides automatic code fixes for violations detected by `Deepstaging.HttpClient.Analyzers`, enabling one-click resolution in IDEs.
+Provides automatic code fixes for violations detected by `Deepstaging.HttpClient.Analyzers`, enabling one-click
+resolution in IDEs.
 
 ## Code Fixes
 
-| Diagnostic | Fix |
-|------------|-----|
-| `HTTP001` — HttpClient class must be partial | Adds `partial` modifier to the class declaration |
-| `HTTP002` — HTTP method must be partial | Adds `partial` modifier to the method declaration |
+| Diagnostic                                   | Fix                                               |
+|----------------------------------------------|---------------------------------------------------|
+| `HTTP001` — HttpClient class must be partial | Adds `partial` modifier to the class declaration  |
+| `HTTP002` — HTTP method must be partial      | Adds `partial` modifier to the method declaration |
 
 ## Dependencies
 
@@ -29,6 +30,7 @@ Provides automatic code fixes for violations detected by `Deepstaging.HttpClient
 
 **RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
 
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
+You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service
+or within your company — you share your improvements back under the same license.
 
 See [LICENSE](../../../LICENSE) for the full legal text.

@@ -9,14 +9,14 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
     public async Task ReportsDiagnostic_WhenTargetLacksEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public class NotAnEffectsModule;
+                              public class NotAnEffectsModule;
 
-            [Deepstaging.Runtime]
-            [Deepstaging.Uses(typeof(NotAnEffectsModule))]
-            public partial class AppRuntime;
-            """;
+                              [Deepstaging.Runtime]
+                              [Deepstaging.Uses(typeof(NotAnEffectsModule))]
+                              public partial class AppRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
             .ShouldReportDiagnostic("DS0008")
@@ -28,17 +28,17 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
     public async Task NoDiagnostic_WhenTargetHasEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailModule;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailModule;
 
-            [Deepstaging.Runtime]
-            [Deepstaging.Uses(typeof(EmailModule))]
-            public partial class AppRuntime;
-            """;
+                              [Deepstaging.Runtime]
+                              [Deepstaging.Uses(typeof(EmailModule))]
+                              public partial class AppRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -48,11 +48,11 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
     public async Task NoDiagnostic_WhenNoUsesAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            [Deepstaging.Runtime]
-            public partial class EmptyRuntime;
-            """;
+                              [Deepstaging.Runtime]
+                              public partial class EmptyRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -62,20 +62,20 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
     public async Task ReportsDiagnostic_WhenOneOfMultipleTargetsLacksEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailModule;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailModule;
 
-            public class NotAModule;
+                              public class NotAModule;
 
-            [Deepstaging.Runtime]
-            [Deepstaging.Uses(typeof(EmailModule))]
-            [Deepstaging.Uses(typeof(NotAModule))]
-            public partial class AppRuntime;
-            """;
+                              [Deepstaging.Runtime]
+                              [Deepstaging.Uses(typeof(EmailModule))]
+                              [Deepstaging.Uses(typeof(NotAModule))]
+                              public partial class AppRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
             .ShouldReportDiagnostic("DS0008")

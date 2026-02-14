@@ -11,21 +11,21 @@ public class HttpClientGeneratorTests : RoslynTestBase
     public async Task GeneratesSimpleGetClient()
     {
         const string source = """
-            using Deepstaging.HttpClient;
+                              using Deepstaging.HttpClient;
 
-            namespace TestApp;
-            
-            public record MyConfig(string ApiKey);
+                              namespace TestApp;
 
-            [HttpClient<MyConfig>()]
-            public partial class UsersClient
-            {
-                [Get("/users/{id}")]
-                private partial User GetUser(int id);
-            }
+                              public record MyConfig(string ApiKey);
 
-            public record User(int Id, string Name);
-            """;
+                              [HttpClient<MyConfig>()]
+                              public partial class UsersClient
+                              {
+                                  [Get("/users/{id}")]
+                                  private partial User GetUser(int id);
+                              }
+
+                              public record User(int Id, string Name);
+                              """;
 
         await GenerateWith<HttpClientGenerator>(source)
             .ShouldGenerate()

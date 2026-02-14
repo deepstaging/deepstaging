@@ -12,22 +12,22 @@ public class StrongIdMustBePartialCodeFixTests : RoslynTestBase
     public async Task AddsPartialModifier()
     {
         const string source = """
-            using Deepstaging.Ids;
+                              using Deepstaging.Ids;
 
-            namespace TestApp;
+                              namespace TestApp;
 
-            [StrongId]
-            public struct UserId;
-            """;
+                              [StrongId]
+                              public struct UserId;
+                              """;
 
         const string expected = """
-            using Deepstaging.Ids;
+                                using Deepstaging.Ids;
 
-            namespace TestApp;
+                                namespace TestApp;
 
-            [StrongId]
-            public partial struct UserId;
-            """;
+                                [StrongId]
+                                public partial struct UserId;
+                                """;
 
         await AnalyzeAndFixWith<StrongIdMustBePartialAnalyzer, StrongIdMustBePartialCodeFix>(source)
             .ForDiagnostic("ID0001")

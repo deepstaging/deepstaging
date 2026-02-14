@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
+using static Deepstaging.Effects.Generators.Writers.Types;
+
 namespace Deepstaging.Effects.Generators.Writers;
 
 /// <summary>
@@ -20,7 +22,7 @@ public static partial class EffectsModuleWriter
                         .AsStatic()
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
-                        .WithReturnType($"Eff<RT, {method.EffResultType}>")
+                        .WithReturnType(Eff("RT", method.EffResultType))
                         .WithXmlDoc(method.XmlDocumentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }

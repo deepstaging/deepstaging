@@ -16,7 +16,7 @@ public sealed record ConfigModel
     /// The simple name of the type.
     /// </summary>
     public required string TypeName { get; init; }
-    
+
     /// <summary>
     /// 
     /// </summary>

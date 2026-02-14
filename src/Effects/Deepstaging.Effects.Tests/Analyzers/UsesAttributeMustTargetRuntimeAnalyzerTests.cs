@@ -9,16 +9,16 @@ public class UsesAttributeMustTargetRuntimeAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenUsesWithoutRuntime()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
 
-            [Deepstaging.Uses(typeof(EmailEffects))]
-            public partial class AppRuntime;
-            """;
+                              [Deepstaging.Uses(typeof(EmailEffects))]
+                              public partial class AppRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeMustTargetRuntimeAnalyzer>(source)
             .ShouldReportDiagnostic("DS0003")
@@ -30,17 +30,17 @@ public class UsesAttributeMustTargetRuntimeAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenUsesWithRuntime()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
 
-            [Deepstaging.Runtime]
-            [Deepstaging.Uses(typeof(EmailEffects))]
-            public partial class AppRuntime;
-            """;
+                              [Deepstaging.Runtime]
+                              [Deepstaging.Uses(typeof(EmailEffects))]
+                              public partial class AppRuntime;
+                              """;
 
         await AnalyzeWith<UsesAttributeMustTargetRuntimeAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -50,10 +50,10 @@ public class UsesAttributeMustTargetRuntimeAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenNoUsesAttribute()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public partial class RegularClass;
-            """;
+                              public partial class RegularClass;
+                              """;
 
         await AnalyzeWith<UsesAttributeMustTargetRuntimeAnalyzer>(source)
             .ShouldHaveNoDiagnostics();

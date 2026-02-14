@@ -9,14 +9,14 @@ public class EffectsModuleDuplicateTargetAnalyzerTests : RoslynTestBase
     public async Task ReportsDiagnostic_WhenDuplicateTargetType()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleDuplicateTargetAnalyzer>(source)
             .ShouldReportDiagnostic("DS0005")
@@ -28,15 +28,15 @@ public class EffectsModuleDuplicateTargetAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenDifferentTargetTypes()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
-            public interface ISlackService { }
+                              public interface IEmailService { }
+                              public interface ISlackService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            [Deepstaging.EffectsModule(typeof(ISlackService))]
-            public sealed partial class NotificationEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              [Deepstaging.EffectsModule(typeof(ISlackService))]
+                              public sealed partial class NotificationEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleDuplicateTargetAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -46,13 +46,13 @@ public class EffectsModuleDuplicateTargetAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenSingleEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public interface IEmailService { }
+                              public interface IEmailService { }
 
-            [Deepstaging.EffectsModule(typeof(IEmailService))]
-            public sealed partial class EmailEffects;
-            """;
+                              [Deepstaging.EffectsModule(typeof(IEmailService))]
+                              public sealed partial class EmailEffects;
+                              """;
 
         await AnalyzeWith<EffectsModuleDuplicateTargetAnalyzer>(source)
             .ShouldHaveNoDiagnostics();
@@ -62,10 +62,10 @@ public class EffectsModuleDuplicateTargetAnalyzerTests : RoslynTestBase
     public async Task NoDiagnostic_WhenNoEffectsModule()
     {
         const string source = """
-            namespace TestApp;
+                              namespace TestApp;
 
-            public sealed partial class RegularClass;
-            """;
+                              public sealed partial class RegularClass;
+                              """;
 
         await AnalyzeWith<EffectsModuleDuplicateTargetAnalyzer>(source)
             .ShouldHaveNoDiagnostics();

@@ -27,7 +27,7 @@ public static class StubWriter
     private static TypeBuilder CreateStubType(this TestRuntimeWriter.StubInfo stub)
     {
         var methods = stub.DependencyType.QueryMethods().GetAll();
-        
+
         return TypeBuilder
             .Parse($"public partial record {stub.RecordName} : {stub.DependencyType}")
             .IfNot(string.IsNullOrEmpty(stub.DependencyType.Namespace), b => b.AddUsing(stub.DependencyType.Namespace!))

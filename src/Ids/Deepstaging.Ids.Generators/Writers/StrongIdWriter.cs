@@ -28,7 +28,7 @@ public static class StrongIdWriter
 
             var valueProperty = PropertyBuilder
                 .Parse($"public {backingType.FullyQualifiedName} Value {{ get; }}");
-            
+
             return TypeBuilder
                 .Parse($"{model.Accessibility} partial struct {typeName}")
                 .InNamespace(model.Namespace)
@@ -51,7 +51,7 @@ public static class StrongIdWriter
                 .OverridesToString(model.BackingType == BackingType.String
                         ? $"{valueProperty.Name} ?? \"\""
                         : $"{valueProperty.Name}.ToString()",
-                    isCustomExpression: true)
+                    true)
                 .WithBackingConversions(backingType, valueProperty)
 
                 // Factory methods and converters
