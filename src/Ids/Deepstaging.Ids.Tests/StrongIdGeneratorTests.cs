@@ -25,7 +25,7 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct UserId")
             .WithNoDiagnostics()
             .VerifySnapshot();
@@ -45,7 +45,7 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct OrderId")
             .WithNoDiagnostics()
             .VerifySnapshot();
@@ -65,7 +65,7 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct Sku")
             .WithNoDiagnostics()
             .VerifySnapshot();
@@ -85,7 +85,7 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct TransactionId")
             .WithNoDiagnostics()
             .VerifySnapshot();
@@ -105,7 +105,7 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct CustomerId")
             .WithFileContaining("CustomerIdTypeConverter")
             .WithFileContaining("CustomerIdSystemTextJsonConverter")
@@ -144,10 +144,11 @@ public class StrongIdGeneratorTests : RoslynTestBase
         await GenerateWith<StrongIdGenerator>(source)
             .WithAdditionalText("Templates/Deepstaging.Ids/StrongId.scriban-cs", template)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("Custom user template")
             .WithFileContaining("public partial struct OrderId")
-            .WithNoDiagnostics();
+            .WithNoDiagnostics()
+            .VerifySnapshot();
     }
 
     [Test]
@@ -164,10 +165,11 @@ public class StrongIdGeneratorTests : RoslynTestBase
 
         await GenerateWith<StrongIdGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
+            .WithFileCount(2)
             .WithFileContaining("public partial struct ProductId")
             .WithoutFileContaining("Custom user template")
-            .WithNoDiagnostics();
+            .WithNoDiagnostics()
+            .VerifySnapshot();
     }
 
     #endregion

@@ -17,19 +17,35 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var userTemplates = context.UserTemplatesProvider;
 
         var models = context.ForAttribute<StrongIdAttribute>()
-            .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel))
-            .Combine(context.UserTemplatesProvider);
+            .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel));
 
-        context.RegisterSourceOutput(models, static (ctx, pair) =>
+        // Per-model: generate source (uses user template if available)
+        context.RegisterSourceOutput(models.Combine(userTemplates), static (ctx, pair) =>
         {
             var (model, templates) = pair;
             var map = new TemplateMap<StrongIdModel>();
-            
+
             model.WriteStrongId(map)
                 .WithUserTemplate("Deepstaging.Ids/StrongId", model, map)
                 .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName), templates);
         });
+
+        // Once: emit scaffold metadata from first model
+        context.RegisterSourceOutput(
+            models.Collect().Select(static (m, _) => m.Length > 0 ? m[0] : default),
+            static (ctx, model) =>
+            {
+                if (model is null) return;
+
+                var map = new TemplateMap<StrongIdModel>();
+                var customizable = model.WriteStrongId(map)
+                    .WithUserTemplate("Deepstaging.Ids/StrongId", model, map);
+
+                ScaffoldEmitter.EmitScaffold(ctx, customizable,
+                    "global::Deepstaging.Ids.StrongIdAttribute");
+            });
     }
 }

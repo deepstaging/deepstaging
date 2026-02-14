@@ -21,11 +21,11 @@ public static class StrongIdWriter
     {
         /// <summary>
         /// Generates the complete strongly-typed ID struct implementation.
-        /// Records explicit template bindings via the provided <paramref name="map"/>.
+        /// Records explicit template bindings via the provided <paramref name="template"/>.
         /// </summary>
-        public OptionalEmit WriteStrongId(TemplateMap<StrongIdModel> map)
+        public OptionalEmit WriteStrongId(TemplateMap<StrongIdModel> template)
         {
-            var typeName = map.Bind(model.TypeName, m => m.TypeName);
+            var typeName = template.Bind(model.TypeName, m => m.TypeName);
             var backingType = model.BackingTypeSnapshot;
 
             var valueProperty = PropertyBuilder

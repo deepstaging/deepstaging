@@ -5,21 +5,21 @@
 // See LICENSE file in the project root for full license information.
 #nullable enable
 namespace TestApp;
-public partial struct UserId : global::System.IEquatable<UserId>, global::System.IComparable<UserId>, global::System.IFormattable
+public partial struct ProductId : global::System.IEquatable<ProductId>, global::System.IComparable<ProductId>, global::System.IFormattable
 
 #if NET6_0_OR_GREATER
         , global::System.ISpanFormattable
 #endif
 #if NET7_0_OR_GREATER
-        , global::System.IParsable<UserId>
-        , global::System.ISpanParsable<UserId>
+        , global::System.IParsable<ProductId>
+        , global::System.ISpanParsable<ProductId>
 #endif
 #if NET8_0_OR_GREATER
         , global::System.IUtf8SpanFormattable
 #endif
 {
-    public static readonly UserId Empty = new UserId(global::System.Guid.Empty);
-    public UserId(System.Guid value)
+    public static readonly ProductId Empty = new ProductId(global::System.Guid.Empty);
+    public ProductId(System.Guid value)
     {
         Value = value;
     }
@@ -27,17 +27,17 @@ public partial struct UserId : global::System.IEquatable<UserId>, global::System
     public System.Guid Value { get; }
 
     /// <inheritdoc cref="global::System.IEquatable{{T}}"/>
-    public bool Equals(UserId other) => Value.Equals(other.Value);
+    public bool Equals(ProductId other) => Value.Equals(other.Value);
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj))
             return false;
-        return obj is UserId other && Equals(other);
+        return obj is ProductId other && Equals(other);
     }
 
     public override int GetHashCode() => Value.GetHashCode();
     /// <inheritdoc cref="global::System.IComparable{{TSelf}}"/>
-    public int CompareTo(UserId other) => Value.CompareTo(other.Value);
+    public int CompareTo(ProductId other) => Value.CompareTo(other.Value);
     /// <inheritdoc cref="global::System.IFormattable"/>
     public string ToString([global::System.Diagnostics.CodeAnalysis.StringSyntax(global::System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.GuidFormat)] string? format, global::System.IFormatProvider? formatProvider) => Value.ToString(format, formatProvider);
 #if NET6_0_OR_GREATER
@@ -50,11 +50,11 @@ public partial struct UserId : global::System.IEquatable<UserId>, global::System
 #endif
 #if NET7_0_OR_GREATER
     /// <inheritdoc cref="global::System.IParsable{{TSelf}}"/>
-    public static UserId Parse(string input, global::System.IFormatProvider? provider) => new(global::System.Guid.Parse(input, provider));
+    public static ProductId Parse(string input, global::System.IFormatProvider? provider) => new(global::System.Guid.Parse(input, provider));
 #endif
 #if NET7_0_OR_GREATER
     /// <inheritdoc cref="global::System.IParsable{{TSelf}}"/>
-    public static bool TryParse(string? input, global::System.IFormatProvider? provider, out UserId result)
+    public static bool TryParse(string? input, global::System.IFormatProvider? provider, out ProductId result)
     {
         if (input is null)
         {
@@ -76,15 +76,15 @@ public partial struct UserId : global::System.IEquatable<UserId>, global::System
 #endif
 
 #if NETCOREAPP2_1_OR_GREATER
-    public static UserId Parse(global::System.ReadOnlySpan<char> input) => new(global::System.Guid.Parse(input));
+    public static ProductId Parse(global::System.ReadOnlySpan<char> input) => new(global::System.Guid.Parse(input));
 #endif
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanParsable{{TSelf}}"/>
-    public static UserId Parse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider) => new(global::System.Guid.Parse(input, provider));
+    public static ProductId Parse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider) => new(global::System.Guid.Parse(input, provider));
 #endif
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanParsable{{TSelf}}"/>
-    public static bool TryParse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider, out UserId result)
+    public static bool TryParse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider, out ProductId result)
     {
         if (global::System.Guid.TryParse(input, provider, out var guid))
         {
@@ -104,22 +104,22 @@ public partial struct UserId : global::System.IEquatable<UserId>, global::System
     public bool TryFormat(global::System.Span<byte> utf8Destination, out int bytesWritten, global::System.ReadOnlySpan<char> format, global::System.IFormatProvider? provider) => Value.TryFormat(utf8Destination, out bytesWritten, format);
 #endif
     public override string ToString() => Value.ToString();
-    public static UserId New() => new UserId(global::System.Guid.NewGuid());
-    public static UserId Parse(string input) => new(global::System.Guid.Parse(input));
-    public static bool operator ==(UserId left, UserId right) => left.Equals(right);
-    public static bool operator !=(UserId left, UserId right) => !(left == right);
-    public static bool operator>(UserId a, UserId b) => a.CompareTo(b) > 0;
-    public static bool operator <(UserId a, UserId b) => a.CompareTo(b) < 0;
-    public static bool operator >=(UserId a, UserId b) => a.CompareTo(b) >= 0;
-    public static bool operator <=(UserId a, UserId b) => a.CompareTo(b) <= 0;
+    public static ProductId New() => new ProductId(global::System.Guid.NewGuid());
+    public static ProductId Parse(string input) => new(global::System.Guid.Parse(input));
+    public static bool operator ==(ProductId left, ProductId right) => left.Equals(right);
+    public static bool operator !=(ProductId left, ProductId right) => !(left == right);
+    public static bool operator>(ProductId a, ProductId b) => a.CompareTo(b) > 0;
+    public static bool operator <(ProductId a, ProductId b) => a.CompareTo(b) < 0;
+    public static bool operator >=(ProductId a, ProductId b) => a.CompareTo(b) >= 0;
+    public static bool operator <=(ProductId a, ProductId b) => a.CompareTo(b) <= 0;
     /// <summary>
-    /// Implicitly converts a <see cref="Guid"/> to a <see cref="UserId"/>.
+    /// Implicitly converts a <see cref="Guid"/> to a <see cref="ProductId"/>.
     /// </summary>
-    public static implicit operator UserId(global::System.Guid value) => new UserId(value);
+    public static implicit operator ProductId(global::System.Guid value) => new ProductId(value);
     /// <summary>
-    /// Explicitly converts a <see cref="UserId"/> to its underlying <see cref="Guid"/> value.
+    /// Explicitly converts a <see cref="ProductId"/> to its underlying <see cref="Guid"/> value.
     /// </summary>
-    public static explicit operator global::System.Guid(UserId value) => value.Value;
+    public static explicit operator global::System.Guid(ProductId value) => value.Value;
 }
 
 // <auto-generated/>
