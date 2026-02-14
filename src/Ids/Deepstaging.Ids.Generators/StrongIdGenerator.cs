@@ -45,7 +45,7 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
                     .WithUserTemplate("Deepstaging.Ids/StrongId", model, map);
 
                 ScaffoldEmitter.EmitScaffold(ctx, customizable,
-                    "global::Deepstaging.Ids.StrongIdAttribute");
+                    "Deepstaging.Ids.StrongIdAttribute");
             });
     }
 }
