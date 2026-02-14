@@ -20,4 +20,8 @@ jobs:
         run: mkdir -p ../../artifacts/packages
       - run: dotnet restore Deepstaging.slnx
       - run: dotnet build Deepstaging.slnx -c Release --no-restore
-      - run: dotnet test Deepstaging.slnx -c Release --no-build
+      - run: dotnet test --project src/Config/Deepstaging.Config.Tests -c Release --no-build
+      - run: dotnet test --project src/Effects/Deepstaging.Effects.Tests -c Release --no-build
+      - run: dotnet test --project src/Effects/Deepstaging.Effects.Testing.Tests -c Release --no-build
+      - run: dotnet test --project src/HttpClient/Deepstaging.HttpClient.Tests -c Release --no-build
+      - run: dotnet test --project src/Ids/Deepstaging.Ids.Tests -c Release --no-build

@@ -18,7 +18,25 @@ on:
         default: ''
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Create local NuGet source directory
+        run: mkdir -p ../../artifacts/packages
+      - run: dotnet restore Deepstaging.slnx
+      - run: dotnet build Deepstaging.slnx -c Release --no-restore
+      - run: dotnet test --project src/Config/Deepstaging.Config.Tests -c Release --no-build
+      - run: dotnet test --project src/Effects/Deepstaging.Effects.Tests -c Release --no-build
+      - run: dotnet test --project src/Effects/Deepstaging.Effects.Testing.Tests -c Release --no-build
+      - run: dotnet test --project src/HttpClient/Deepstaging.HttpClient.Tests -c Release --no-build
+      - run: dotnet test --project src/Ids/Deepstaging.Ids.Tests -c Release --no-build
+
   publish:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       id-token: write  # Required for OIDC Trusted Publishing
