@@ -5,6 +5,7 @@ namespace Deepstaging.Effects.Projection.Models;
 /// <summary>
 /// Represents a parameter for an effect method.
 /// </summary>
+[PipelineModel]
 public sealed record EffectParameterModel
 {
     /// <summary>
