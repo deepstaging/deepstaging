@@ -25,10 +25,10 @@
   <Import Project="$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.local.props" Condition="Exists('$(MSBuildThisFileDirectory)../roslyn/Deepstaging.Roslyn.Versions.local.props')" />
   <!-- 3. Fallback when roslyn/ is not checked out side-by-side -->
   <ItemGroup Condition="'$(DeepstagingRoslynVersion)' == ''">
-    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev.74" />
+    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.122" />
+    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev.122" />
+    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.122" />
+    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev.122" />
   </ItemGroup>
   <ItemGroup>
     <!-- Core Roslyn -->
