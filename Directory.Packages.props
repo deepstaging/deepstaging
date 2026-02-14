@@ -15,10 +15,10 @@
   <!-- Fallback: used in CI when roslyn/ is not checked out side-by-side.
        Cross-repo dispatch updates these versions after roslyn publishes. -->
   <ItemGroup Condition="'$(DeepstagingRoslynVersion)' == ''">
-    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.74" />
-    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev.74" />
+    <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.96" />
+    <PackageVersion Include="Deepstaging.Roslyn.Scriban" Version="1.0.0-dev.96" />
+    <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.96" />
+    <PackageVersion Include="Deepstaging.Roslyn.Workspace" Version="1.0.0-dev.96" />
   </ItemGroup>
 
   <ItemGroup>
