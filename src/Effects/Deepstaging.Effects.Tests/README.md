@@ -84,9 +84,10 @@ Deepstaging.Tests/
 - **[Analyzers](../Deepstaging.Analyzers/README.md)** — Analyzer implementations being tested
 - **[Generators](../Deepstaging.Generators/README.md)** — Generator implementations being tested
 - **[Projection](../Deepstaging.Projection/README.md)** — Projection logic being tested
-- *
-  *[Deepstaging.Roslyn.Testing](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Testing/README.md)
-  ** — Test infrastructure
+-
+    *
+*[Deepstaging.Roslyn.Testing](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Testing/README.md)
+** — Test infrastructure
     - [RoslynTestBase](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Testing/Docs/RoslynTestBase.md) —
       Base class docs
     - [GeneratorTestContext](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Testing/Docs/GeneratorTestContext.md) —

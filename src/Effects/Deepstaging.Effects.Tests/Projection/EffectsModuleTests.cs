@@ -36,7 +36,7 @@ public class EffectsModuleTests : RoslynTestBase
         await Assert.That(model.Instrumented).IsTrue();
         await Assert.That(model.IsDbContext).IsFalse();
         await Assert.That(model.DbSets).IsEmpty();
-        await Assert.That(model.Methods.Length).IsEqualTo(2);
+        await Assert.That(model.Methods.Count).IsEqualTo(2);
         await Assert.That(model.Capability.DependencyType.PropertyName).IsEqualTo("EmailService");
         await Assert.That(model.Capability.Interface).IsEqualTo("IHasEmailService");
 

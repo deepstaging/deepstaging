@@ -62,6 +62,7 @@ public class DeepstagingGenerator : IIncrementalGenerator
     - [Emit](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn/Docs/Emit.md) — Code generation API
 -
     *
+
 *[Deepstaging.Roslyn.Scriban](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Scriban/README.md)
 ** — Template infrastructure
 

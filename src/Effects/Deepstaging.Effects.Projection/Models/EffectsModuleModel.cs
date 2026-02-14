@@ -5,6 +5,7 @@ namespace Deepstaging.Effects.Projection.Models;
 /// <summary>
 /// Model for a standalone effects module discovered via [EffectsModule] attribute.
 /// </summary>
+[PipelineModel]
 public sealed record EffectsModuleModel
 {
     /// <summary>
@@ -45,7 +46,7 @@ public sealed record EffectsModuleModel
     /// <summary>
     /// The effect methods in this module.
     /// </summary>
-    public required ImmutableArray<EffectMethodModel> Methods { get; init; }
+    public required EquatableArray<EffectMethodModel> Methods { get; init; }
 
     /// <summary>
     /// Whether OpenTelemetry instrumentation is enabled.
@@ -60,12 +61,12 @@ public sealed record EffectsModuleModel
     /// <summary>
     /// DbSet information if this is a DbContext module.
     /// </summary>
-    public ImmutableArray<DbSetModel> DbSets { get; init; } = [];
+    public EquatableArray<DbSetModel> DbSets { get; init; } = [];
 
     /// <summary>
     /// XML documentation from the target type (if available).
     /// </summary>
-    public XmlDocumentation XmlDocumentation { get; init; }
+    public required DocumentationSnapshot XmlDocumentation { get; init; }
 }
 
 /// <summary>

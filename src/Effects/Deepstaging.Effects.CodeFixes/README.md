@@ -58,9 +58,10 @@ public partial class EmailModule;  // Fixed
 - **[Analyzers](../Deepstaging.Analyzers/README.md)** — Diagnostics that trigger these fixes
 - **[Core Attributes](../Deepstaging/README.md)** — Attribute definitions
 - **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Roslyn toolkit
-- *
-  *[Deepstaging.Roslyn.Workspace](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Workspace/README.md)
-  ** — Code fix provider infrastructure
+-
+    *
+*[Deepstaging.Roslyn.Workspace](https://github.com/deepstaging/roslyn/blob/main/src/Deepstaging.Roslyn.Workspace/README.md)
+** — Code fix provider infrastructure
 
 ## License
 

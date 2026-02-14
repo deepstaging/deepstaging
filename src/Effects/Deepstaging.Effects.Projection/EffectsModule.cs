@@ -46,7 +46,7 @@ public static class EffectsModule
                             Namespace = container.Namespace ?? "Global",
                             TargetType = attribute.TargetType.GloballyQualifiedName,
                             TargetTypeName = attribute.TargetType.Name,
-                            XmlDocumentation = attribute.TargetType.XmlDocumentation,
+                            XmlDocumentation = attribute.TargetType.XmlDocumentation.ToSnapshot(),
                             IsDbContext = attribute.TargetType.IsEfDbContext(),
                             DbSets = attribute.CreateDbSets()
                         };
@@ -55,7 +55,7 @@ public static class EffectsModule
         }
     }
 
-    private static ImmutableArray<EffectMethodModel> CreateEffectMethods(this EffectsModuleAttributeQuery attribute)
+    private static EquatableArray<EffectMethodModel> CreateEffectMethods(this EffectsModuleAttributeQuery attribute)
     {
         var exclude = attribute.Exclude.IsDefaultOrEmpty ? null : new HashSet<string>(attribute.Exclude);
         var includeOnly = attribute.IncludeOnly.IsDefaultOrEmpty ? null : new HashSet<string>(attribute.IncludeOnly);
@@ -75,13 +75,16 @@ public static class EffectsModule
                     EffResultType = method.EffectResultType(liftingStrategy),
                     LiftingStrategy = liftingStrategy,
                     Documentation = method.XmlDocumentation.ToSnapshot(),
-                    Parameters = method.Parameters.Select(param => new EffectParameterModel
-                    {
-                        Name = param.Name,
-                        Type = param.Type.FullyQualifiedName,
-                        HasDefaultValue = param.HasExplicitDefaultValue,
-                        DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
-                    }).ToEquatableArray()
+                    Parameters =
+                    [
+                        ..method.Parameters.Select(param => new EffectParameterModel
+                        {
+                            Name = param.Name,
+                            Type = param.Type.FullyQualifiedName,
+                            HasDefaultValue = param.HasExplicitDefaultValue,
+                            DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
+                        })
+                    ]
                 };
             });
     }
