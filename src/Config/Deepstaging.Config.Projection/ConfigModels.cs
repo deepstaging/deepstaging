@@ -24,11 +24,9 @@ public static class ConfigModels
                 Namespace = symbol.Namespace ?? "",
                 TypeName = symbol.Name,
                 Accessibility = symbol.Accessibility,
-                ExposedConfigurationTypes =
-                [
-                    ..symbol.ExposesAttributes()
-                        .Select(x => x.ConfigurationType)
-                ]
+                ExposedConfigurationTypes = symbol.ExposesAttributes()
+                    .Select(x => x.ConfigurationType.ToSnapshot())
+                    .ToEquatableArray()
             };
         }
     }

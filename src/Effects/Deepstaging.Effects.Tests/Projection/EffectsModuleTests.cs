@@ -44,7 +44,7 @@ public class EffectsModuleTests : RoslynTestBase
         await Assert.That(sendMethod.SourceMethodName).IsEqualTo("SendAsync");
         await Assert.That(sendMethod.EffResultType).IsEqualTo("Unit");
         await Assert.That(sendMethod.LiftingStrategy).IsEqualTo(EffectLiftingStrategy.AsyncVoid);
-        await Assert.That(sendMethod.Parameters.Length).IsEqualTo(2);
+        await Assert.That(sendMethod.Parameters.Count).IsEqualTo(2);
         await Assert.That(sendMethod.Parameters[0].Name).IsEqualTo("to");
         await Assert.That(sendMethod.Parameters[0].Type).IsEqualTo("string");
         await Assert.That(sendMethod.Parameters[1].Name).IsEqualTo("body");
@@ -54,7 +54,7 @@ public class EffectsModuleTests : RoslynTestBase
         await Assert.That(validateMethod.SourceMethodName).IsEqualTo("ValidateAsync");
         await Assert.That(validateMethod.EffResultType).IsEqualTo("bool");
         await Assert.That(validateMethod.LiftingStrategy).IsEqualTo(EffectLiftingStrategy.AsyncValue);
-        await Assert.That(validateMethod.Parameters.Length).IsEqualTo(1);
+        await Assert.That(validateMethod.Parameters.Count).IsEqualTo(1);
         await Assert.That(validateMethod.Parameters[0].Name).IsEqualTo("email");
         await Assert.That(validateMethod.Parameters[0].Type).IsEqualTo("string");
     }

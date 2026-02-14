@@ -23,7 +23,7 @@ public static partial class EffectsModuleWriter
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
                         .WithReturnType(Eff("RT", method.EffResultType))
-                        .WithXmlDoc(method.XmlDocumentation)
+                        .WithXmlDoc(method.Documentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }
 

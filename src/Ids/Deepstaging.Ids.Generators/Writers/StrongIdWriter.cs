@@ -24,7 +24,7 @@ public static class StrongIdWriter
         public OptionalEmit WriteStrongId()
         {
             var typeName = model.TypeName;
-            var backingType = model.BackingTypeSymbol;
+            var backingType = model.BackingTypeSnapshot;
 
             var valueProperty = PropertyBuilder
                 .Parse($"public {backingType.FullyQualifiedName} Value {{ get; }}");

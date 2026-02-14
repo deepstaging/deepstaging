@@ -71,21 +71,17 @@ public static class EffectsModule
                 return new EffectMethodModel
                 {
                     EffectName = method.Name,
-                    SourceMethodSymbol = method,
                     SourceMethodName = method.Name,
                     EffResultType = method.EffectResultType(liftingStrategy),
                     LiftingStrategy = liftingStrategy,
-                    XmlDocumentation = method.XmlDocumentation,
-                    Parameters =
-                    [
-                        ..method.Parameters.Select(param => new EffectParameterModel
-                        {
-                            Name = param.Name,
-                            Type = param.Type.FullyQualifiedName,
-                            HasDefaultValue = param.HasExplicitDefaultValue,
-                            DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
-                        })
-                    ]
+                    Documentation = method.XmlDocumentation.ToSnapshot(),
+                    Parameters = method.Parameters.Select(param => new EffectParameterModel
+                    {
+                        Name = param.Name,
+                        Type = param.Type.FullyQualifiedName,
+                        HasDefaultValue = param.HasExplicitDefaultValue,
+                        DefaultValue = param.ExplicitDefaultValue.Map(x => x?.ToString()).OrNull()
+                    }).ToEquatableArray()
                 };
             });
     }

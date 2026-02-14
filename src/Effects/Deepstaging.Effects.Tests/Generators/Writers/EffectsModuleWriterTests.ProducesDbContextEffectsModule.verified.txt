@@ -43,12 +43,12 @@ public static partial class MyEffects
             /// <summary>
             /// Returns all entities as a list.
             /// </summary>
-            public static Eff<RT, List<global::TestApp.User>> ToListAsync<RT>(CancellationToken token = default)
+            public static Eff<RT, global::System.Collections.Generic.List<global::TestApp.User>> ToListAsync<RT>(CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().ToListAsync(token).WithActivity("Database.Users.ToListAsync", ActivitySource);
             /// <summary>
             /// Returns the first entity matching the predicate, or None.
             /// </summary>
-            public static Eff<RT, Option<global::TestApp.User>> FirstOrNoneAsync<RT>(Expression<Func<global::TestApp.User, bool>> predicate, CancellationToken token = default)
+            public static Eff<RT, Option<global::TestApp.User>> FirstOrNoneAsync<RT>(global::System.Linq.Expressions.Expression<global::System.Func<global::TestApp.User, bool>> predicate, CancellationToken token = default)
                 where RT : IHasAppDbContext => Query<RT>().FirstOrNoneAsync(predicate, token).WithActivity("Database.Users.FirstOrNoneAsync", ActivitySource);
             /// <summary>
             /// Returns the count of entities.

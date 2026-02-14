@@ -5,18 +5,15 @@
 // See LICENSE file in the project root for full license information.
 #nullable enable
 using System;
+using TestApp;
 
 namespace TestApp;
 public partial class TestAppRuntime : IHasEmailService, IHasSlackService
 {
     private global::TestApp.IEmailService? _emailService;
-
     private global::TestApp.ISlackService? _slackService;
-
     public global::TestApp.IEmailService EmailService => _emailService ?? throw new InvalidOperationException("Service 'EmailService' has not been configured on TestAppRuntime. Use .WithEmailService() or Create(emailService:) to configure it.");
-
     public global::TestApp.ISlackService SlackService => _slackService ?? throw new InvalidOperationException("Service 'SlackService' has not been configured on TestAppRuntime. Use .WithSlackService() or Create(slackService:) to configure it.");
-
 
     public TestAppRuntime WithEmailService(global::TestApp.IEmailService emailService)
     {
@@ -24,6 +21,11 @@ public partial class TestAppRuntime : IHasEmailService, IHasSlackService
         return this;
     }
 
+    public TestAppRuntime WithStubEmailService(global::System.Func<StubEmailService, StubEmailService> configure)
+    {
+        _emailService = configure(_emailService as StubEmailService ?? new StubEmailService());
+        return this;
+    }
 
     public TestAppRuntime WithSlackService(global::TestApp.ISlackService slackService)
     {
@@ -31,22 +33,31 @@ public partial class TestAppRuntime : IHasEmailService, IHasSlackService
         return this;
     }
 
-
-    public static TestAppRuntime Create(global::TestApp.IEmailService? emailService = null, global::TestApp.ISlackService? slackService = null)
+    public TestAppRuntime WithStubSlackService(global::System.Func<StubSlackService, StubSlackService> configure)
     {
-        var runtime = new TestAppRuntime();
+        _slackService = configure(_slackService as StubSlackService ?? new StubSlackService());
+        return this;
+    }
+
+    public static global::TestApp.TestAppRuntime Create(global::TestApp.IEmailService? emailService = null, global::TestApp.ISlackService? slackService = null)
+    {
+        var runtime = new global::TestApp.TestAppRuntime();
         runtime._emailService = emailService;
         runtime._slackService = slackService;
         return runtime;
     }
 
-
-    public class StubEmailService : global::TestApp.IEmailService
+    public partial record StubEmailService : global::TestApp.IEmailService
     {
+        public global::System.Func<string, string, string, global::System.Threading.Tasks.Task>? OnSendAsync { get; init; }
+
+        public global::System.Threading.Tasks.Task SendAsync(string to, string subject, string body) => OnSendAsync?.Invoke(to, subject, body) ?? global::System.Threading.Tasks.Task.CompletedTask;
     }
 
-
-    public class StubSlackService : global::TestApp.ISlackService
+    public partial record StubSlackService : global::TestApp.ISlackService
     {
+        public global::System.Func<string, string, global::System.Threading.Tasks.Task>? OnPostMessageAsync { get; init; }
+
+        public global::System.Threading.Tasks.Task PostMessageAsync(string channel, string message) => OnPostMessageAsync?.Invoke(channel, message) ?? global::System.Threading.Tasks.Task.CompletedTask;
     }
 }

@@ -4,7 +4,6 @@
 using Deepstaging.Roslyn.Emit;
 using Deepstaging.Config.Projection.Models;
 using Deepstaging.Roslyn;
-using Microsoft.CodeAnalysis;
 
 namespace Deepstaging.Config.Generators.Writers;
 
@@ -31,6 +30,6 @@ public static class ConfigWriter
         }
     }
 
-    private static TypeBuilder AddConfigType(TypeBuilder builder, ValidSymbol<INamedTypeSymbol> configType) =>
+    private static TypeBuilder AddConfigType(TypeBuilder builder, TypeSnapshot configType) =>
         builder;
 }

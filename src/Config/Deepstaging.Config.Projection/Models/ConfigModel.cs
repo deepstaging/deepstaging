@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
+
+using Deepstaging.Roslyn;
+
 namespace Deepstaging.Config.Projection.Models;
 
 /// <summary>
 /// 
 /// </summary>
+[PipelineModel]
 public sealed record ConfigModel
 {
     /// <summary>
@@ -25,5 +29,5 @@ public sealed record ConfigModel
     /// <summary>
     /// 
     /// </summary>
-    public ImmutableArray<ValidSymbol<INamedTypeSymbol>> ExposedConfigurationTypes { get; init; } = [];
+    public EquatableArray<TypeSnapshot> ExposedConfigurationTypes { get; init; } = [];
 }

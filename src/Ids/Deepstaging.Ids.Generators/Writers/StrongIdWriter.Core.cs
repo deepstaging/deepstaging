@@ -16,7 +16,7 @@ internal static class CoreWriter
     /// </summary>
     internal static TypeBuilder AddConstructor(this TypeBuilder builder, StrongIdModel model)
     {
-        var backingTypeName = model.BackingTypeSymbol.FullyQualifiedName;
+        var backingTypeName = model.BackingTypeSnapshot.FullyQualifiedName;
 
         if (model.BackingType != BackingType.String)
             return builder

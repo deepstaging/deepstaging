@@ -19,7 +19,6 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
 #endif
 {
     public static readonly Sku Empty = new Sku(string.Empty);
-
 #if NET7_0_OR_GREATER
     public Sku(string value)
     {
@@ -28,7 +27,6 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
     }
 #endif
 
-
 #if !NET7_0_OR_GREATER
     public Sku(string value)
     {
@@ -36,9 +34,7 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
     }
 #endif
 
-
     public string Value { get; }
-
 
     /// <inheritdoc cref="global::System.IEquatable{{T}}"/>
     public bool Equals(Sku other)
@@ -52,7 +48,6 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
         };
     }
 
-
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj))
@@ -60,9 +55,7 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
         return obj is Sku other && Equals(other);
     }
 
-
     public override int GetHashCode() => Value?.GetHashCode() ?? 0;
-
     /// <inheritdoc cref="global::System.IComparable{{TSelf}}"/>
     public int CompareTo(Sku other)
     {
@@ -75,10 +68,8 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
         };
     }
 
-
     /// <inheritdoc cref="global::System.IFormattable"/>
     public string ToString(string? format, global::System.IFormatProvider? formatProvider) => Value ?? string.Empty;
-
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanFormattable"/>
     public bool TryFormat(global::System.Span<char> destination, out int charsWritten, global::System.ReadOnlySpan<char> format, global::System.IFormatProvider? provider)
@@ -94,7 +85,6 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
         return false;
     }
 #endif
-
 
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanFormattable"/>
@@ -112,12 +102,10 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
     }
 #endif
 
-
 #if NET7_0_OR_GREATER
     /// <inheritdoc cref="global::System.IParsable{{TSelf}}"/>
     public static Sku Parse(string input, global::System.IFormatProvider? provider) => new(input);
 #endif
-
 #if NET7_0_OR_GREATER
     /// <inheritdoc cref="global::System.IParsable{{TSelf}}"/>
     public static bool TryParse(string? input, global::System.IFormatProvider? provider, out Sku result)
@@ -127,16 +115,13 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
     }
 #endif
 
-
 #if NETCOREAPP2_1_OR_GREATER
     public static Sku Parse(global::System.ReadOnlySpan<char> input) => new(input.ToString());
 #endif
-
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanParsable{{TSelf}}"/>
     public static Sku Parse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider) => new(input.ToString());
 #endif
-
 #if NET6_0_OR_GREATER
     /// <inheritdoc cref="global::System.ISpanParsable{{TSelf}}"/>
     public static bool TryParse(global::System.ReadOnlySpan<char> input, global::System.IFormatProvider? provider, out Sku result)
@@ -145,7 +130,6 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
         return true;
     }
 #endif
-
 
 #if NET8_0_OR_GREATER
     /// <inheritdoc cref="global::System.IUtf8SpanFormattable.TryFormat"/>
@@ -163,28 +147,18 @@ public partial struct Sku : global::System.IEquatable<Sku>, global::System.IComp
     }
 #endif
 
-
     public override string ToString() => Value ?? "";
-
     public static Sku Parse(string input) => new(input);
-
     public static bool operator ==(Sku left, Sku right) => left.Equals(right);
-
     public static bool operator !=(Sku left, Sku right) => !(left == right);
-
     public static bool operator>(Sku a, Sku b) => a.CompareTo(b) > 0;
-
     public static bool operator <(Sku a, Sku b) => a.CompareTo(b) < 0;
-
     public static bool operator >=(Sku a, Sku b) => a.CompareTo(b) >= 0;
-
     public static bool operator <=(Sku a, Sku b) => a.CompareTo(b) <= 0;
-
     /// <summary>
     /// Implicitly converts a <see cref="String"/> to a <see cref="Sku"/>.
     /// </summary>
     public static implicit operator Sku(string value) => new Sku(value);
-
     /// <summary>
     /// Explicitly converts a <see cref="Sku"/> to its underlying <see cref="String"/> value.
     /// </summary>

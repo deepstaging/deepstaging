@@ -26,7 +26,7 @@ public static class Queries
                     TypeName = symbol.Name,
                     Accessibility = symbol.AccessibilityString,
                     BackingType = attr.BackingType,
-                    BackingTypeSymbol = attr.BackingTypeSymbol(model),
+                    BackingTypeSnapshot = attr.BackingTypeSymbol(model).ToSnapshot(),
                     Converters = attr.Converters
                 })
                 .OrThrow($"Expected symbol '{symbol.FullyQualifiedName}' to have StrongIdAttribute.");

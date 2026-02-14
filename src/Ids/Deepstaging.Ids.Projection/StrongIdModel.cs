@@ -2,13 +2,13 @@
 // SPDX-License-Identifier: RPL-1.5
 
 using Deepstaging.Roslyn;
-using Microsoft.CodeAnalysis;
 
 namespace Deepstaging.Ids.Projection;
 
 /// <summary>
 /// Represents the analyzed model of a strongly-typed ID struct.
 /// </summary>
+[PipelineModel]
 public sealed record StrongIdModel
 {
     /// <summary>
@@ -37,7 +37,7 @@ public sealed record StrongIdModel
     public required IdConverters Converters { get; init; }
 
     /// <summary>
-    /// The Roslyn symbol for the backing type (Guid, Int32, Int64, or String).
+    /// Pipeline-safe snapshot of the backing type (Guid, Int32, Int64, or String).
     /// </summary>
-    public ValidSymbol<INamedTypeSymbol> BackingTypeSymbol { get; set; }
+    public required TypeSnapshot BackingTypeSnapshot { get; init; }
 }
