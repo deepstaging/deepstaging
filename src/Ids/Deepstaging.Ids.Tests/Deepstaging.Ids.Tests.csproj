@@ -20,7 +20,9 @@
 
     <ItemGroup>
         <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Scriban"/>
         <PackageReference Include="Deepstaging.Roslyn.Testing"/>
+        <PackageReference Include="Scriban"/>
         <PackageReference Include="TUnit"/>
         <PackageReference Include="TUnit.Engine"/>
         <PackageReference Include="Basic.Reference.Assemblies.Net100"/>

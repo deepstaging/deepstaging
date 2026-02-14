@@ -17,11 +17,10 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var userTemplates = context.UserTemplatesProvider;
 
         var models = context.ForAttribute<StrongIdAttribute>()
             .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel))
-            .Combine(userTemplates);
+            .Combine(context.UserTemplatesProvider);
 
         context.RegisterSourceOutput(models, static (ctx, pair) =>
         {

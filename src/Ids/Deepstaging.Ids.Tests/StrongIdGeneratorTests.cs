@@ -116,4 +116,59 @@ public class StrongIdGeneratorTests : RoslynTestBase
             .CompilesSuccessfully()
             .VerifySnapshot();
     }
+
+    #region User Template Override
+
+    [Test]
+    public async Task UsesUserTemplate_WhenProvided()
+    {
+        const string source = """
+                              using Deepstaging.Ids;
+
+                              namespace TestApp;
+
+                              [StrongId]
+                              public partial struct OrderId;
+                              """;
+
+        const string template = """
+                                namespace TestApp;
+                                public partial struct {{ TypeName }}
+                                {
+                                    // Custom user template
+                                    public System.Guid Value { get; }
+                                    public {{ TypeName }}(System.Guid value) => Value = value;
+                                }
+                                """;
+
+        await GenerateWith<StrongIdGenerator>(source)
+            .WithAdditionalText("Templates/Deepstaging.Ids/StrongId.scriban-cs", template)
+            .ShouldGenerate()
+            .WithFileCount(1)
+            .WithFileContaining("Custom user template")
+            .WithFileContaining("public partial struct OrderId")
+            .WithNoDiagnostics();
+    }
+
+    [Test]
+    public async Task UsesDefaultEmit_WhenNoUserTemplate()
+    {
+        const string source = """
+                              using Deepstaging.Ids;
+
+                              namespace TestApp;
+
+                              [StrongId]
+                              public partial struct ProductId;
+                              """;
+
+        await GenerateWith<StrongIdGenerator>(source)
+            .ShouldGenerate()
+            .WithFileCount(1)
+            .WithFileContaining("public partial struct ProductId")
+            .WithoutFileContaining("Custom user template")
+            .WithNoDiagnostics();
+    }
+
+    #endregion
 }
