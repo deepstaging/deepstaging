@@ -1,0 +1,31 @@
+// SPDX-FileCopyrightText: 2024-present Deepstaging
+// SPDX-License-Identifier: RPL-1.5
+
+namespace Deepstaging.Generators;
+
+using Writers.LocalRefs;
+
+/// <summary>
+/// Incremental source generator that emits post-initialization output
+/// such as global using directives.
+/// </summary>
+[Generator]
+public sealed class PreludeGenerator : IIncrementalGenerator
+{
+    /// <inheritdoc />
+    public void Initialize(IncrementalGeneratorInitializationContext context)
+    {
+        context.RegisterPostInitializationOutput(ctx =>
+        {
+            var result = GlobalUsings.Emit(
+                "Deepstaging.Effects",
+                LanguageExtRefs.Namespace,
+                CollectionRefs.Namespace,
+                TaskRefs.Namespace,
+                NamespaceRef.From("System.Linq"));
+
+            if (result.IsValid(out var valid))
+                ctx.AddSource("Deepstaging.GlobalUsings.g.cs", valid.Code);
+        });
+    }
+}

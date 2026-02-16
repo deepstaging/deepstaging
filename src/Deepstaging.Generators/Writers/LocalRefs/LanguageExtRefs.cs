@@ -11,10 +11,10 @@ internal static class LanguageExtRefs
     public static readonly NamespaceRef Namespace = NamespaceRef.From("LanguageExt");
     
     /// <summary>LanguageExt.Effects</summary>
-    public static readonly NamespaceRef EffectsNamespace = NamespaceRef.From($"{Namespace}.Effects");
+    public static readonly NamespaceRef EffectsNamespace = Namespace.Append("Effects");
     
     /// <summary>static LanguageExt.Prelude</summary>
-    public static readonly string PreludeNamespace = NamespaceRef.From($"{Namespace}.Prelude").AsStatic();
+    public static readonly string PreludeNamespace = Namespace.Append("Prelude").AsStatic();
 
     /// <summary>Creates an <c>Option&lt;T&gt;</c> type reference.</summary>
     public static TypeRef Option(TypeRef innerType) => Namespace.GlobalType("Option").Of(innerType);
