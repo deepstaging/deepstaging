@@ -44,7 +44,7 @@ public static partial class EffectsModuleWriter
                 .Parse($"public static partial class {model.EffectsContainerName}")
                 .AddUsings(SystemRefs.Namespace, "Deepstaging.Effects")
                 .AddUsings(DiagnosticsRefs.Namespace, CollectionRefs.Namespace)
-                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeStatic)
+                .AddLanguageExtUsings()
                 .InNamespace(model.Namespace)
                 .WithXmlDoc($"Container class for the <c>{model.Name}</c> effects module and its nested entity set effect classes.")
                 .AddNestedType(module)

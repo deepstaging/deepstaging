@@ -24,5 +24,7 @@ global using Deepstaging.Roslyn.Emit.Operators.Conversions;
 global using Deepstaging.Roslyn.Emit.Patterns;
 global using Deepstaging.Roslyn.Emit.Refs;
 global using Deepstaging.Roslyn.Generators;
+global using Deepstaging.Roslyn.LanguageExt.Expressions;
+global using Deepstaging.Roslyn.LanguageExt.Extensions;
 global using Deepstaging.Roslyn.LanguageExt.Refs;
 global using Microsoft.CodeAnalysis;

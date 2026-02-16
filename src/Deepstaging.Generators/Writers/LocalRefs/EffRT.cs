@@ -7,7 +7,7 @@ namespace Deepstaging.Generators.Writers.LocalRefs;
 /// runtime type parameter. Foundational LanguageExt refs are provided by
 /// <see cref="LanguageExtRefs"/> from the <c>Deepstaging.Roslyn.LanguageExt</c> satellite package.
 /// </summary>
-internal static class EffRefs
+internal static class EffRT
 {
     /// <summary><c>Eff&lt;RT, {result}&gt;</c></summary>
     public static TypeRef Of(TypeRef result) => LanguageExtRefs.Eff("RT", result);

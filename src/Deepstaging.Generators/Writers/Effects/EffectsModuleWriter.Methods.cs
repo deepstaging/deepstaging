@@ -13,14 +13,13 @@ public static partial class EffectsModuleWriter
     extension(TypeBuilder builder)
     {
         private TypeBuilder AddEffectMethods(EffectsModuleModel module) =>
-            builder.If(module.Methods.Any(), b => b
-                    .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeStatic))
+            builder.If(module.Methods.Any(), b => b.AddLanguageExtUsings())
                 .WithEach(module.Methods, (b, method) => b
                     .AddMethod(method.EffectName, m => m
                         .AsStatic()
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
-                        .WithReturnType(EffRefs.Of(method.EffResultType))
+                        .WithReturnType(EffRT.Of(method.EffResultType))
                         .WithXmlDoc(method.Documentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }
@@ -34,33 +33,16 @@ public static partial class EffectsModuleWriter
     {
         var paramList = string.Join(", ", method.Parameters.Select(p => p.Name));
         var methodCall = $"rt.{module.Capability.PropertyName}.{method.SourceMethodName}({paramList})";
+        var lift = EffExpression.Lift("RT", "rt");
 
         var expression = method.LiftingStrategy switch
         {
-            // liftEff<RT, T>(async rt => await rt.Prop.Method(params))
-            EffectLiftingStrategy.AsyncValue =>
-                $"liftEff<RT, {method.EffResultType}>(async rt => await {methodCall})",
-
-            // liftEff<RT, Unit>(async rt => { await rt.Prop.Method(params); return unit; })
-            EffectLiftingStrategy.AsyncVoid =>
-                $$"""liftEff<RT, Unit>(async rt => { await {{methodCall}}; return unit; })""",
-
-            // liftEff<RT, Option<T>>(async rt => Optional(await rt.Prop.Method(params)))
-            EffectLiftingStrategy.AsyncNullableToOption =>
-                $"liftEff<RT, {method.EffResultType}>(async rt => Optional(await {methodCall}))",
-
-            // liftEff<RT, T>(rt => rt.Prop.Method(params))
-            EffectLiftingStrategy.SyncValue =>
-                $"liftEff<RT, {method.EffResultType}>(rt => {methodCall})",
-
-            // liftEff<RT, Unit>(rt => { rt.Prop.Method(params); return unit; })
-            EffectLiftingStrategy.SyncVoid =>
-                $$"""liftEff<RT, Unit>(rt => { {{methodCall}}; return unit; })""",
-
-            // liftEff<RT, Option<T>>(rt => Optional(rt.Prop.Method(params)))
-            EffectLiftingStrategy.SyncNullableToOption =>
-                $"liftEff<RT, {method.EffResultType}>(rt => Optional({methodCall}))",
-
+            EffectLiftingStrategy.AsyncValue => lift.Async(method.EffResultType, methodCall),
+            EffectLiftingStrategy.AsyncVoid => lift.AsyncVoid(methodCall),
+            EffectLiftingStrategy.AsyncNullableToOption => lift.AsyncOptional(method.EffResultType, methodCall),
+            EffectLiftingStrategy.SyncValue => lift.Sync(method.EffResultType, methodCall),
+            EffectLiftingStrategy.SyncVoid => lift.SyncVoid(methodCall),
+            EffectLiftingStrategy.SyncNullableToOption => lift.SyncOptional(method.EffResultType, methodCall),
             _ => throw new ArgumentOutOfRangeException(nameof(method.LiftingStrategy))
         };
 

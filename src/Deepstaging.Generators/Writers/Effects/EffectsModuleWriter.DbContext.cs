@@ -54,7 +54,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder SaveChangesAsyncMethod(this EffectsModuleModel model) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of("int")} SaveChangesAsync<RT>(
+             public static {EffRT.Of("int")} SaveChangesAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface} 
              """)
@@ -63,7 +63,8 @@ public static partial class EffectsModuleWriter
             .AddTypeParam("RT", "The runtime type providing database context access.")
             .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
             .WithReturns("An effect that yields the number of state entries written to the database."))
-        .WithExpressionBody($"""liftEff<RT, int>(async rt => await rt.{model.Capability.PropertyName}.SaveChangesAsync(token))""");
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .Async("int", $"rt.{model.Capability.PropertyName}.SaveChangesAsync(token)"));
 
     // ========== DbSet Query Methods ==========
 
@@ -86,7 +87,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder FindAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(Option(dbSet.EntityType))} FindAsync<RT>(
+             public static {EffRT.Of(Option(dbSet.EntityType))} FindAsync<RT>(
                 params object[] keyValues
              ) where RT : {model.Capability.Interface}
              """)
@@ -95,13 +96,13 @@ public static partial class EffectsModuleWriter
             .AddTypeParam("RT", "The runtime type providing database context access.")
             .AddParam("keyValues", "The primary key values of the entity to find.")
             .WithReturns("An effect that yields the entity wrapped in an Option, or None if not found."))
-        .WithExpressionBody(
-            $"""liftEff<RT, {Option(dbSet.EntityType)}>(async rt => Optional(await rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.FindAsync(keyValues)))""");
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .AsyncOptional(Option(dbSet.EntityType), $"rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.FindAsync(keyValues)"));
 
     private static MethodBuilder ToListAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(List(dbSet.EntityType))} ToListAsync<RT>(
+             public static {EffRT.Of(List(dbSet.EntityType))} ToListAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -115,7 +116,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder FirstOrNoneAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
+             public static {EffRT.Of(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
                 {ExpressionsRefs.Expression(dbSet.EntityType, "bool")} predicate,
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
@@ -131,7 +132,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of("int")} CountAsync<RT>(
+             public static {EffRT.Of("int")} CountAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -145,7 +146,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of("bool")} AnyAsync<RT>(
+             public static {EffRT.Of("bool")} AnyAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -161,7 +162,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder AddMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(dbSet.EntityType)} Add<RT>(
+             public static {EffRT.Of(dbSet.EntityType)} Add<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)
@@ -170,17 +171,18 @@ public static partial class EffectsModuleWriter
             .AddTypeParam("RT", "The runtime type providing database context access.")
             .AddParam("entity", "The entity to add.")
             .WithReturns("An effect that yields the tracked entity."))
-        .WithExpressionBody(
-            $$"""liftEff<RT, {{dbSet.EntityType}}>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Add(entity); return entity; })""");
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .Body(dbSet.EntityType, $"rt => {{ rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.Add(entity); return entity; }}"));
 
     private static MethodBuilder AddRangeMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Array(dbSet.EntityType)} AddRange<RT>(
-                params {dbSet.EntityType}[] entities
+             public static {EffRT.Array(dbSet.EntityType)} AddRange<RT>(
+                params {dbSet.EntityType.Array()} entities
              ) where RT : {model.Capability.Interface}
              """)
-        .WithExpressionBody($$"""liftEff<RT, {{dbSet.EntityType}}[]>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.AddRange(entities); return entities; })""")
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .Body(dbSet.EntityType.Array(), $"rt => {{ rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.AddRange(entities); return entities; }}"))
         .WithXmlDoc(xml => xml
             .WithSummary("Begins tracking the entities in the Added state so they will be inserted on SaveChanges.")
             .AddTypeParam("RT", "The runtime type providing database context access.")
@@ -190,11 +192,12 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder UpdateMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(dbSet.EntityType)} Update<RT>(
+             public static {EffRT.Of(dbSet.EntityType)} Update<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)
-        .WithExpressionBody($$"""liftEff<RT, {{dbSet.EntityType}}>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Update(entity); return entity; })""")
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .Body(dbSet.EntityType, $"rt => {{ rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.Update(entity); return entity; }}"))
         .WithXmlDoc(xml => xml
             .WithSummary("Begins tracking the entity in the Modified state so it will be updated on SaveChanges.")
             .AddTypeParam("RT", "The runtime type providing database context access.")
@@ -204,11 +207,12 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder RemoveMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffRefs.Of(dbSet.EntityType)} Remove<RT>(
+             public static {EffRT.Of(dbSet.EntityType)} Remove<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)
-        .WithExpressionBody($$"""liftEff<RT, {{dbSet.EntityType}}>(rt => { rt.{{model.Capability.PropertyName}}.{{dbSet.PropertyName}}.Remove(entity); return entity; })""")
+        .WithExpressionBody(EffExpression.Lift("RT", "rt")
+            .Body(dbSet.EntityType, $"rt => {{ rt.{model.Capability.PropertyName}.{dbSet.PropertyName}.Remove(entity); return entity; }}"))
         .WithXmlDoc(xml => xml
             .WithSummary("Begins tracking the entity in the Deleted state so it will be removed on SaveChanges.")
             .AddTypeParam("RT", "The runtime type providing database context access.")
