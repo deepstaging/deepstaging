@@ -4,6 +4,7 @@
 namespace Deepstaging.Generators.Writers.Effects;
 
 using LocalRefs;
+using static LanguageExtRefs;
 
 /// <summary>
 /// Vanilla effect method emissions (non-DbContext effect methods).
@@ -19,7 +20,7 @@ public static partial class EffectsModuleWriter
                         .AsStatic()
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
-                        .WithReturnType(EffRT.Of(method.EffResultType))
+                        .WithReturnType(EffRT.Of(method.EffReturnType()))
                         .WithXmlDoc(method.Documentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }
@@ -50,4 +51,11 @@ public static partial class EffectsModuleWriter
             ? $"{expression}.WithActivity(\"{module.Name}.{method.EffectName}\", ActivitySource)"
             : expression;
     }
+
+    private static TypeRef EffReturnType(this EffectMethodModel method) => method.LiftingStrategy switch
+    {
+        EffectLiftingStrategy.AsyncNullableToOption or EffectLiftingStrategy.SyncNullableToOption =>
+            Option(method.EffResultType),
+        _ => method.EffResultType
+    };
 }

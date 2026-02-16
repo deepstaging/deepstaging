@@ -138,7 +138,7 @@ public static class EffectsModuleModelQueries
             SyncVoid => "Unit",
             AsyncVoid => "Unit",
             SyncValue => method.ReturnType.GloballyQualifiedName,
-            SyncNullableToOption => $"Option<{method.ReturnType}>",
+            SyncNullableToOption => method.ReturnType.GloballyQualifiedName,
 
             AsyncValue => method.ReturnType
                 .GetFirstTypeArgument()
@@ -147,7 +147,7 @@ public static class EffectsModuleModelQueries
 
             AsyncNullableToOption => method.ReturnType
                 .GetFirstTypeArgument()
-                .Map(type => $"Option<{type}>")
+                .Map(type => type.GloballyQualifiedName)
                 .OrThrow("Expected a property argument for async value return property."),
 
             _ => "Unit"
