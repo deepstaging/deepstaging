@@ -17,17 +17,7 @@
     <DeepstagingVersion>1.0.0-dev.1</DeepstagingVersion>
   </PropertyGroup>
   <ItemGroup>
-    <!-- Meta-package -->
     <PackageVersion Include="Deepstaging" Version="$(DeepstagingVersion)" />
-    <!-- Effects -->
-    <PackageVersion Include="Deepstaging.Effects" Version="$(DeepstagingVersion)" />
-    <PackageVersion Include="Deepstaging.Effects.Runtime" Version="$(DeepstagingVersion)" />
-    <PackageVersion Include="Deepstaging.Effects.Testing" Version="$(DeepstagingVersion)" />
-    <!-- Config -->
-    <PackageVersion Include="Deepstaging.Config" Version="$(DeepstagingVersion)" />
-    <!-- Ids -->
-    <PackageVersion Include="Deepstaging.Ids" Version="$(DeepstagingVersion)" />
-    <!-- HttpClient -->
-    <PackageVersion Include="Deepstaging.HttpClient" Version="$(DeepstagingVersion)" />
+    <PackageVersion Include="Deepstaging.Testing" Version="$(DeepstagingVersion)" />
   </ItemGroup>
 </Project>

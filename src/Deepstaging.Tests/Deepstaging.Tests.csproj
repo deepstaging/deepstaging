@@ -1,0 +1,39 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Suppress CS1591 for test project (no docs needed) -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Deepstaging\Deepstaging.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Generators\Deepstaging.Generators.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Analyzers\Deepstaging.Analyzers.csproj"/>
+        <ProjectReference Include="..\Deepstaging.CodeFixes\Deepstaging.CodeFixes.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Runtime\Deepstaging.Runtime.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Testing.Generators\Deepstaging.Testing.Generators.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Testing"/>
+        <PackageReference Include="LanguageExt.Core"/>
+        <PackageReference Include="Scriban"/>
+        <PackageReference Include="TUnit"/>
+        <PackageReference Include="TUnit.Engine"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100"/>
+        <PackageReference Include="Verify"/>
+        <PackageReference Include="Verify.TUnit"/>
+        <!-- References for compilation verification of generated converters -->
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Dapper"/>
+    </ItemGroup>
+
+</Project>

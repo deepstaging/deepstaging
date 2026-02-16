@@ -1,0 +1,62 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <IsRoslynComponent>true</IsRoslynComponent>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <!-- Suppress RS1038 - Workspaces reference comes from Deepstaging.Roslyn but we don't use it -->
+        <NoWarn>$(NoWarn);RS1038</NoWarn>
+
+        <!-- Copy local dependencies so they can be bundled with the analyzer -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Deepstaging\Deepstaging.csproj"/>
+        <ProjectReference Include="..\Deepstaging.Projection\Deepstaging.Projection.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true"/>
+        <PackageReference Include="Deepstaging.Roslyn"/>
+    </ItemGroup>
+
+    <!-- Embed templates as resources -->
+    <ItemGroup>
+        <EmbeddedResource Include="Templates/**/*.scriban-cs"/>
+    </ItemGroup>
+
+    <!--
+        Bundle dependencies for analyzer consumption.
+        When this project is referenced as an analyzer, these files will be loaded alongside it.
+    -->
+    <PropertyGroup>
+        <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    </PropertyGroup>
+
+    <Target Name="GetDependencyTargetPaths" AfterTargets="ResolvePackageAssets">
+        <ItemGroup>
+            <TargetPathWithTargetPlatformMoniker Include="$(PkgScriban)/lib/netstandard2.0/Scriban.dll"
+                                                 IncludeRuntimeDependency="false"/>
+            <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
+                                                 Condition="'%(Filename)' == 'Deepstaging.Roslyn'"
+                                                 IncludeRuntimeDependency="false"/>
+            <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
+                                                 Condition="'%(Filename)' == 'Deepstaging'"
+                                                 IncludeRuntimeDependency="false"/>
+            <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
+                                                 Condition="'%(Filename)' == 'Deepstaging.Projection'"
+                                                 IncludeRuntimeDependency="false"/>
+        </ItemGroup>
+    </Target>
+
+</Project>

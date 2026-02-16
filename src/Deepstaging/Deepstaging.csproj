@@ -2,51 +2,106 @@
 <!-- SPDX-License-Identifier: RPL-1.5 -->
 <Project Sdk="Microsoft.NET.Sdk">
     <!--
-        Deepstaging Umbrella Package
+        Deepstaging NuGet Package
         
-        This is the meta-package that references all Deepstaging features.
-        Users install this single package to get everything:
+        This is the single package that bundles everything consumers need:
+        - Attributes and enums for all features (Effects, Ids, HttpClient, Config)
+        - Runtime libraries for net10.0 consumers (Deepstaging.Runtime)
+        - Source generators, analyzers, and code fixes
         
+        Consumers just need:
         <PackageReference Include="Deepstaging" Version="1.0.0" />
         
-        Individual features can also be installed separately if needed.
-        
-        During development, we use ProjectReferences.
-        At pack time, they flow as PackageReference dependencies automatically.
+        To build the package:
+        1. Build the solution first: dotnet build Deepstaging.slnx
+        2. Pack this project: dotnet pack src/Deepstaging/Deepstaging.csproj -o artifacts/packages
     -->
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
+        <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <IsPackable>true</IsPackable>
+
+        <!-- Suppress NU5128: We deliberately bundle libs for multiple TFMs -->
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
 
         <!-- Package metadata -->
         <PackageId>Deepstaging</PackageId>
         <Title>Deepstaging</Title>
-        <Description>Complete Deepstaging toolkit - effects system, config generators, ID types, and HTTP client generators. Install this single package to get all features.</Description>
-        <PackageTags>deepstaging;effects;source-generator;analyzer;roslyn;csharp</PackageTags>
-
-        <!-- This package has no code - it's just a meta-package -->
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-
-        <!-- Suppress NU5128: meta-package intentionally has no lib output -->
-        <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <Description>Complete Deepstaging toolkit — effects system, strongly-typed IDs, HTTP client generators, and config generators. Source generators, analyzers, and code fixes included.</Description>
+        <PackageTags>deepstaging;effects;strong-id;source-generator;analyzer;roslyn;csharp</PackageTags>
+        <RootNamespace>Deepstaging</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
-    <!-- 
-        Reference feature packages via ProjectReference for development.
-        At pack time, these flow as PackageReference dependencies automatically.
-    -->
+    <!-- Shared dependencies -->
     <ItemGroup>
-        <ProjectReference Include="..\Effects\Deepstaging.Effects\Deepstaging.Effects.csproj"/>
-        <ProjectReference Include="..\Config\Deepstaging.Config\Deepstaging.Config.csproj"/>
-        <ProjectReference Include="..\Ids\Deepstaging.Ids\Deepstaging.Ids.csproj"/>
-        <ProjectReference Include="..\HttpClient\Deepstaging.HttpClient\Deepstaging.HttpClient.csproj"/>
+        <PackageReference Include="PolySharp" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <!-- net10.0 runtime dependencies (flow transitively to consumers) -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="LanguageExt.Core"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    </ItemGroup>
+
+    <!-- Build props file imported automatically by consuming projects -->
+    <ItemGroup>
+        <None Include="build\Deepstaging.props" Pack="true" PackagePath="build"/>
+    </ItemGroup>
+
+    <!--
+        Package structure:
+        
+        lib/netstandard2.0/
+            Deepstaging.dll                     (attributes and enums)
+            
+        lib/net10.0/
+            Deepstaging.dll                     (attributes and enums, for net10.0 consumers)
+            Deepstaging.Runtime.dll             (runtime — DI, tracing, metrics)
+            
+        analyzers/dotnet/cs/
+            Deepstaging.Generators.dll
+            Deepstaging.Analyzers.dll
+            Deepstaging.CodeFixes.dll
+            Deepstaging.dll                     (generator dependency)
+            Deepstaging.Projection.dll          (generator dependency)
+            Deepstaging.Roslyn.dll              (generator dependency)
+            Scriban.dll                         (generator dependency)
+    -->
+
+    <PropertyGroup>
+        <BundleArtifactsPath>$(MSBuildThisFileDirectory)..</BundleArtifactsPath>
+    </PropertyGroup>
+
+    <!-- Runtime libraries in lib/net10.0/ -->
+    <ItemGroup>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Runtime/bin/$(Configuration)/net10.0/Deepstaging.Runtime.dll"
+              Pack="true" PackagePath="lib/net10.0" Visible="false"/>
+    </ItemGroup>
+
+    <!-- Analyzers and generators in analyzers folder -->
+    <ItemGroup>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Generators.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Analyzers/bin/$(Configuration)/netstandard2.0/Deepstaging.Analyzers.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.CodeFixes.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+
+        <!-- Generator dependencies (copied from Generators output) -->
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Projection.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Scriban.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>

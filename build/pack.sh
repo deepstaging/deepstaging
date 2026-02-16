@@ -10,12 +10,8 @@
 #   ./build/pack.sh --no-version-suffix  # Pack without version suffix (release)
 #
 # Output: ../../artifacts/packages/
-#   - Deepstaging.{version}.nupkg                 (meta-package)
-#   - Deepstaging.Effects.{version}.nupkg
-#   - Deepstaging.Effects.Testing.{version}.nupkg
-#   - Deepstaging.Config.{version}.nupkg
-#   - Deepstaging.Ids.{version}.nupkg
-#   - Deepstaging.HttpClient.{version}.nupkg
+#   - Deepstaging.{version}.nupkg
+#   - Deepstaging.Testing.{version}.nupkg
 
 set -euo pipefail
 
@@ -121,9 +117,9 @@ VERSIONS_FILE="$REPO_ROOT/Deepstaging.Versions.props"
 VERSIONS_LOCAL_FILE="$REPO_ROOT/Deepstaging.Versions.local.props"
 
 # Extract the full version from a generated .nupkg filename
-NUPKG=$(ls "$OUTPUT_DIR"/Deepstaging.Effects.1*.nupkg 2>/dev/null | tail -1)
+NUPKG=$(ls "$OUTPUT_DIR"/Deepstaging.1*.nupkg 2>/dev/null | tail -1)
 if [[ -n "$NUPKG" ]]; then
-    PACK_VERSION=$(basename "$NUPKG" | sed 's/^Deepstaging\.Effects\.\(.*\)\.nupkg$/\1/')
+    PACK_VERSION=$(basename "$NUPKG" | sed 's/^Deepstaging\.\(.*\)\.nupkg$/\1/')
 
     if [[ "$UPDATE_VERSIONS" == "true" ]]; then
         # CI: update the committed Versions.props
@@ -150,18 +146,8 @@ if [[ -n "$NUPKG" ]]; then
     <DeepstagingVersion>$PACK_VERSION</DeepstagingVersion>
   </PropertyGroup>
   <ItemGroup>
-    <!-- Meta-package -->
     <PackageVersion Include="Deepstaging" Version="\$(DeepstagingVersion)" />
-    <!-- Effects -->
-    <PackageVersion Include="Deepstaging.Effects" Version="\$(DeepstagingVersion)" />
-    <PackageVersion Include="Deepstaging.Effects.Runtime" Version="\$(DeepstagingVersion)" />
-    <PackageVersion Include="Deepstaging.Effects.Testing" Version="\$(DeepstagingVersion)" />
-    <!-- Config -->
-    <PackageVersion Include="Deepstaging.Config" Version="\$(DeepstagingVersion)" />
-    <!-- Ids -->
-    <PackageVersion Include="Deepstaging.Ids" Version="\$(DeepstagingVersion)" />
-    <!-- HttpClient -->
-    <PackageVersion Include="Deepstaging.HttpClient" Version="\$(DeepstagingVersion)" />
+    <PackageVersion Include="Deepstaging.Testing" Version="\$(DeepstagingVersion)" />
   </ItemGroup>
 </Project>
 EOF

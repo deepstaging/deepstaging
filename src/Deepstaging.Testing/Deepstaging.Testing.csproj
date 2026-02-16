@@ -1,0 +1,101 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+    <!--
+        Deepstaging.Testing NuGet Package
+        
+        Test helpers for Deepstaging. Generates test runtime implementations
+        with configurable service mocks.
+        
+        Consumers just need:
+        <PackageReference Include="Deepstaging.Testing" Version="1.0.0" />
+    -->
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net10.0</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>true</IsPackable>
+
+        <!--
+            Suppress NU5128: We deliberately bundle libs for multiple TFMs.
+            Suppress CS1591: TUnit's assertion generator emits types without XML docs.
+        -->
+        <NoWarn>$(NoWarn);NU5128;CS1591</NoWarn>
+
+        <!-- Package metadata -->
+        <PackageId>Deepstaging.Testing</PackageId>
+        <Title>Deepstaging.Testing</Title>
+        <Description>Test helpers for Deepstaging. Generates test runtime implementations with configurable service mocks.</Description>
+        <PackageTags>deepstaging;testing;source-generator;functional;csharp</PackageTags>
+        <RootNamespace>Deepstaging</RootNamespace>
+    </PropertyGroup>
+
+    <!-- Dependency on the main Deepstaging package -->
+    <ItemGroup>
+        <ProjectReference Include="..\Deepstaging\Deepstaging.csproj"/>
+    </ItemGroup>
+
+    <!-- TUnit assertions for net10.0 consumers -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="TUnit"/>
+    </ItemGroup>
+
+    <!-- Build props file imported automatically by consuming projects -->
+    <ItemGroup>
+        <None Include="build\Deepstaging.Testing.props" Pack="true" PackagePath="build"/>
+    </ItemGroup>
+
+    <!--
+        Package structure:
+        
+        lib/netstandard2.0/
+            Deepstaging.Testing.dll                 (attributes — for netstandard2.0 consumers)
+            
+        lib/net10.0/
+            Deepstaging.Testing.dll                 (attributes + assertions — for net10.0 consumers)
+            
+        analyzers/dotnet/cs/
+            Deepstaging.Testing.Generators.dll
+            Deepstaging.Testing.Analyzers.dll
+            Deepstaging.Testing.CodeFixes.dll
+            Deepstaging.Testing.dll                 (generator dependency)
+            Deepstaging.Testing.Projection.dll      (generator dependency)
+            Deepstaging.dll                         (generator dependency — for reading attributes)
+            Deepstaging.Projection.dll              (generator dependency — for querying models)
+            Deepstaging.Roslyn.dll                  (generator dependency)
+            Deepstaging.Roslyn.Workspace.dll        (codefix dependency)
+    -->
+
+    <PropertyGroup>
+        <BundleArtifactsPath>$(MSBuildThisFileDirectory)..</BundleArtifactsPath>
+    </PropertyGroup>
+
+    <!-- Analyzers and generators in analyzers folder -->
+    <ItemGroup>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.Generators.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+
+        <!-- Generator dependencies (copied from Generators output) -->
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.Projection.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Projection.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+
+        <!-- Analyzers -->
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.Analyzers/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.Analyzers.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+
+        <!-- Code fixes -->
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.CodeFixes.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.Workspace.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    </ItemGroup>
+
+</Project>
