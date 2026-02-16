@@ -17,17 +17,11 @@ BASE_URL="https://raw.githubusercontent.com/deepstaging/assets/dist/icons"
 # Parallel arrays: icon name and project directory
 ICON_NAMES=(
   "Deepstaging"
-  "Deepstaging.Effects"
-  "Deepstaging.Effects.Testing"
-  "Deepstaging.Ids"
-  "Deepstaging.HttpClient"
+  "Deepstaging.Testing"
 )
 ICON_DIRS=(
   "src/Deepstaging"
-  "src/Effects/Deepstaging.Effects"
-  "src/Effects/Deepstaging.Effects.Testing"
-  "src/Ids/Deepstaging.Ids"
-  "src/HttpClient/Deepstaging.HttpClient"
+  "src/Deepstaging.Testing"
 )
 
 CHECK_ONLY=false
