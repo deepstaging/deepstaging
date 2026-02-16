@@ -190,8 +190,8 @@ public static class EffectsModuleModelQueries
                             )
                         ],
                         DelegateType = method.ReturnsVoid
-                            ? TypeRef.Delegates.Action([..method.Parameters.Select(p => TypeRef.From(p.Type))])
-                            : TypeRef.Delegates.Func([..method.Parameters.Select(p => TypeRef.From(p.Type)), TypeRef.From(method.ReturnType)])
+                            ? DelegateRefs.Action([..method.Parameters.Select(p => TypeRef.From(p.Type))])
+                            : DelegateRefs.Func([..method.Parameters.Select(p => TypeRef.From(p.Type)), TypeRef.From(method.ReturnType)])
                     }
                 )
             ]

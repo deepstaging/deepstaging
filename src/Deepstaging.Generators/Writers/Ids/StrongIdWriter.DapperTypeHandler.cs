@@ -41,7 +41,7 @@ internal static class DapperTypeHandlerWriter
             BackingType.Guid => $$"""
                                   return value switch
                                   {
-                                      global::System.Guid guidValue => new {{typeName}}(guidValue),
+                                      {{SystemRefs.Guid}} guidValue => new {{typeName}}(guidValue),
                                       string stringValue when !string.IsNullOrEmpty(stringValue) && global::System.Guid.TryParse(stringValue, out var result) => new {{typeName}}(result),
                                       _ => throw new global::System.InvalidCastException($"Unable to cast object of type {value.GetType()} to {{typeName}}"),
                                   };

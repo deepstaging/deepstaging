@@ -4,6 +4,7 @@
 
 global using Deepstaging.HttpClient;
 global using Deepstaging.Ids;
+global using Deepstaging.Projection.Config;
 global using Deepstaging.Projection.Effects;
 global using Deepstaging.Roslyn;
 global using Deepstaging.Roslyn.Analyzers;

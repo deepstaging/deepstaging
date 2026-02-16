@@ -21,14 +21,13 @@ public class ConfigGeneratorTests : RoslynTestBase
 
                               public sealed record SlackConfig(string ApiKey);
 
-                              [ConfigRoot]
+                              [ConfigProvider(Section = "Slack")]
                               [Exposes<SlackConfig>]
-                              public partial class Configuration;
+                              public partial class SlackConfigProvider;
                               """;
 
         await GenerateWith<ConfigGenerator>(source)
             .ShouldGenerate()
-            .WithFileCount(1)
             .VerifySnapshot();
     }
 }

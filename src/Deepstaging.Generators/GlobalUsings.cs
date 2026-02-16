@@ -22,6 +22,6 @@ global using Deepstaging.Roslyn.Emit.Interfaces.Formatting;
 global using Deepstaging.Roslyn.Emit.Interfaces.Parsing;
 global using Deepstaging.Roslyn.Emit.Operators.Conversions;
 global using Deepstaging.Roslyn.Emit.Patterns;
+global using Deepstaging.Roslyn.Emit.Refs;
 global using Deepstaging.Roslyn.Generators;
 global using Microsoft.CodeAnalysis;
-global using static Deepstaging.Roslyn.Emit.TypeRef;

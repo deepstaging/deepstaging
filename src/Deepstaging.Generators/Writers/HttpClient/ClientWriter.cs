@@ -17,11 +17,11 @@ public static class ClientWriter
         /// </summary>
         public OptionalEmit WriteClient() => TypeBuilder
             .Parse($"{model.Accessibility} partial class {model.TypeName}")
-            .AddUsings("System.Text.Json", "System.Threading", "System.Threading.Tasks", "System.Net.Http")
+            .AddUsings(HttpRefs.Namespace, TaskRefs.ThreadingNamespace, TaskRefs.Namespace, JsonRefs.Namespace)
             .InNamespace(model.Namespace)
             .Implements(model.InterfaceName)
             .WithPrimaryConstructor(c => c
-                .AddParameter("client", Http.Client)
+                .AddParameter("client", HttpRefs.Client)
                 .If(model.HasConfiguration, cb => cb
                     .AddParameter("configuration", model.ConfigurationType!)))
             .AddMethod(SendAsyncMethod)
@@ -32,15 +32,15 @@ public static class ClientWriter
 
     private static MethodBuilder SendAsyncMethod => MethodBuilder
         .Parse($"""
-                protected async {Tasks.Task("TResponse")} SendAsync<TResponse>(
-                    {Http.RequestMessage} request, 
-                    {Tasks.CancellationToken} token = default
+                protected async {TaskRefs.Task("TResponse")} SendAsync<TResponse>(
+                    {HttpRefs.RequestMessage} request, 
+                    {TaskRefs.CancellationToken} token = default
                 )
                 """)
         .WithBody(b => b
-            .AddStatement("var response = await client.SendAsync(request, token).ConfigureAwait(false)")
-            .AddStatement("response.EnsureSuccessStatusCode()")
-            .AddStatement("var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false)")
-            .AddReturn($"{Json.Serializer}.Deserialize<TResponse>(content)!;")
+            .AddStatement($"var response = await {HttpRefs.SendAsync("client", "request", "token").ConfigureAwait()}")
+            .AddStatement(HttpRefs.EnsureSuccessStatusCode("response"))
+            .AddStatement($"var content = await {HttpRefs.ReadAsStringAsync("response").ConfigureAwait()}")
+            .AddReturn(JsonRefs.Deserialize("TResponse", "content").NullForgiving())
         );
 }

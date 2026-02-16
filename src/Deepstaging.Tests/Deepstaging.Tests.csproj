@@ -36,4 +36,8 @@
         <PackageReference Include="Dapper"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Analyzers\Config\" />
+    </ItemGroup>
+
 </Project>

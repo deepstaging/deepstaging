@@ -53,11 +53,11 @@ internal static class JsonConverterWriter
         backingType switch
         {
             BackingType.Guid =>
-                $"new(global::System.Guid.Parse(reader.GetString() ?? throw new {TypeRef.Exceptions.Format}(\"The string for the {typeName} property was null\")))",
+                $"new(global::System.Guid.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
             BackingType.Int =>
-                $"new(int.Parse(reader.GetString() ?? throw new {TypeRef.Exceptions.Format}(\"The string for the {typeName} property was null\")))",
+                $"new(int.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
             BackingType.Long =>
-                $"new(long.Parse(reader.GetString() ?? throw new {TypeRef.Exceptions.Format}(\"The string for the {typeName} property was null\")))",
+                $"new(long.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
             BackingType.String => "new(reader.GetString()!)",
             _ => throw new ArgumentOutOfRangeException(nameof(backingType), backingType, null)
         };

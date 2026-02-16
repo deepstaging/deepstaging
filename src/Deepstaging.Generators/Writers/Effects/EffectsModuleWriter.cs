@@ -3,6 +3,8 @@
 
 namespace Deepstaging.Generators.Writers.Effects;
 
+using LocalRefs;
+
 /// <summary>
 /// Emits code for standalone [EffectsModule] decorated classes.
 /// </summary>
@@ -17,7 +19,7 @@ public static partial class EffectsModuleWriter
             TypeBuilder
                 .Interface(model.Capability.Interface)
                 .InNamespace(model.Namespace)
-                .AddUsings("Deepstaging.Effects", "System.Threading.Tasks")
+                .AddUsings("Deepstaging.Effects", TaskRefs.Namespace)
                 .AddProperty(model.Capability.PropertyName, model.TargetType, builder => builder.AsReadOnly())
                 .WithXmlDoc(xml => xml
                     .WithSummary($"Runtime capability interface for the {model.Capability.DependencyType.Name} dependency of the {model.Name} effects module.")
@@ -29,19 +31,6 @@ public static partial class EffectsModuleWriter
         /// </summary>
         public OptionalEmit WriteEffectsModule()
         {
-            var usings = new[]
-            {
-                "Deepstaging.Effects",
-                "LanguageExt",
-                "LanguageExt.Effects",
-                "System.Diagnostics",
-                "System",
-                "System.Collections.Generic",
-                "System.Threading",
-                "System.Threading.Tasks",
-                "static LanguageExt.Prelude"
-            };
-
             var module = TypeBuilder
                 .Parse($"public static partial class {model.Name}")
                 // TODO: Add flagged Effects enum to this class that records all effects in this module.
@@ -53,7 +42,9 @@ public static partial class EffectsModuleWriter
 
             return TypeBuilder
                 .Parse($"public static partial class {model.EffectsContainerName}")
-                .AddUsings(usings)
+                .AddUsings(SystemRefs.Namespace, "Deepstaging.Effects")
+                .AddUsings(DiagnosticsRefs.Namespace, CollectionRefs.Namespace)
+                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeNamespace)
                 .InNamespace(model.Namespace)
                 .WithXmlDoc($"Container class for the <c>{model.Name}</c> effects module and its nested entity set effect classes.")
                 .AddNestedType(module)
@@ -63,7 +54,7 @@ public static partial class EffectsModuleWriter
 
     internal static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) => builder
         .If(module.Instrumented, b => b
-            .AddUsing("System.Diagnostics")
-            .AddField(FieldBuilder.Parse("private static readonly ActivitySource ActivitySource")
+            .AddUsing(DiagnosticsRefs.Namespace)
+            .AddField(FieldBuilder.Parse($"private static readonly {DiagnosticsRefs.Namespace} ActivitySource")
                 .WithInitializer($"""new("{module.Namespace}.{module.Name}", "1.0.0")""")));
 }

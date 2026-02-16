@@ -3,9 +3,6 @@
 
 namespace Deepstaging.Testing.Generators.Writers;
 
-using static TypeRef.Delegates;
-using static TypeRef.Exceptions;
-
 /// <summary>
 /// Provides extension methods for generating test runtime source code from a <see cref="TestRuntimeModel"/>.
 /// </summary>
@@ -21,7 +18,7 @@ public static class TestRuntimeWriter
             TypeBuilder
                 .Parse($"{model.AccessibilityModifier} partial class {model.TestRuntimeType.Name}")
                 .InNamespace(model.Namespace)
-                .AddUsing("System")
+                .AddUsing(SystemRefs.Namespace)
                 .Implements(model.CapabilitiesInterfaceFullName)
                 .Implements($"global::Deepstaging.ITestRuntime<{model.TestRuntimeType.CodeName}>")
                 .WithXmlDoc(xml => xml
@@ -38,11 +35,11 @@ public static class TestRuntimeWriter
                 // Add static Create() factory method (implements ITestRuntime<TSelf>)
                 .AddMethod(MethodBuilder
                     .Parse($"public static {model.TestRuntimeType.CodeName} Create()")
+                    .WithBody(body => body
+                        .AddReturn($"new {model.TestRuntimeType.CodeName}()"))
                     .WithXmlDoc(xml => xml
                         .WithSummary($"Creates a new <c>{model.TestRuntimeType.Name}</c> instance with all capabilities unconfigured. Use <c>.With*()</c> methods to configure.")
-                        .WithReturns("A new test runtime instance."))
-                    .WithBody(body => body
-                        .AddReturn($"new {model.TestRuntimeType.CodeName}()")))
+                        .WithReturns("A new test runtime instance.")))
                 .Emit();
     }
 
@@ -52,13 +49,13 @@ public static class TestRuntimeWriter
 
         return type.AddMethod(MethodBuilder
             .Parse($"public {type.Name} With{capability.PropertyName}({capability.DependencyType.CodeName} {capability.ParameterName})")
+            .WithBody(body => body
+                .AddStatement($"{capability.FieldName} = {capability.ParameterName}")
+                .AddReturn("this"))
             .WithXmlDoc(xml => xml
                 .WithSummary($"Configures the <c>{capability.PropertyName}</c> capability with the specified implementation.")
                 .AddParam(capability.ParameterName, $"The {capability.DependencyType.Name} implementation to use.")
-                .WithReturns("This test runtime instance for fluent chaining."))
-            .WithBody(body => body
-                .AddStatement($"{capability.FieldName} = {capability.ParameterName}")
-                .AddReturn("this")));
+                .WithReturns("This test runtime instance for fluent chaining.")));
     }
 
     private static TypeBuilder ImplementCapability(this TypeBuilder type)
@@ -76,8 +73,8 @@ public static class TestRuntimeWriter
                 .For(stub.PropertyName, stub.DependencyType.CodeName)
                 .WithXmlDoc(xml => xml
                     .WithSummary($"Gets the <c>{stub.DependencyType.Name}</c> capability, or throws if not configured.")
-                    .AddException(InvalidOperation, "Thrown if the capability has not been configured."))
-                .WithGetter($"{stub.FieldName} ?? throw new {InvalidOperation}(\"{exceptionMessage}\")"));
+                    .AddException(ExceptionRefs.InvalidOperation, "Thrown if the capability has not been configured."))
+                .WithGetter($"{stub.FieldName} ?? throw new {ExceptionRefs.InvalidOperation}(\"{exceptionMessage}\")"));
     }
 
     internal class StubInfo(RuntimeCapabilityModel capability)
@@ -89,7 +86,7 @@ public static class TestRuntimeWriter
         public string ParameterName => capability.ParameterName;
         public TypeSnapshot DependencyType => capability.DependencyType;
         public string NullableDependencyType => $"{capability.DependencyType.CodeName}?";
-        public TypeRef ConfigureDelegate => Func(RecordName, RecordName);
+        public TypeRef ConfigureDelegate => DelegateRefs.Func(RecordName, RecordName);
         public EquatableArray<CapabilityMethodModel> Methods => capability.Methods;
     }
 }

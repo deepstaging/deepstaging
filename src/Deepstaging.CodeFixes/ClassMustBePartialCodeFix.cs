@@ -4,6 +4,7 @@
 namespace Deepstaging.CodeFixes;
 
 using Analyzers.Effects;
+using Analyzers.Config;
 
 /// <summary>
 /// Code fix provider that adds the 'partial' modifier to classes with [EffectsModule].
@@ -12,6 +13,7 @@ using Analyzers.Effects;
 [CodeFix(RuntimeMustBePartialAnalyzer.DiagnosticId)]
 [CodeFix(EffectsModuleMustBePartialAnalyzer.DiagnosticId)]
 [CodeFix(HttpClientMustBePartialAnalyzer.DiagnosticId)]
+[CodeFix(ConfigProviderMustBePartialAnalyzer.DiagnosticId)]
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ClassMustBePartialCodeFix))]
 public sealed class ClassMustBePartialCodeFix : ClassCodeFix
 {

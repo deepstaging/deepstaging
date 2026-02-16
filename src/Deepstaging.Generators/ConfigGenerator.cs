@@ -6,8 +6,8 @@ namespace Deepstaging.Generators;
 using Config;
 
 /// <summary>
-/// Incremental source generator that generates immutable With*() methods
-/// for classes marked with [Config].
+/// Incremental source generator that generates strongly-typed configuration providers
+/// for classes marked with <see cref="ConfigProviderAttribute"/>.
 /// </summary>
 [Generator]
 public sealed class ConfigGenerator : IIncrementalGenerator
@@ -15,11 +15,9 @@ public sealed class ConfigGenerator : IIncrementalGenerator
     /// <inheritdoc />
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Find all types with [Config] attribute and map to model
-        var models = context.ForAttribute<ConfigRootAttribute>()
+        var models = context.ForAttribute<ConfigProviderAttribute>()
             .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().QueryConfigModel());
 
-        // Register source output for each model
         context.RegisterSourceOutput(models, static (ctx, model) => model
             .WriteConfigClass()
             .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName)));

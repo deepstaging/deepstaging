@@ -11,3 +11,4 @@ global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
 global using Deepstaging.Roslyn;
 global using Deepstaging.Roslyn.Emit;
+global using Deepstaging.Roslyn.Emit.Refs;

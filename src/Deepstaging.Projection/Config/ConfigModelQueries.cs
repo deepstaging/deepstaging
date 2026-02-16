@@ -7,7 +7,7 @@ using Attributes;
 using Models;
 
 /// <summary>
-/// Provides extension methods for querying and building "With" method models from type symbols.
+/// Provides extension methods for building configuration models from type symbols.
 /// </summary>
 public static class ConfigModelQueries
 {
@@ -16,19 +16,26 @@ public static class ConfigModelQueries
     extension(ValidSymbol<INamedTypeSymbol> symbol)
     {
         /// <summary>
-        /// Builds a <see cref="Models.ConfigModel"/> from the current symbol, extracting relevant information such as namespace, type name, accessibility, and exposed configuration types.
+        /// Builds a <see cref="Models.ConfigModel"/> from the current symbol, extracting relevant information
+        /// such as namespace, type name, accessibility, section, and exposed configuration types.
         /// </summary>
-        /// <returns></returns>
-        public ConfigModel QueryConfigModel() =>
-            new()
+        public ConfigModel QueryConfigModel()
+        {
+            var attribute = symbol.ConfigProviderAttribute();
+
+            return new ConfigModel
             {
                 Namespace = symbol.Namespace ?? "",
                 TypeName = symbol.Name,
                 Accessibility = symbol.AccessibilityString,
-                ExposedConfigurationTypes = symbol.ExposesAttributes()
-                    .Select(ToConfigTypeModel)
-                    .ToEquatableArray()
+                Section = attribute.GetSectionName(symbol),
+                ExposedConfigurationTypes =
+                [
+                    ..symbol.ExposesAttributes()
+                        .Select(ToConfigTypeModel)
+                ]
             };
+        }
     }
 
     private static ConfigTypeModel ToConfigTypeModel(ExposesAttributeQuery attribute)
@@ -44,6 +51,6 @@ public static class ConfigModelQueries
     private static ConfigTypePropertyModel ToConfigTypePropertyModel(ValidSymbol<IPropertySymbol> property) => new(
         Property: property.ToSnapshot(),
         Documentation: property.XmlDocumentation.ToSnapshot(),
-        IsSecret: property.HasAttribute("Secret")
+        IsSecret: property.HasAttribute<SecretAttribute>()
     );
 }

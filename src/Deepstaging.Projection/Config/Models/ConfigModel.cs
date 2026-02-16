@@ -4,7 +4,7 @@
 namespace Deepstaging.Projection.Config.Models;
 
 /// <summary>
-/// 
+/// Represents a configuration provider model built from a type decorated with <see cref="ConfigProviderAttribute"/>.
 /// </summary>
 [PipelineModel]
 public sealed record ConfigModel
@@ -17,15 +17,20 @@ public sealed record ConfigModel
     /// <summary>
     /// The simple name of the type.
     /// </summary>
-    public required string TypeName { get; init; }
+    public required TypeRef TypeName { get; init; }
 
     /// <summary>
-    /// 
+    /// The accessibility modifier of the type.
     /// </summary>
     public required string Accessibility { get; init; }
 
     /// <summary>
-    /// 
+    /// The configuration section name (explicit or inferred from the class name).
+    /// </summary>
+    public required string Section { get; init; }
+
+    /// <summary>
+    /// The configuration types exposed by this provider.
     /// </summary>
     public EquatableArray<ConfigTypeModel> ExposedConfigurationTypes { get; init; } = [];
 }

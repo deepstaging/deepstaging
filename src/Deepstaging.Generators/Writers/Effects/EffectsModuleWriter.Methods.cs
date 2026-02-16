@@ -3,7 +3,7 @@
 
 namespace Deepstaging.Generators.Writers.Effects;
 
-using static Types;
+using LocalRefs;
 
 /// <summary>
 /// Vanilla effect method emissions (non-DbContext effect methods).
@@ -14,15 +14,13 @@ public static partial class EffectsModuleWriter
     {
         private TypeBuilder AddEffectMethods(EffectsModuleModel module) =>
             builder.If(module.Methods.Any(), b => b
-                    .AddUsing("LanguageExt")
-                    .AddUsing("LanguageExt.Effects")
-                    .AddUsing("static LanguageExt.Prelude"))
+                    .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeNamespace))
                 .WithEach(module.Methods, (b, method) => b
                     .AddMethod(method.EffectName, m => m
                         .AsStatic()
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
-                        .WithReturnType(Effects.EffOf(method.EffResultType))
+                        .WithReturnType(LanguageExtRefs.EffOf(method.EffResultType))
                         .WithXmlDoc(method.Documentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }

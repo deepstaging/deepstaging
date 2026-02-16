@@ -15,12 +15,11 @@ public static class RuntimeBootstrapperWriter
         /// </summary>
         public OptionalEmit WriteRuntimeBootstrapperClass()
         {
-            var optionsType = From($"{model.RuntimeTypeName}Options");
+            var optionsType = TypeRef.From($"{model.RuntimeTypeName}Options");
 
             return TypeBuilder.Parse($"public static class {model.RuntimeTypeName}Bootstrapper")
                 .InNamespace(model.Namespace)
-                .WithXmlDoc(xml => xml
-                    .WithSummary($"Provides dependency injection bootstrapping for the <c>{model.RuntimeTypeName}</c> runtime."))
+                .WithXmlDoc($"Provides dependency injection bootstrapping for the <c>{model.RuntimeTypeName}</c> runtime.")
                 .AddNestedType(model.OptionsClass(optionsType))
                 .AddMethod(model.BootstrapMethod(optionsType))
                 .Emit();
@@ -38,7 +37,8 @@ public static class RuntimeBootstrapperWriter
             .WithAutoPropertyAccessors()
             .WithXmlDoc("Gets or sets whether OpenTelemetry tracing is enabled for effect instrumentation."))
         .AddMethod(MethodBuilder
-            .Parse($"public {optionsType} EnableTracing()")
+            .For("EnableTracing")
+            .WithReturnType(optionsType)
             .WithXmlDoc(xml => xml
                 .WithSummary("Enables OpenTelemetry tracing for instrumented effect methods.")
                 .WithReturns("This options instance for fluent chaining."))
@@ -52,7 +52,8 @@ public static class RuntimeBootstrapperWriter
                 .WithAutoPropertyAccessors()
                 .WithXmlDoc("Gets or sets whether structured logging is enabled for effect instrumentation."))
             .AddMethod(MethodBuilder
-                .Parse($"public {optionsType} EnableLogging()")
+                .For("EnableLogging")
+                .WithReturnType(optionsType)
                 .WithXmlDoc(xml => xml
                     .WithSummary("Enables structured logging for instrumented effect methods.")
                     .WithReturns("This options instance for fluent chaining."))
@@ -62,28 +63,28 @@ public static class RuntimeBootstrapperWriter
 
     private static MethodBuilder BootstrapMethod(this RuntimeModel model, TypeRef optionsType)
     {
-        var configureDelegate = Delegates.Action(optionsType);
+        var configureDelegate = DelegateRefs.Action(optionsType);
 
         return MethodBuilder
             .Parse(
                 $"""
-                 public static {DependencyInjection.IServiceCollection} Add{model.RuntimeTypeName}(
-                     this {DependencyInjection.IServiceCollection} services, 
+                 public static {DependencyInjectionRefs.IServiceCollection} Add{model.RuntimeTypeName}(
+                     this {DependencyInjectionRefs.IServiceCollection} services, 
                      {configureDelegate.Nullable()} configure = null
                  )
                  """)
-            .WithXmlDoc(xml => xml
-                .WithSummary($"Registers the <c>{model.RuntimeTypeName}</c> runtime and its dependencies with the service collection.")
-                .AddParam("services", "The service collection to add the runtime to.")
-                .AddParam("configure", "An optional delegate to configure runtime options such as tracing and logging.")
-                .WithReturns("The service collection for fluent chaining."))
-            .AddUsings("Microsoft.Extensions.DependencyInjection", "OpenTelemetry.Trace", "System", "System.Threading.Tasks")
+            .AddUsings(SystemRefs.Namespace, TaskRefs.Namespace, DependencyInjectionRefs.Namespace, "OpenTelemetry.Trace")
             .WithBody(body => body
                 .AddStatement($"var options = new {optionsType}()")
                 .AddStatement("configure?.Invoke(options)")
                 .ConfigureRuntimeRegistration(model)
                 .ConfigureTracingRegistration(model.ActivitySources)
-                .AddReturn("services"));
+                .AddReturn("services"))
+            .WithXmlDoc(xml => xml
+                .WithSummary($"Registers the <c>{model.RuntimeTypeName}</c> runtime and its dependencies with the service collection.")
+                .AddParam("services", "The service collection to add the runtime to.")
+                .AddParam("configure", "An optional delegate to configure runtime options such as tracing and logging.")
+                .WithReturns("The service collection for fluent chaining."));
     }
 
     private static BodyBuilder ConfigureTracingRegistration(this BodyBuilder builder, EquatableArray<string> activitySources) => builder
@@ -106,7 +107,7 @@ public static class RuntimeBootstrapperWriter
 
         if (model.HasInstrumentedModules)
         {
-            dependencies.Add($"var loggerFactory = options.Logging ? sp.GetRequiredService<{Logging.ILoggerFactory}>() : null;");
+            dependencies.Add($"var loggerFactory = options.Logging ? sp.GetRequiredService<{LoggingRefs.ILoggerFactory}>() : null;");
             capabilities.Add("loggerFactory");
         }
 

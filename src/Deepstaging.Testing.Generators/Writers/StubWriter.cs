@@ -3,8 +3,6 @@
 
 namespace Deepstaging.Testing.Generators.Writers;
 
-using static TypeRef.Tasks;
-
 /// <summary>
 /// Provides extension methods for generating inner stub classes for each capability
 /// on a test runtime. Each stub implements the capability interface with configurable
@@ -87,10 +85,10 @@ public static class StubWriter
                     .Invoke([..method.Parameters.Select(x => x.Name)])
                     .OrDefault(method switch
                     {
-                        { IsNonGenericTask: true } => CompletedTask,
+                        { IsNonGenericTask: true } => TaskRefs.CompletedTask,
                         { IsNonGenericValueTask: true } => "default",
-                        { IsGenericTask: true } => $"{Task()}.FromResult<{method.InnerTaskType}>(default!)",
-                        { IsGenericValueTask: true } => $"new global::System.Threading.Tasks.ValueTask<{method.InnerTaskType}>(default!)",
+                        { IsGenericTask: true } => TaskRefs.FromResult(method.InnerTaskType!, "default!"),
+                        { IsGenericValueTask: true } => TaskRefs.ValueTask(method.InnerTaskType!).New("default!"),
                         _ => "default!"
                     }))
             .WithXmlDoc(xml => xml

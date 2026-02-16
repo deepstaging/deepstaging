@@ -27,19 +27,20 @@ public static class RequestWriter
         /// </summary>
         public MethodBuilder WriteAsyncMethod() =>
             MethodBuilder
-                .Parse($"public async {Tasks.Task(request.ReturnType)} {request.AsyncMethodName}()")
+                .Parse($"public async {TaskRefs.Task(request.ReturnType)} {request.AsyncMethodName}()")
                 .WithEach(request.Parameters, (b, param) => param.HasDefaultValue
                     ? b.AddParameter(param.Name, param.TypeFqn, p => p.WithDefaultValue(param.DefaultValueExpression!))
                     : b.AddParameter(param.Name, param.TypeFqn))
-                .AddParameter("token", Tasks.CancellationToken, p => p.WithDefaultValue("default"))
+                .AddParameter("token", TaskRefs.CancellationToken, p => p.WithDefaultValue("default"))
                 .WithBody(body => body
                     .AddPathStatements(request)
-                    .AddStatement($"using var httpRequest = new {Http.RequestMessage}({Http.Verb($"{request.Verb}")}, path);")
+                    .AddStatement($"using var httpRequest = {HttpRefs.RequestMessage.New(HttpRefs.Verb($"{request.Verb}"), "path")}")
                     .WithEach(request.HeaderParameters, (b, hp) => b
-                        .AddStatement($"if ({hp.Name} != null) httpRequest.Headers.TryAddWithoutValidation(\"{hp.EffectiveName}\", {hp.Name});"))
+                        .AddIf("{hp.Name} != null", then => then
+                            .AddStatement($"httpRequest.Headers.TryAddWithoutValidation(\"{hp.EffectiveName}\", {hp.Name})")))
                     .If(condition: request.BodyParameter is not null, b => b
-                        .AddStatement($"var json = {Json.Serializer}.Serialize({request.BodyParameter!.Name})")
-                        .AddStatement($"httpRequest.Content = new {Http.StringContent}(json, {Encoding.UTF8}, \"application/json\");"))
+                        .AddStatement($"var json = {JsonRefs.Serialize(request.BodyParameter!.Name)}")
+                        .AddStatement($"httpRequest.Content = {HttpRefs.StringContent.New("json", EncodingRefs.UTF8, "application/json")}"))
                     .AddReturn($"await SendAsync<{request.ReturnType}>(httpRequest, token).ConfigureAwait(false);"));
     }
 
@@ -50,12 +51,13 @@ public static class RequestWriter
 
         return builder.If(
             condition: request.QueryParameters.Count > 0,
-            then: body => body
-                .AddStatement($"var params = new {Collections.List("string")}()")
+            body => body
+                .AddStatement($"var params = {CollectionRefs.List("string").New()}")
                 .WithEach(request.QueryParameters, (b, qp) => b
-                    .AddStatement($"if ({qp.Name} != null) params.Add($\"{qp.EffectiveName}={{{qp.Name}}}\");"))
+                    .AddIf($"{qp.Name} != null", then => then
+                        .AddStatement($"params.Add($\"{qp.EffectiveName}={{{qp.Name}}}\")")))
                 .AddStatement($"var path = params.Count > 0 ? $\"{pathExpr}?{{string.Join(\"&\", params)}}\" : $\"{pathExpr}\";"),
-            @else: body => body
+            body => body
                 .AddStatement($"var path = $\"{pathExpr}\";")
         );
     }

@@ -21,7 +21,7 @@ internal static class TestConfiguration
             typeof(OpenTelemetry.OpenTelemetryBuilder),
             typeof(OpenTelemetry.Trace.TracerProvider),
             // Config
-            typeof(Config.ConfigRootAttribute),
+            typeof(Config.ConfigProviderAttribute),
             // Ids
             typeof(Ids.StrongIdAttribute),
             typeof(System.ComponentModel.TypeConverter),

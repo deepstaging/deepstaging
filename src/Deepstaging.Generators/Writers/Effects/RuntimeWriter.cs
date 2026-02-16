@@ -3,7 +3,7 @@
 
 namespace Deepstaging.Generators.Writers.Effects;
 
-using static TypeRef.Logging;
+using LocalRefs;
 
 /// <summary>
 /// Generates the partial runtime class with capability properties and a primary constructor.
@@ -24,11 +24,11 @@ public static class RuntimeWriter
                 .WithEach(model.Capabilities, (b, capability) => b
                     .AddParameter(capability.ParameterName, capability.DependencyType.CodeName))
                 .If(model.HasInstrumentedModules, b => b
-                    .AddParameter("loggerFactory", ILoggerFactory.Nullable(), p => p.WithDefaultValue("null")));
+                    .AddParameter("loggerFactory", LoggingRefs.ILoggerFactory.Nullable(), p => p.WithDefaultValue("null")));
 
             return TypeBuilder
                 .Parse($"{model.AccessibilityModifier} partial class {model.RuntimeTypeName}")
-                .AddUsing("System.Threading.Tasks")
+                .AddUsing(TaskRefs.Namespace)
                 .WithXmlDoc("Runtime class that implements capability interfaces and provides access to effect dependencies.")
                 .Implements(model.CapabilitiesInterfaceName)
                 .InNamespace(model.Namespace)
@@ -38,9 +38,9 @@ public static class RuntimeWriter
                         .WithXmlDoc($"Gets the <c>{capability.DependencyType.Name}</c> dependency for this runtime.")
                         .WithGetter(capability.ParameterName)))
                 .If(model.HasInstrumentedModules, b => b
-                    .AddUsing("Microsoft.Extensions.Logging")
+                    .AddUsing(LoggingRefs.Namespace)
                     .Implements(LoggerFactoryInterface)
-                    .AddProperty("LoggerFactory", ILoggerFactory, prop => prop
+                    .AddProperty("LoggerFactory", LoggingRefs.ILoggerFactory, prop => prop
                         .WithXmlDoc("Gets the logger factory for structured logging of instrumented effect methods.")
                         .WithGetter("loggerFactory!")))
                 .Emit();

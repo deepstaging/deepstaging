@@ -4,12 +4,14 @@
 namespace Deepstaging.CodeFixes;
 
 using Analyzers.Effects;
+using Analyzers.Config;
 
 /// <summary>
 /// Code fix provider that adds the 'sealed' modifier to classes with [EffectsModule].
 /// </summary>
 [Shared]
 [CodeFix(EffectsModuleShouldBeSealedAnalyzer.DiagnosticId)]
+[CodeFix(ConfigProviderShouldBeSealedAnalyzer.DiagnosticId)]
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ClassShouldBeSealedCodeFix))]
 public sealed class ClassShouldBeSealedCodeFix : ClassCodeFix
 {
