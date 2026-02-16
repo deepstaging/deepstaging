@@ -1,159 +1,241 @@
-# Copilot Instructions
+# Copilot Instructions for Deepstaging
 
-This repository contains **Deepstaging**, a Roslyn-based code generation toolkit for C#/.NET.
-
-## Build & Test Commands
+## Build, Test, Lint
 
 ```bash
-# Build entire solution
+# Build
 dotnet build Deepstaging.slnx
 
-# Run all tests
-dotnet test Deepstaging.slnx
+# Test (all) — prefer `dotnet run` for TUnit (easier flag passing)
+dotnet run --project src/Deepstaging.Tests -c Release
+dotnet run --project src/Deepstaging.Testing.Tests -c Release
 
-# Run a specific test by name
-dotnet test --filter "FullyQualifiedName~MyTestClassName.MyTestMethod"
+# Test (by class name)
+dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
 
-# Run tests in a specific project
-dotnet test roslyn/Deepstaging.Roslyn.Tests
+# Test (by test name)
+dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
+
+# Test (by feature — e.g., all Effects tests)
+dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/Deepstaging.Tests*Effects*/*/*
+
+# Test via dotnet test (flags go after --)
+dotnet test --project src/Deepstaging.Tests -c Release -- --treenode-filter /*/*/StrongIdGeneratorTests/*
+
+# Pack (local dev)
+./build/pack.sh
 ```
 
-## Architecture Overview
+There is no separate lint command. Warnings are treated as errors via `TreatWarningsAsErrors`, so `dotnet build` is the lint step.
 
-### Solution Structure
+The `--treenode-filter` syntax is `/<Assembly>/<Namespace>/<Class>/<Test>` with `*` wildcards.
 
-- **`src/`** - Main application code
-  - `Deepstaging` - Core package with marker attributes (entry point for consumers)
-  - `Deepstaging.Generators` - Incremental source generators
-  - `Deepstaging.Analyzers` - Roslyn diagnostic analyzers
-  - `Deepstaging.Runtime` - Runtime support library
-  - `Deepstaging.Tests` - Integration tests
+## Architecture
 
-- **`roslyn/`** - Roslyn utilities (the core toolkit)
-  - `Deepstaging.Roslyn` - Query builders, projections, emit API, and generator extensions
-  - `Deepstaging.Roslyn.Scriban` - Scriban template infrastructure for generators
-  - `Deepstaging.Roslyn.Testing` - Test base classes for Roslyn components
-  - `Deepstaging.Roslyn.Tests` - Tests for the Roslyn toolkit
+### Project Map
 
-### Roslyn Library (Deepstaging.Roslyn)
+| Project | Target | Purpose |
+|---------|--------|---------|
+| `Deepstaging` | netstandard2.0 + net10.0 | Core marker attributes (`EffectsModuleAttribute`, `StrongIdAttribute`, `ConfigRootAttribute`, `HttpClientAttribute`) and enums (`BackingType`, `IdConverters`) |
+| `Deepstaging.Runtime` | net10.0 | Runtime support: OpenTelemetry instrumentation (`ActivityEffectExtensions`), `IHasLoggerFactory`, `EffectMetrics` |
+| `Deepstaging.Projection` | netstandard2.0 | Roslyn analysis layer — attribute queries and pipeline models for each feature |
+| `Deepstaging.Generators` | netstandard2.0 | Incremental source generators: `EffectsGenerator`, `StrongIdGenerator`, `ConfigGenerator`, `HttpClientGenerator` |
+| `Deepstaging.Analyzers` | netstandard2.0 | Roslyn diagnostic analyzers (enforce partial/sealed, validate targets, check method names) |
+| `Deepstaging.CodeFixes` | netstandard2.0 | Code fix providers (`StructMustBePartialCodeFix`, `ClassMustBePartialCodeFix`, etc.) |
+| `Deepstaging.Testing` | netstandard2.0 + net10.0 | Test support library (not tests) — `ITestRuntime<TSelf>`, `TestRuntimeAttribute<TRuntime>` |
+| `Deepstaging.Testing.Projection` | netstandard2.0 | Projection layer for test runtime attributes |
+| `Deepstaging.Testing.Generators` | netstandard2.0 | Generator for test runtime implementations |
+| `Deepstaging.Testing.Analyzers` | netstandard2.0 | Analyzers for test runtime attributes |
+| `Deepstaging.Testing.CodeFixes` | netstandard2.0 | Code fixes for test runtime violations |
+| `Deepstaging.Tests` | net10.0 | Main test suite |
+| `Deepstaging.Testing.Tests` | net10.0 | Tests for the Testing support library |
 
-Three main APIs for working with Roslyn:
+All library projects target `netstandard2.0` for Roslyn analyzer/generator compatibility. Only test projects and Runtime target `net10.0`.
 
-1. **Queries** - Fluent builders for finding symbols:
-   ```csharp
-   TypeQuery.From(compilation)
-       .ThatArePublic()
-       .ThatAreClasses()
-       .WithAttribute("MyAttribute")
-       .GetAll();
-   ```
+### Layered Architecture
 
-2. **Projections** - Optional/validated wrappers for nullable symbols:
-   ```csharp
-   symbol.GetAttribute("MyAttribute")
-       .NamedArg<int>("MaxRetries")
-       .OrDefault(3);
-   ```
+Each feature (Effects, Ids, Config, HttpClient) follows this pipeline:
 
-3. **Emit** - Fluent builders for generating C# code:
-   ```csharp
-   TypeBuilder.Class("Customer")
-       .InNamespace("MyApp")
-       .AddProperty("Name", "string", p => p.WithAutoPropertyAccessors())
-       .Emit();
-   ```
+```
+Attributes (Deepstaging)
+    ↓
+Projection (Deepstaging.Projection) ← single source of truth for attribute interpretation
+    ↓
+Generators, Analyzers, CodeFixes
+```
 
-### Source Generator Pattern
+### Generator Pattern
 
-Generators use Scriban templates with this structure:
+Generators use the Emit API with Writer classes organized by feature:
 
 ```
 Deepstaging.Generators/
-├── DeepstagingGenerator.cs
-├── Writers/           # Template invocation logic
-└── Templates/          # .scriban-cs templates (embedded resources)
+├── Effects/
+│   ├── EffectsGenerator.cs              # IIncrementalGenerator entry point
+│   └── Writers/
+│       ├── EffectsModuleWriter.cs        # Core writer
+│       ├── EffectsModuleWriter.Methods.cs # Partial for method generation
+│       ├── EffectsModuleWriter.DbContext.cs
+│       ├── DbSetQueryWriter.cs
+│       ├── RuntimeWriter.cs
+│       └── RuntimeBootstrapperWriter.cs
+├── Ids/Writers/StrongIdWriter.cs         # + partials: .Constructor, .Converters, .Factory, etc.
+├── Config/Writers/ConfigWriter.cs
+└── HttpClient/Writers/
+    ├── ClientWriter.cs
+    ├── InterfaceWriter.cs
+    └── RequestWriter.cs
 ```
 
-Template usage:
+Generator entry point pattern:
 ```csharp
-private static readonly Func<string, TemplateName> Named = 
-    TemplateName.ForGenerator<MyGenerator>();
-
-context.AddFromTemplate(
-    Named("MyTemplate.scriban-cs"),
-    hintName,
-    model);
-```
-
-## Testing Conventions
-
-### Test Framework
-
-Uses **TUnit** (not xUnit/NUnit) with async assertions:
-```csharp
-await Assert.That(result).HasCount(2);
-await Assert.That(name).IsEqualTo("Expected");
-```
-
-### Roslyn Testing Base Classes
-
-All Roslyn tests inherit from `RoslynTestBase`:
-
-```csharp
-public class MyTests : RoslynTestBase
+[Generator]
+public sealed class StrongIdGenerator : IIncrementalGenerator
 {
-    [Test]
-    public async Task TestSymbols()
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var type = Symbols("public class MyClass { }").GetType("MyClass");
-        // ...
-    }
+        var models = context.ForAttribute<StrongIdAttribute>()
+            .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel));
 
-    [Test]
-    public async Task TestAnalyzer()
-    {
-        await Analyze<MyAnalyzer>(source)
-            .ShouldReportDiagnostic("MYID001");
-    }
-
-    [Test]
-    public async Task TestGenerator()
-    {
-        await Generate<MyGenerator>(source)
-            .ShouldGenerate()
-            .VerifySnapshot();
+        context.RegisterSourceOutput(models, static (ctx, model) =>
+        {
+            model.WriteStrongId()
+                .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName));
+        });
     }
 }
 ```
 
+Writers transform projection models into generated code using TypeBuilder fluent API:
+```csharp
+model.WriteStrongId()        // returns OptionalEmit
+    .AddSourceTo(ctx, hint);
+```
+
+### Analyzer Pattern
+
+Analyzers extend `TypeAnalyzer` (from Deepstaging.Roslyn):
+```csharp
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+[Reports(DiagnosticId, "Title", Message = "...", Description = "...")]
+public sealed class StrongIdMustBePartialAnalyzer : TypeAnalyzer
+{
+    public const string DiagnosticId = "ID0001";
+
+    protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
+        type.HasAttribute<StrongIdAttribute>() && type is { IsPartial: false };
+}
+```
+
+### CodeFix Pattern
+
+Code fixes use helper base classes:
+```csharp
+[Shared]
+[CodeFix(StrongIdMustBePartialAnalyzer.DiagnosticId)]
+[ExportCodeFixProvider(LanguageNames.CSharp)]
+public sealed class StructMustBePartialCodeFix : StructCodeFix
+{
+    protected override CodeAction CreateFix(Document document, ValidSyntax<StructDeclarationSyntax> syntax) =>
+        document.AddPartialModifierAction(syntax);
+}
+```
+
+## Testing
+
+### Test Framework
+
+Uses **TUnit** (not xUnit/NUnit) with async assertions and **Verify** for snapshot testing.
+
+All Roslyn tests inherit from `RoslynTestBase` (from `Deepstaging.Roslyn.Testing`).
+
+### Test Patterns
+
+**Generator tests:**
+```csharp
+await GenerateWith<StrongIdGenerator>(source)
+    .ShouldGenerate()
+    .WithFileContaining("public partial struct UserId")
+    .WithNoDiagnostics()
+    .VerifySnapshot();
+```
+
+**Analyzer tests:**
+```csharp
+await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
+    .ShouldReportDiagnostic("ID0001")
+    .WithSeverity(DiagnosticSeverity.Error)
+    .WithMessage("*UserId*partial*");
+```
+
+**CodeFix tests:**
+```csharp
+await AnalyzeAndFixWith<StrongIdMustBePartialAnalyzer, StructMustBePartialCodeFix>(source)
+    .ForDiagnostic("ID0001")
+    .ShouldProduce(expectedSource);
+```
+
+**Writer unit tests** (using `SymbolsFor` to test emit logic directly):
+```csharp
+var emit = SymbolsFor(source)
+    .RequireNamedType("EmailEffects")
+    .QueryEffectsModules()
+    .First()
+    .WriteCapabilityInterface();
+
+await Assert.That(emit).IsSuccessful();
+```
+
 ### Reference Configuration
 
-Tests needing custom assembly references configure them via `ModuleInitializer`:
+Tests register assembly references via `ModuleInitializer` in `TestConfiguration.cs`:
 ```csharp
 [ModuleInitializer]
-public static void Init() =>
-    ReferenceConfiguration.AddReferencesFromTypes(typeof(MyAttribute));
+public static void Initialize()
+{
+    ReferenceConfiguration.AddReferencesFromTypes(
+        typeof(EffectsModuleAttribute),
+        typeof(ActivityEffectExtensions),
+        // ...all types needed for compilation
+    );
+}
 ```
 
 ### Snapshot Testing
 
-Uses **Verify** for generator output verification. Snapshot files are stored alongside test files with `.verified.txt` extension.
+Uses **Verify** for generator output. Snapshots stored alongside tests with `.verified.txt` extension.
 
-## Code Conventions
+### Test Directory Structure
 
-### Build Configuration
+Tests mirror the feature structure:
+```
+Deepstaging.Tests/
+├── Generators/Effects/, Ids/, Config/, HttpClient/
+├── Analyzers/Effects/, Ids/, Config/, HttpClient/
+├── CodeFixes/Effects/, Ids/, Config/
+└── Projection/Effects/, Ids/
+```
 
-- **TreatWarningsAsErrors** is enabled globally - all warnings must be fixed
-- **Nullable reference types** are enabled
-- **Central package management** via `Directory.Packages.props`
-- Build outputs go to `artifacts/` directory
+## Conventions
 
-### Query/Emit Symmetry
+### License Headers (Required)
 
-The library maintains symmetry between reading and writing:
-- `TypeQuery` finds types → `TypeBuilder` creates types
-- `MethodQuery` finds methods → `MethodBuilder` creates methods
-- `ValidSymbol<T>` wraps symbols → `ValidEmit` wraps generated code
+Every source file must start with SPDX license headers. A pre-commit hook enforces this.
+
+```csharp
+// SPDX-FileCopyrightText: 2024-present Deepstaging
+// SPDX-License-Identifier: RPL-1.5
+```
+
+### Code Style
+
+- C# `latest` language version (C# 14 features including extension members)
+- Nullable reference types enabled everywhere
+- `TreatWarningsAsErrors` — `dotnet build` is the lint step
+- Central package versioning via `Directory.Packages.props` — never specify versions in `.csproj`
+- Build config is modular: `build/Build.*.props` files — edit there, not in `Directory.Build.props`
+- `Deepstaging.Versions.props` is auto-updated by CI — do not edit manually
+- Local dev overrides go in `Directory.Build.Dev.props` (gitignored, template provided)
 
 ### Projection Pattern
 
@@ -165,21 +247,18 @@ if (optional.IsNotValid(out var valid))
 // valid is now guaranteed non-null
 ```
 
-### Template Naming
+### C# Extensions
 
-Scriban templates use `.scriban-cs` extension and are embedded resources:
-```xml
-<EmbeddedResource Include="Templates\*.scriban-cs" />
+This codebase uses C# 14 extension members (not classic extension methods):
+```csharp
+extension(ValidSymbol<INamedTypeSymbol> symbol)
+{
+    public ImmutableArray<StrongIdAttributeQuery> StrongIdAttributes() =>
+        [..symbol.GetAttributes<StrongIdAttribute>().Select(...)];
+}
 ```
 
-## License
+### NuGet Configuration
 
-**RPL-1.5** (Reciprocal Public License) — Real reciprocity, no loopholes.
-
-You can use this code, modify it, and share it freely. But when you deploy it — internally or externally, as a service or within your company — you share your improvements back under the same license.
-
-Why? We believe if you benefit from this code, the community should benefit from your improvements. That's the deal we think is fair.
-
-**Personal research and experimentation? No obligations.** Go learn, explore, and build.
-
-See [LICENSE](../LICENSE) for the full legal text.
+- Local source at `../../artifacts/packages` for Deepstaging.Roslyn packages (sibling repo)
+- Source mapping: `Deepstaging.*` → local first, nuget.org fallback
