@@ -27,7 +27,7 @@ public sealed record EffectMethodModel
     /// <summary>
     /// The lifting strategy to use for this method.
     /// </summary>
-    public required EffectLiftingStrategy LiftingStrategy { get; init; }
+    public required LiftingStrategy LiftingStrategy { get; init; }
 
     /// <summary>
     /// The parameters for this method.

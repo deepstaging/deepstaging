@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: 2024-present Deepstaging
 // SPDX-License-Identifier: RPL-1.5
 
-using static Deepstaging.Projection.Effects.Models.EffectLiftingStrategy;
-
 namespace Deepstaging.Projection.Effects;
 
 using Attributes;
@@ -104,54 +102,6 @@ public static class EffectsModuleModelQueries
                 )
                 .OrThrow($"Expected {property.Name} to return an entity type.")
             );
-    }
-
-
-    private static EffectLiftingStrategy DetermineLiftingStrategy(this ValidSymbol<IMethodSymbol> method)
-    {
-        return method.AsyncKind switch
-        {
-            AsyncMethodKind.Void => AsyncVoid,
-            AsyncMethodKind.Value => method.ReturnType.InnerTaskType switch
-            {
-                { IsEmpty: true } => throw new InvalidOperationException(
-                    "Async methods with return property Task must have a property argument."
-                ),
-                { IsNullable: true } => AsyncNullableToOption,
-                { IsNullable: false } => AsyncValue
-            },
-            AsyncMethodKind.NotAsync => method.ReturnType.GetFirstTypeArgument() switch
-            {
-                { IsEmpty: true } => method.ReturnsVoid ? SyncVoid :
-                    method.ReturnType.IsNullable ? SyncNullableToOption : SyncValue,
-                { IsNullable: true } => SyncNullableToOption,
-                { IsNullable: false } => SyncValue
-            },
-            _ => SyncVoid
-        };
-    }
-
-    private static string EffectResultType(this ValidSymbol<IMethodSymbol> method, EffectLiftingStrategy strategy)
-    {
-        return strategy switch
-        {
-            SyncVoid => "Unit",
-            AsyncVoid => "Unit",
-            SyncValue => method.ReturnType.GloballyQualifiedName,
-            SyncNullableToOption => method.ReturnType.GloballyQualifiedName,
-
-            AsyncValue => method.ReturnType
-                .GetFirstTypeArgument()
-                .Map(type => type.GloballyQualifiedName)
-                .OrThrow("Expected a property argument for async value return property."),
-
-            AsyncNullableToOption => method.ReturnType
-                .GetFirstTypeArgument()
-                .Map(type => type.GloballyQualifiedName)
-                .OrThrow("Expected a property argument for async value return property."),
-
-            _ => "Unit"
-        };
     }
 
     private static RuntimeCapabilityModel CreateCapabilityModel(this ValidSymbol<INamedTypeSymbol> targetType)

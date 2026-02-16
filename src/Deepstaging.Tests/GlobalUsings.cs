@@ -11,6 +11,7 @@ global using Deepstaging.Generators.Writers.Effects;
 global using Deepstaging.Projection.Effects;
 global using Deepstaging.Projection.Effects.Models;
 global using Deepstaging.Roslyn.Emit;
+global using Deepstaging.Roslyn.LanguageExt.Expressions;
 global using Deepstaging.Roslyn.Testing;
 global using TUnit;
 global using TUnit.Core;

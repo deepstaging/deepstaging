@@ -10,35 +10,35 @@ namespace Deepstaging.Generators.Writers.LocalRefs;
 internal static class EffRT
 {
     /// <summary><c>Eff&lt;RT, {result}&gt;</c></summary>
-    public static TypeRef Of(TypeRef result) => LanguageExtRefs.Eff("RT", result);
+    public static EffTypeRef Of(TypeRef result) => LanguageExtRefs.Eff("RT", result);
 
     /// <summary><c>Eff&lt;RT, List&lt;T&gt;&gt;</c></summary>
-    public static readonly TypeRef ListT = Of(CollectionRefs.List("T"));
+    public static readonly EffTypeRef ListT = Of(CollectionRefs.List("T"));
 
     /// <summary><c>Eff&lt;RT, T[]&gt;</c></summary>
-    public static readonly TypeRef ArrayT = Of("T[]");
+    public static readonly EffTypeRef ArrayT = Of("T[]");
 
     /// <summary><c>Eff&lt;RT, {result}[]&gt;</c></summary>
-    public static TypeRef Array(TypeRef result) => LanguageExtRefs.Eff("RT", result: result.Array());
+    public static EffTypeRef Array(TypeRef result) => LanguageExtRefs.Eff("RT", result: result.Array());
 
     /// <summary><c>Eff&lt;RT, Option&lt;T&gt;&gt;</c></summary>
-    public static readonly TypeRef OptionT = Of(LanguageExtRefs.Option("T"));
+    public static readonly EffTypeRef OptionT = Of(LanguageExtRefs.Option("T"));
 
     /// <summary><c>Eff&lt;RT, int&gt;</c></summary>
-    public static readonly TypeRef Int = Of("int");
+    public static readonly EffTypeRef Int = Of("int");
 
     /// <summary><c>Eff&lt;RT, long&gt;</c></summary>
-    public static readonly TypeRef Long = Of("long");
+    public static readonly EffTypeRef Long = Of("long");
 
     /// <summary><c>Eff&lt;RT, bool&gt;</c></summary>
-    public static readonly TypeRef Bool = Of("bool");
+    public static readonly EffTypeRef Bool = Of("bool");
 
     /// <summary><c>Eff&lt;RT, Unit&gt;</c></summary>
-    public static readonly TypeRef Unit = Of("Unit");
+    public static readonly EffTypeRef Unit = Of("Unit");
 
     /// <summary><c>Eff&lt;RT, T&gt;</c></summary>
-    public static readonly TypeRef T = Of("T");
+    public static readonly EffTypeRef T = Of("T");
 
     /// <summary><c>Eff&lt;RT, TResult&gt;</c></summary>
-    public static readonly TypeRef TResult = Of("TResult");
+    public static readonly EffTypeRef TResult = Of("TResult");
 }

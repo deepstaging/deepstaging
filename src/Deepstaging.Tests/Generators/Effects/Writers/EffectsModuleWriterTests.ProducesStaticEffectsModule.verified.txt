@@ -30,7 +30,7 @@ public static partial class EmailEffects
         /// <param name="to">The recipient email address</param>
         /// <param name="subject">The email subject</param>
         /// <param name="body">The email body</param>
-        public static global::LanguageExt.Eff<RT, Unit> SendAsync<RT>(string to, string subject, string body)
+        public static global::LanguageExt.Eff<RT, global::LanguageExt.Unit> SendAsync<RT>(string to, string subject, string body)
             where RT : IHasEmailService => liftEff<RT, Unit>(async rt =>
         {
             await rt.EmailService.SendAsync(to, subject, body);

@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Common"/>
         <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.LanguageExt"/>
         <PackageReference Include="PolySharp" PrivateAssets="all"/>
     </ItemGroup>
 
