@@ -29,8 +29,6 @@ using LanguageExt.Effects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using static LanguageExt.Prelude;
 
 namespace TestApp;
@@ -41,8 +39,8 @@ public static partial class GreeterModule
 {
     public static partial class Greeter
     {
-        private static readonly ActivitySource ActivitySource = new("TestApp.Greeter", "1.0.0");
-        public static Eff<RT, string> SayHelloAsync<RT>(string name)
+        private static readonly global::System.Diagnostics.ActivitySource ActivitySource = new("TestApp.Greeter", "1.0.0");
+        public static global::LanguageExt.Eff<RT, string> SayHelloAsync<RT>(string name)
             where RT : IHasGreeter => liftEff<RT, string>(async rt => await rt.Greeter.SayHelloAsync(name)).WithActivity("Greeter.SayHelloAsync", ActivitySource);
     }
 }

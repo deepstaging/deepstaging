@@ -21,7 +21,7 @@ public static class DbSetQueryWriter
                 .Parse($"public sealed class {DbSetRefs.DbSetQueryType} where T : class")
                 .InNamespace("Deepstaging.Effects")
                 .AddUsings(LinqRefs.Namespace, LinqRefs.ExpressionsNamespace)
-                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.PreludeNamespace)
+                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.PreludeStatic)
                 .AddUsings(TaskRefs.ThreadingNamespace, "Microsoft.EntityFrameworkCore")
                 .WithXmlDoc(xml => xml
                     .WithSummary("A composable query builder for DbSet that accumulates LINQ expressions and materializes to an Eff only on terminal operations.")
@@ -173,133 +173,133 @@ public static class DbSetQueryWriter
         .AddRegion("Terminal Effects", type => type
             .AddCommonTerminalMethods()
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffOptionT} FirstOrNoneAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
+                .Parse($"public {EffRefs.OptionT} FirstOrNoneAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the first element matching the predicate, or None if not found.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the matching element wrapped in an Option, or None."))
-                .WithExpressionBody($"{LanguageExtRefs.EffOptionT}.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(predicate, token)))"))
+                .WithExpressionBody($"{EffRefs.OptionT}.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(predicate, token)))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffOptionT} SingleOrNoneAsync(CancellationToken token = default)")
+                .Parse($"public {EffRefs.OptionT} SingleOrNoneAsync(CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the single element, or None if empty. Throws if more than one element exists.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the single element wrapped in an Option, or None."))
-                .WithExpressionBody($"{LanguageExtRefs.EffOptionT}.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(token)))"))
+                .WithExpressionBody($"{EffRefs.OptionT}.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(token)))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffOptionT} SingleOrNoneAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
+                .Parse($"public {EffRefs.OptionT} SingleOrNoneAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the single element matching the predicate, or None. Throws if more than one element matches.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the matching element wrapped in an Option, or None."))
-                .WithExpressionBody($"{LanguageExtRefs.EffOptionT}.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(predicate, token)))"))
+                .WithExpressionBody($"{EffRefs.OptionT}.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(predicate, token)))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffInt} CountAsync(CancellationToken token = default)")
-                .WithExpressionBody($"{LanguageExtRefs.EffInt}.LiftIO(async rt => await query(rt).CountAsync(token))")
+                .Parse($"public {EffRefs.Int} CountAsync(CancellationToken token = default)")
+                .WithExpressionBody($"{EffRefs.Int}.LiftIO(async rt => await query(rt).CountAsync(token))")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the number of elements.")))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffInt} CountAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
+                .Parse($"public {EffRefs.Int} CountAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements matching the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the number of matching elements."))
-                .WithExpressionBody($"{LanguageExtRefs.EffInt}.LiftIO(async rt => await query(rt).CountAsync(predicate, token))"))
+                .WithExpressionBody($"{EffRefs.Int}.LiftIO(async rt => await query(rt).CountAsync(predicate, token))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffLong} LongCountAsync(CancellationToken token = default)")
+                .Parse($"public {EffRefs.Long} LongCountAsync(CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements as a 64-bit integer.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the number of elements as a <see langword=\"long\" />."))
-                .WithExpressionBody($"{LanguageExtRefs.EffLong}.LiftIO(async rt => await query(rt).LongCountAsync(token))"))
+                .WithExpressionBody($"{EffRefs.Long}.LiftIO(async rt => await query(rt).LongCountAsync(token))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffBool} AnyAsync(CancellationToken token = default)")
+                .Parse($"public {EffRefs.Bool} AnyAsync(CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether the sequence contains any elements.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields <see langword=\"true\" /> if the sequence contains any elements."))
-                .WithExpressionBody($"{LanguageExtRefs.EffBool}.LiftIO(async rt => await query(rt).AnyAsync(token))"))
+                .WithExpressionBody($"{EffRefs.Bool}.LiftIO(async rt => await query(rt).AnyAsync(token))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffBool} AnyAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
+                .Parse($"public {EffRefs.Bool} AnyAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether any element satisfies the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields <see langword=\"true\" /> if any element matches the predicate."))
-                .WithExpressionBody($"{LanguageExtRefs.EffBool}.LiftIO(async rt => await query(rt).AnyAsync(predicate, token))"))
+                .WithExpressionBody($"{EffRefs.Bool}.LiftIO(async rt => await query(rt).AnyAsync(predicate, token))"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffBool} AllAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
+                .Parse($"public {EffRefs.Bool} AllAsync({ExpressionsRefs.Predicate} predicate, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether all elements satisfy the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields <see langword=\"true\" /> if every element matches the predicate."))
-                .WithExpressionBody($"{LanguageExtRefs.EffBool}.LiftIO(async rt => await query(rt).AllAsync(predicate, token))")));
+                .WithExpressionBody($"{EffRefs.Bool}.LiftIO(async rt => await query(rt).AllAsync(predicate, token))")));
 
     private static TypeBuilder AddAggregateMethods(this TypeBuilder builder) => builder
         .AddRegion("Aggregate Operations", type => type
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffT} MaxAsync(CancellationToken token = default)")
+                .Parse($"public {EffRefs.T} MaxAsync(CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the maximum value in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the maximum value."))
-                .WithExpressionBody($"{LanguageExtRefs.EffT}.LiftIO(async rt => (await query(rt).MaxAsync(token))!)"))
+                .WithExpressionBody($"{EffRefs.T}.LiftIO(async rt => (await query(rt).MaxAsync(token))!)"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffTResult} MaxAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, CancellationToken token = default)")
+                .Parse($"public {EffRefs.TResult} MaxAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the maximum value of the selected projection.")
                     .AddTypeParam("TResult", "The type of the projected value.")
                     .AddParam("selector", "The projection expression to apply to each element.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the maximum projected value."))
-                .WithExpressionBody($"{LanguageExtRefs.EffTResult}.LiftIO(async rt => (await query(rt).MaxAsync(selector, token))!)"))
+                .WithExpressionBody($"{EffRefs.TResult}.LiftIO(async rt => (await query(rt).MaxAsync(selector, token))!)"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffT} MinAsync(CancellationToken token = default)")
+                .Parse($"public {EffRefs.T} MinAsync(CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the minimum value in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the minimum value."))
-                .WithExpressionBody($"{LanguageExtRefs.EffT}.LiftIO(async rt => (await query(rt).MinAsync(token))!)"))
+                .WithExpressionBody($"{EffRefs.T}.LiftIO(async rt => (await query(rt).MinAsync(token))!)"))
             .AddMethod(MethodBuilder
-                .Parse($"public {LanguageExtRefs.EffTResult} MinAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, CancellationToken token = default)")
+                .Parse($"public {EffRefs.TResult} MinAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, CancellationToken token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the minimum value of the selected projection.")
                     .AddTypeParam("TResult", "The type of the projected value.")
                     .AddParam("selector", "The projection expression to apply to each element.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the minimum projected value."))
-                .WithExpressionBody($"{LanguageExtRefs.EffTResult}.LiftIO(async rt => (await query(rt).MinAsync(selector, token))!)")));
+                .WithExpressionBody($"{EffRefs.TResult}.LiftIO(async rt => (await query(rt).MinAsync(selector, token))!)")));
 
     // ========== Shared terminal methods (used by both DbSetQuery and DbSetOrderedQuery) ==========
 
     private static TypeBuilder AddCommonTerminalMethods(this TypeBuilder builder) => builder
         .AddMethod(MethodBuilder
-            .Parse($"public {LanguageExtRefs.EffListT} ToListAsync(CancellationToken token = default)")
+            .Parse($"public {EffRefs.ListT} ToListAsync(CancellationToken token = default)")
             .WithXmlDoc(xml => xml
                 .WithSummary("Executes the query and returns all results as a list.")
                 .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                 .WithReturns("An effect that yields a list of all matching elements."))
-            .WithExpressionBody($"{LanguageExtRefs.EffListT}.LiftIO(async rt => await query(rt).ToListAsync(token))"))
+            .WithExpressionBody($"{EffRefs.ListT}.LiftIO(async rt => await query(rt).ToListAsync(token))"))
         .AddMethod(MethodBuilder
-            .Parse($"public {LanguageExtRefs.EffArrayT} ToArrayAsync(CancellationToken token = default)")
+            .Parse($"public {EffRefs.ArrayT} ToArrayAsync(CancellationToken token = default)")
             .WithXmlDoc(xml => xml
                 .WithSummary("Executes the query and returns all results as an array.")
                 .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                 .WithReturns("An effect that yields an array of all matching elements."))
-            .WithExpressionBody($"{LanguageExtRefs.EffArrayT}.LiftIO(async rt => await query(rt).ToArrayAsync(token))"))
+            .WithExpressionBody($"{EffRefs.ArrayT}.LiftIO(async rt => await query(rt).ToArrayAsync(token))"))
         .AddMethod(MethodBuilder
-            .Parse($"public {LanguageExtRefs.EffOptionT} FirstOrNoneAsync(CancellationToken token = default)")
+            .Parse($"public {EffRefs.OptionT} FirstOrNoneAsync(CancellationToken token = default)")
             .WithXmlDoc(xml => xml
                 .WithSummary("Returns the first element, or None if the sequence is empty.")
                 .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                 .WithReturns("An effect that yields the first element wrapped in an Option, or None."))
-            .WithExpressionBody($"{LanguageExtRefs.EffOptionT}.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)))"));
+            .WithExpressionBody($"{EffRefs.OptionT}.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)))"));
 
     // ========== Nested DbSetOrderedQuery ==========
 

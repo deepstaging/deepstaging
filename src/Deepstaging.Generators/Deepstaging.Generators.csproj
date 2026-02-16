@@ -28,6 +28,7 @@
         </PackageReference>
         <PackageReference Include="Scriban" PrivateAssets="all" GeneratePathProperty="true"/>
         <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.LanguageExt"/>
     </ItemGroup>
 
     <!-- Embed templates as resources -->
@@ -49,6 +50,9 @@
                                                  IncludeRuntimeDependency="false"/>
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
                                                  Condition="'%(Filename)' == 'Deepstaging.Roslyn'"
+                                                 IncludeRuntimeDependency="false"/>
+            <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
+                                                 Condition="'%(Filename)' == 'Deepstaging.Roslyn.LanguageExt'"
                                                  IncludeRuntimeDependency="false"/>
             <TargetPathWithTargetPlatformMoniker Include="@(ReferenceCopyLocalPaths)"
                                                  Condition="'%(Filename)' == 'Deepstaging'"

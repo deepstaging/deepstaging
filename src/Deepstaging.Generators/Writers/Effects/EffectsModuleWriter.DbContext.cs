@@ -6,7 +6,7 @@ namespace Deepstaging.Generators.Writers.Effects;
 
 using LocalRefs;
 using static CollectionRefs;
-using static LocalRefs.LanguageExtRefs;
+using static LanguageExtRefs;
 
 /// <summary>
 /// DbContext-specific effect emissions (SaveChanges, DbSet methods).
@@ -54,7 +54,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder SaveChangesAsyncMethod(this EffectsModuleModel model) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf("int")} SaveChangesAsync<RT>(
+             public static {EffRefs.Of("int")} SaveChangesAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface} 
              """)
@@ -86,7 +86,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder FindAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(Option(dbSet.EntityType))} FindAsync<RT>(
+             public static {EffRefs.Of(Option(dbSet.EntityType))} FindAsync<RT>(
                 params object[] keyValues
              ) where RT : {model.Capability.Interface}
              """)
@@ -101,7 +101,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder ToListAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(List(dbSet.EntityType))} ToListAsync<RT>(
+             public static {EffRefs.Of(List(dbSet.EntityType))} ToListAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -115,7 +115,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder FirstOrNoneAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
+             public static {EffRefs.Of(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
                 {ExpressionsRefs.Expression(dbSet.EntityType, "bool")} predicate,
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
@@ -131,7 +131,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf("int")} CountAsync<RT>(
+             public static {EffRefs.Of("int")} CountAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -145,7 +145,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf("bool")} AnyAsync<RT>(
+             public static {EffRefs.Of("bool")} AnyAsync<RT>(
                 {TaskRefs.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
@@ -161,7 +161,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder AddMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(dbSet.EntityType)} Add<RT>(
+             public static {EffRefs.Of(dbSet.EntityType)} Add<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)
@@ -176,7 +176,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder AddRangeMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffArray(dbSet.EntityType)} AddRange<RT>(
+             public static {EffRefs.Array(dbSet.EntityType)} AddRange<RT>(
                 params {dbSet.EntityType}[] entities
              ) where RT : {model.Capability.Interface}
              """)
@@ -190,7 +190,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder UpdateMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(dbSet.EntityType)} Update<RT>(
+             public static {EffRefs.Of(dbSet.EntityType)} Update<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)
@@ -204,7 +204,7 @@ public static partial class EffectsModuleWriter
     private static MethodBuilder RemoveMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
         .Parse(
             $"""
-             public static {EffOf(dbSet.EntityType)} Remove<RT>(
+             public static {EffRefs.Of(dbSet.EntityType)} Remove<RT>(
                 {dbSet.EntityType} entity
              ) where RT : {model.Capability.Interface}
              """)

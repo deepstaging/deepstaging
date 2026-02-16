@@ -3,8 +3,6 @@
 
 namespace Deepstaging.Generators;
 
-using Writers.LocalRefs;
-
 /// <summary>
 /// Incremental source generator that emits post-initialization output
 /// such as global using directives.

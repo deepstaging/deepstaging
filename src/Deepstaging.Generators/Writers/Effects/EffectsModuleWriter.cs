@@ -44,7 +44,7 @@ public static partial class EffectsModuleWriter
                 .Parse($"public static partial class {model.EffectsContainerName}")
                 .AddUsings(SystemRefs.Namespace, "Deepstaging.Effects")
                 .AddUsings(DiagnosticsRefs.Namespace, CollectionRefs.Namespace)
-                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeNamespace)
+                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeStatic)
                 .InNamespace(model.Namespace)
                 .WithXmlDoc($"Container class for the <c>{model.Name}</c> effects module and its nested entity set effect classes.")
                 .AddNestedType(module)
@@ -55,6 +55,6 @@ public static partial class EffectsModuleWriter
     internal static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) => builder
         .If(module.Instrumented, b => b
             .AddUsing(DiagnosticsRefs.Namespace)
-            .AddField(FieldBuilder.Parse($"private static readonly {DiagnosticsRefs.Namespace} ActivitySource")
+            .AddField(FieldBuilder.Parse($"private static readonly {DiagnosticsRefs.ActivitySource} ActivitySource")
                 .WithInitializer($"""new("{module.Namespace}.{module.Name}", "1.0.0")""")));
 }

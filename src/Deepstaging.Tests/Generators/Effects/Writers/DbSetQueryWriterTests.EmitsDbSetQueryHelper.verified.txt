@@ -116,78 +116,78 @@ public sealed class DbSetQuery<RT, T>(global::System.Func<RT, global::System.Lin
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields a list of all matching elements.</returns>
-    public Eff<RT, global::System.Collections.Generic.List<T>> ToListAsync(CancellationToken token = default) => Eff<RT, global::System.Collections.Generic.List<T>>.LiftIO(async rt => await query(rt).ToListAsync(token));
+    public global::LanguageExt.Eff<RT, global::System.Collections.Generic.List<T>> ToListAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, global::System.Collections.Generic.List<T>>.LiftIO(async rt => await query(rt).ToListAsync(token));
     /// <summary>
     /// Executes the query and returns all results as an array.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields an array of all matching elements.</returns>
-    public Eff<RT, T[]> ToArrayAsync(CancellationToken token = default) => Eff<RT, T[]>.LiftIO(async rt => await query(rt).ToArrayAsync(token));
+    public global::LanguageExt.Eff<RT, T[]> ToArrayAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, T[]>.LiftIO(async rt => await query(rt).ToArrayAsync(token));
     /// <summary>
     /// Returns the first element, or None if the sequence is empty.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the first element wrapped in an Option, or None.</returns>
-    public Eff<RT, Option<T>> FirstOrNoneAsync(CancellationToken token = default) => Eff<RT, Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)));
+    public global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>> FirstOrNoneAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)));
     /// <summary>
     /// Returns the first element matching the predicate, or None if not found.
     /// </summary>
     /// <param name="predicate">The LINQ expression representing the filter condition.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the matching element wrapped in an Option, or None.</returns>
-    public Eff<RT, Option<T>> FirstOrNoneAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => Eff<RT, Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(predicate, token)));
+    public global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>> FirstOrNoneAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(predicate, token)));
     /// <summary>
     /// Returns the single element, or None if empty. Throws if more than one element exists.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the single element wrapped in an Option, or None.</returns>
-    public Eff<RT, Option<T>> SingleOrNoneAsync(CancellationToken token = default) => Eff<RT, Option<T>>.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(token)));
+    public global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>> SingleOrNoneAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>>.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(token)));
     /// <summary>
     /// Returns the single element matching the predicate, or None. Throws if more than one element matches.
     /// </summary>
     /// <param name="predicate">The LINQ expression representing the filter condition.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the matching element wrapped in an Option, or None.</returns>
-    public Eff<RT, Option<T>> SingleOrNoneAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => Eff<RT, Option<T>>.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(predicate, token)));
+    public global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>> SingleOrNoneAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>>.LiftIO(async rt => Optional(await query(rt).SingleOrDefaultAsync(predicate, token)));
     /// <summary>
     /// Returns the count of elements in the sequence.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the number of elements.</returns>
-    public Eff<RT, int> CountAsync(CancellationToken token = default) => Eff<RT, int>.LiftIO(async rt => await query(rt).CountAsync(token));
+    public global::LanguageExt.Eff<RT, int> CountAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, int>.LiftIO(async rt => await query(rt).CountAsync(token));
     /// <summary>
     /// Returns the count of elements matching the predicate.
     /// </summary>
     /// <param name="predicate">The LINQ expression representing the filter condition.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the number of matching elements.</returns>
-    public Eff<RT, int> CountAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => Eff<RT, int>.LiftIO(async rt => await query(rt).CountAsync(predicate, token));
+    public global::LanguageExt.Eff<RT, int> CountAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => global::LanguageExt.Eff<RT, int>.LiftIO(async rt => await query(rt).CountAsync(predicate, token));
     /// <summary>
     /// Returns the count of elements as a 64-bit integer.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the number of elements as a &lt;see langword=&quot;long&quot; /&gt;.</returns>
-    public Eff<RT, long> LongCountAsync(CancellationToken token = default) => Eff<RT, long>.LiftIO(async rt => await query(rt).LongCountAsync(token));
+    public global::LanguageExt.Eff<RT, long> LongCountAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, long>.LiftIO(async rt => await query(rt).LongCountAsync(token));
     /// <summary>
     /// Determines whether the sequence contains any elements.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields &lt;see langword=&quot;true&quot; /&gt; if the sequence contains any elements.</returns>
-    public Eff<RT, bool> AnyAsync(CancellationToken token = default) => Eff<RT, bool>.LiftIO(async rt => await query(rt).AnyAsync(token));
+    public global::LanguageExt.Eff<RT, bool> AnyAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, bool>.LiftIO(async rt => await query(rt).AnyAsync(token));
     /// <summary>
     /// Determines whether any element satisfies the predicate.
     /// </summary>
     /// <param name="predicate">The LINQ expression representing the filter condition.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields &lt;see langword=&quot;true&quot; /&gt; if any element matches the predicate.</returns>
-    public Eff<RT, bool> AnyAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => Eff<RT, bool>.LiftIO(async rt => await query(rt).AnyAsync(predicate, token));
+    public global::LanguageExt.Eff<RT, bool> AnyAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => global::LanguageExt.Eff<RT, bool>.LiftIO(async rt => await query(rt).AnyAsync(predicate, token));
     /// <summary>
     /// Determines whether all elements satisfy the predicate.
     /// </summary>
     /// <param name="predicate">The LINQ expression representing the filter condition.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields &lt;see langword=&quot;true&quot; /&gt; if every element matches the predicate.</returns>
-    public Eff<RT, bool> AllAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => Eff<RT, bool>.LiftIO(async rt => await query(rt).AllAsync(predicate, token));
+    public global::LanguageExt.Eff<RT, bool> AllAsync(global::System.Linq.Expressions.Expression<global::System.Func<T, bool>> predicate, CancellationToken token = default) => global::LanguageExt.Eff<RT, bool>.LiftIO(async rt => await query(rt).AllAsync(predicate, token));
 #endregion
 #region Aggregate Operations
     /// <summary>
@@ -195,7 +195,7 @@ public sealed class DbSetQuery<RT, T>(global::System.Func<RT, global::System.Lin
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the maximum value.</returns>
-    public Eff<RT, T> MaxAsync(CancellationToken token = default) => Eff<RT, T>.LiftIO(async rt => (await query(rt).MaxAsync(token))!);
+    public global::LanguageExt.Eff<RT, T> MaxAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, T>.LiftIO(async rt => (await query(rt).MaxAsync(token))!);
     /// <summary>
     /// Returns the maximum value of the selected projection.
     /// </summary>
@@ -203,13 +203,13 @@ public sealed class DbSetQuery<RT, T>(global::System.Func<RT, global::System.Lin
     /// <param name="selector">The projection expression to apply to each element.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the maximum projected value.</returns>
-    public Eff<RT, TResult> MaxAsync<TResult>(global::System.Linq.Expressions.Expression<global::System.Func<T, TResult>> selector, CancellationToken token = default) => Eff<RT, TResult>.LiftIO(async rt => (await query(rt).MaxAsync(selector, token))!);
+    public global::LanguageExt.Eff<RT, TResult> MaxAsync<TResult>(global::System.Linq.Expressions.Expression<global::System.Func<T, TResult>> selector, CancellationToken token = default) => global::LanguageExt.Eff<RT, TResult>.LiftIO(async rt => (await query(rt).MaxAsync(selector, token))!);
     /// <summary>
     /// Returns the minimum value in the sequence.
     /// </summary>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the minimum value.</returns>
-    public Eff<RT, T> MinAsync(CancellationToken token = default) => Eff<RT, T>.LiftIO(async rt => (await query(rt).MinAsync(token))!);
+    public global::LanguageExt.Eff<RT, T> MinAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, T>.LiftIO(async rt => (await query(rt).MinAsync(token))!);
     /// <summary>
     /// Returns the minimum value of the selected projection.
     /// </summary>
@@ -217,7 +217,7 @@ public sealed class DbSetQuery<RT, T>(global::System.Func<RT, global::System.Lin
     /// <param name="selector">The projection expression to apply to each element.</param>
     /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
     /// <returns>An effect that yields the minimum projected value.</returns>
-    public Eff<RT, TResult> MinAsync<TResult>(global::System.Linq.Expressions.Expression<global::System.Func<T, TResult>> selector, CancellationToken token = default) => Eff<RT, TResult>.LiftIO(async rt => (await query(rt).MinAsync(selector, token))!);
+    public global::LanguageExt.Eff<RT, TResult> MinAsync<TResult>(global::System.Linq.Expressions.Expression<global::System.Func<T, TResult>> selector, CancellationToken token = default) => global::LanguageExt.Eff<RT, TResult>.LiftIO(async rt => (await query(rt).MinAsync(selector, token))!);
 #endregion
     /// <summary>
     /// An ordered query builder that supports ThenBy operations.
@@ -258,19 +258,19 @@ public sealed class DbSetQuery<RT, T>(global::System.Func<RT, global::System.Lin
         /// </summary>
         /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
         /// <returns>An effect that yields a list of all matching elements.</returns>
-        public Eff<RT, global::System.Collections.Generic.List<T>> ToListAsync(CancellationToken token = default) => Eff<RT, global::System.Collections.Generic.List<T>>.LiftIO(async rt => await query(rt).ToListAsync(token));
+        public global::LanguageExt.Eff<RT, global::System.Collections.Generic.List<T>> ToListAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, global::System.Collections.Generic.List<T>>.LiftIO(async rt => await query(rt).ToListAsync(token));
         /// <summary>
         /// Executes the query and returns all results as an array.
         /// </summary>
         /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
         /// <returns>An effect that yields an array of all matching elements.</returns>
-        public Eff<RT, T[]> ToArrayAsync(CancellationToken token = default) => Eff<RT, T[]>.LiftIO(async rt => await query(rt).ToArrayAsync(token));
+        public global::LanguageExt.Eff<RT, T[]> ToArrayAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, T[]>.LiftIO(async rt => await query(rt).ToArrayAsync(token));
         /// <summary>
         /// Returns the first element, or None if the sequence is empty.
         /// </summary>
         /// <param name="token">A cancellation token to observe while waiting for the task to complete.</param>
         /// <returns>An effect that yields the first element wrapped in an Option, or None.</returns>
-        public Eff<RT, Option<T>> FirstOrNoneAsync(CancellationToken token = default) => Eff<RT, Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)));
+        public global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>> FirstOrNoneAsync(CancellationToken token = default) => global::LanguageExt.Eff<RT, global::LanguageExt.Option<T>>.LiftIO(async rt => Optional(await query(rt).FirstOrDefaultAsync(token)));
 #endregion
     }
 }

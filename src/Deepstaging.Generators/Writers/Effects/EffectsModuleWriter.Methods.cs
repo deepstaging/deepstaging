@@ -14,13 +14,13 @@ public static partial class EffectsModuleWriter
     {
         private TypeBuilder AddEffectMethods(EffectsModuleModel module) =>
             builder.If(module.Methods.Any(), b => b
-                    .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeNamespace))
+                    .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.EffectsNamespace, LanguageExtRefs.PreludeStatic))
                 .WithEach(module.Methods, (b, method) => b
                     .AddMethod(method.EffectName, m => m
                         .AsStatic()
                         .AddTypeParameter("RT", tp => tp.WithConstraint(module.Capability.Interface))
                         .AddMethodParameters(method)
-                        .WithReturnType(LanguageExtRefs.EffOf(method.EffResultType))
+                        .WithReturnType(EffRefs.Of(method.EffResultType))
                         .WithXmlDoc(method.Documentation)
                         .WithExpressionBody(module.LiftedMethodExpression(method))));
     }
