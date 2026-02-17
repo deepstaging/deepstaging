@@ -1,0 +1,44 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <!-- Suppress CS1591 for test project (no docs needed) -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Deepstaging\Deepstaging.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.Projection\Deepstaging.Projection.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.Generators\Deepstaging.Generators.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.Analyzers\Deepstaging.Analyzers.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.CodeFixes\Deepstaging.CodeFixes.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.Runtime\Deepstaging.Runtime.csproj"/>
+        <ProjectReference Include="..\..\src\Deepstaging.Testing.Generators\Deepstaging.Testing.Generators.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Deepstaging.Roslyn"/>
+        <PackageReference Include="Deepstaging.Roslyn.Testing"/>
+        <PackageReference Include="LanguageExt.Core"/>
+        <PackageReference Include="Scriban"/>
+        <PackageReference Include="TUnit"/>
+        <PackageReference Include="TUnit.Engine"/>
+        <PackageReference Include="Basic.Reference.Assemblies.Net100"/>
+        <PackageReference Include="Verify"/>
+        <PackageReference Include="Verify.TUnit"/>
+        <!-- References for compilation verification of generated converters -->
+        <PackageReference Include="Newtonsoft.Json"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
+        <PackageReference Include="Dapper"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Analyzers\Config\" />
+    </ItemGroup>
+
+</Project>

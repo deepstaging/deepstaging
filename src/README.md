@@ -14,7 +14,6 @@ Source-generated effect wrappers for C#/.NET services with OpenTelemetry instrum
 | **Deepstaging.CodeFixes** | Quick fixes for analyzer diagnostics |
 | **Deepstaging.Runtime** | Runtime support (activity extensions, metrics) |
 | **Deepstaging.Projection** | Projection utilities |
-| **Deepstaging.Tests** | Integration tests |
 
 ## How It Works
 
@@ -134,8 +133,7 @@ src/
 ├── Deepstaging.Analyzers/  # Diagnostic analyzers
 ├── Deepstaging.CodeFixes/  # Quick fixes
 ├── Deepstaging.Runtime/    # Runtime support
-├── Deepstaging.Projection/ # Projection utilities
-└── Deepstaging.Tests/      # Integration tests
+└── Deepstaging.Projection/ # Projection utilities
 ```
 
 ## License

@@ -5,8 +5,10 @@ name: Build & Test
 on:
   push:
     branches: [main]
+    paths: ['src/**', 'test/**']
   pull_request:
     branches: [main]
+    paths: ['src/**', 'test/**']
 
 jobs:
   build:
@@ -20,5 +22,5 @@ jobs:
         run: mkdir -p ../../artifacts/packages
       - run: dotnet restore Deepstaging.slnx
       - run: dotnet build Deepstaging.slnx -c Release --no-restore
-      - run: dotnet test --project src/Deepstaging.Tests -c Release --no-build
-      - run: dotnet test --project src/Deepstaging.Testing.Tests -c Release --no-build
+      - run: dotnet test --project test/Deepstaging.Tests -c Release --no-build
+      - run: dotnet test --project test/Deepstaging.Testing.Tests -c Release --no-build

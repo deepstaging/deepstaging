@@ -104,8 +104,10 @@ src/
 ├── Deepstaging.CodeFixes          # Code fix providers
 ├── Deepstaging.Runtime            # Runtime support (OpenTelemetry, metrics)
 ├── Deepstaging.Testing            # Test support library (ITestRuntime, TestRuntimeAttribute)
-├── Deepstaging.Testing.*          # Projection, generators, analyzers, and code fixes for testing
-└── Deepstaging.Tests              # Test suite
+└── Deepstaging.Testing.*          # Projection, generators, analyzers, and code fixes for testing
+test/
+├── Deepstaging.Tests              # Main test suite
+└── Deepstaging.Testing.Tests      # Tests for the Testing support library
 ```
 
 ## Build & Test
@@ -115,13 +117,13 @@ src/
 dotnet build Deepstaging.slnx
 
 # Run all tests
-dotnet run --project src/Deepstaging.Tests -c Release
+dotnet run --project test/Deepstaging.Tests -c Release
 
 # Run tests by class
-dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
 
 # Run a single test
-dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
 ```
 
 ## License

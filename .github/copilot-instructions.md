@@ -7,20 +7,20 @@
 dotnet build Deepstaging.slnx
 
 # Test (all) — prefer `dotnet run` for TUnit (easier flag passing)
-dotnet run --project src/Deepstaging.Tests -c Release
-dotnet run --project src/Deepstaging.Testing.Tests -c Release
+dotnet run --project test/Deepstaging.Tests -c Release
+dotnet run --project test/Deepstaging.Testing.Tests -c Release
 
 # Test (by class name)
-dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
 
 # Test (by test name)
-dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
 
 # Test (by feature — e.g., all Effects tests)
-dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/Deepstaging.Tests*Effects*/*/*
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/Deepstaging.Tests*Effects*/*/*
 
 # Test via dotnet test (flags go after --)
-dotnet test --project src/Deepstaging.Tests -c Release -- --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet test --project test/Deepstaging.Tests -c Release -- --treenode-filter /*/*/StrongIdGeneratorTests/*
 
 # Pack (local dev)
 ./build/pack.sh
@@ -47,8 +47,8 @@ The `--treenode-filter` syntax is `/<Assembly>/<Namespace>/<Class>/<Test>` with 
 | `Deepstaging.Testing.Generators` | netstandard2.0 | Generator for test runtime implementations |
 | `Deepstaging.Testing.Analyzers` | netstandard2.0 | Analyzers for test runtime attributes |
 | `Deepstaging.Testing.CodeFixes` | netstandard2.0 | Code fixes for test runtime violations |
-| `Deepstaging.Tests` | net10.0 | Main test suite |
-| `Deepstaging.Testing.Tests` | net10.0 | Tests for the Testing support library |
+| `Deepstaging.Tests` | net10.0 | Main test suite (in `test/`) |
+| `Deepstaging.Testing.Tests` | net10.0 | Tests for the Testing support library (in `test/`) |
 
 All library projects target `netstandard2.0` for Roslyn analyzer/generator compatibility. Only test projects and Runtime target `net10.0`.
 
@@ -209,11 +209,13 @@ Uses **Verify** for generator output. Snapshots stored alongside tests with `.ve
 
 Tests mirror the feature structure:
 ```
-Deepstaging.Tests/
-├── Generators/Effects/, Ids/, Config/, HttpClient/
-├── Analyzers/Effects/, Ids/, Config/, HttpClient/
-├── CodeFixes/Effects/, Ids/, Config/
-└── Projection/Effects/, Ids/
+test/
+├── Deepstaging.Tests/
+│   ├── Generators/Effects/, Ids/, Config/, HttpClient/
+│   ├── Analyzers/Effects/, Ids/, Config/, HttpClient/
+│   ├── CodeFixes/Effects/, Ids/, Config/
+│   └── Projection/Effects/, Ids/
+└── Deepstaging.Testing.Tests/
 ```
 
 ## Conventions
