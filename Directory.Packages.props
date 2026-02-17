@@ -26,7 +26,7 @@
   <!-- 3. Fallback when roslyn/ is not checked out side-by-side -->
   <ItemGroup Condition="'$(DeepstagingRoslynVersion)' == ''">
     <PackageVersion Include="Deepstaging.Roslyn" Version="1.0.0-dev.170" />
-    <PackageVersion Include="Deepstaging.Roslyn.LanguageExt" Version="1.0.0-dev.129" />
+    <PackageVersion Include="Deepstaging.Roslyn.LanguageExt" Version="1.0.0-dev.170" />
     <PackageVersion Include="Deepstaging.Roslyn.Testing" Version="1.0.0-dev.170" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +44,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.2" />
     <!-- Testing -->
     <PackageVersion Include="Microsoft.Testing.Platform" Version="2.1.0" />
     <PackageVersion Include="Microsoft.Testing.Platform.MSBuild" Version="2.1.0" />

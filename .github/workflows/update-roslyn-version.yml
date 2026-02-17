@@ -26,9 +26,8 @@ jobs:
 
           # Update fallback versions in Directory.Packages.props
           sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn\" Version=\"$VERSION\"|g" Directory.Packages.props
-          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Scriban\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Scriban\" Version=\"$VERSION\"|g" Directory.Packages.props
+          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.LanguageExt\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.LanguageExt\" Version=\"$VERSION\"|g" Directory.Packages.props
           sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Testing\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Testing\" Version=\"$VERSION\"|g" Directory.Packages.props
-          sed -i "s|<PackageVersion Include=\"Deepstaging\.Roslyn\.Workspace\" Version=\"[^\"]*\"|<PackageVersion Include=\"Deepstaging.Roslyn.Workspace\" Version=\"$VERSION\"|g" Directory.Packages.props
 
           echo "Updated Directory.Packages.props:"
           grep "Deepstaging.Roslyn" Directory.Packages.props
