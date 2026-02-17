@@ -1,16 +1,16 @@
 # Deepstaging
 
-Turn your service interfaces into composable, instrumented effects with zero boilerplate.
+> ⚠️ **Not ready for production use.** APIs are unstable and may change without notice.
 
-## Installation
+Deepstaging is a C# source generator toolkit that eliminates boilerplate across four domains: **effect systems**, **strongly-typed IDs**, **configuration providers**, and **HTTP clients**. You annotate your types with attributes; the generators, analyzers, and code fixes do the rest — all at compile time, with zero reflection.
 
-```bash
-dotnet add package Deepstaging
-```
+Built on [Deepstaging.Roslyn](https://github.com/deepstaging/roslyn).
 
-### Quick Start
+## Features
 
-**1. Define your services**
+### Effects
+
+Turn service interfaces and `DbContext`s into composable [LanguageExt](https://github.com/louthy/language-ext) effect modules with automatic OpenTelemetry instrumentation.
 
 ```csharp
 public interface IEmailService
@@ -18,100 +18,111 @@ public interface IEmailService
     Task SendAsync(string to, string subject, string body);
 }
 
-public interface ISlackService
+[EffectsModule(typeof(IEmailService), Name = "Email")]
+public sealed partial class EmailEffects;
+
+[Runtime]
+[Uses(typeof(EmailEffects))]
+public sealed partial class AppRuntime;
+```
+
+The generator produces `Eff<RT, A>` wrappers, capability interfaces, DI registration, and `Activity` spans — all wired together through the runtime.
+
+### Strong IDs
+
+Type-safe ID structs with configurable backing types and serialization converters.
+
+```csharp
+[StrongId]
+public readonly partial struct UserId;
+
+[StrongId(BackingType = BackingType.Int, Converters = IdConverters.All)]
+public readonly partial struct OrderId;
+```
+
+Generated structs implement `IEquatable<T>`, `IParsable<T>`, `IComparable<T>`, and `ToString`. Opt into JSON, EF Core, Dapper, Newtonsoft, and `TypeConverter` support via the `Converters` flag.
+
+### Configuration
+
+Strongly-typed configuration providers with interfaces, DI registration, and JSON Schema generation.
+
+```csharp
+public sealed record SmtpSettings(string Host, int Port);
+
+public class SmtpSecrets
 {
-    Task PostMessageAsync(string channel, string message);
+    [Secret]
+    public string Password { get; init; } = "";
+}
+
+[ConfigProvider(Section = "Smtp")]
+[Exposes<SmtpSettings>]
+[Exposes<SmtpSecrets>]
+public sealed partial class SmtpConfigProvider;
+```
+
+The generator creates an `ISmtpConfigProvider` interface, binds properties from `IConfiguration`, and emits a DI extension method. `[Secret]` properties are separated into a dedicated secrets schema.
+
+### HTTP Clients
+
+Declarative HTTP clients generated from annotated partial classes.
+
+```csharp
+[HttpClient<ApiConfig>]
+[BearerAuth]
+public partial class UsersClient
+{
+    [Get("/users/{id}")]
+    private partial User GetUser(int id);
+
+    [Post("/users")]
+    private partial User CreateUser([Body] CreateUserRequest request);
+
+    [Get("/users")]
+    private partial List<User> ListUsers([Query] int page, [Header("X-Request-Id")] string requestId);
 }
 ```
 
-**2. Create an effects module**
+Supports path parameters, query strings, headers, request bodies, and authentication (`[BearerAuth]`, `[ApiKeyAuth]`, `[BasicAuth]`). Generates a client implementation and an `IUsersClient` interface.
 
-```csharp
-using Deepstaging;
+### Testing
 
-[EffectsModule(typeof(IEmailService), Name = "Email")]
-[EffectsModule(typeof(ISlackService), Name = "Slack")]
-public partial class AppEffects;
-```
+`[TestRuntime<TRuntime>]` generates test-friendly runtime doubles from your production runtime, with fluent `.With*()` methods for injecting dependencies.
 
-**3. Define your runtime**
+## Compile-Time Safety
 
-```csharp
-[Runtime]
-[Uses(typeof(AppEffects))]
-public partial class AppRuntime;
-```
-
-**4. Compose and run effects**
-
-```csharp
-using static AppEffects;
-
-// Compose effects with LINQ-style syntax
-var workflow = 
-    from _ in Email.Send("user@example.com", "Hello", "Welcome!")
-    from _ in Slack.PostMessage("#general", "New user signed up!")
-    select unit;
-
-// Run with your runtime
-await workflow.Run(runtime);
-```
-
-### Features
-
-| Feature | Description |
-|---------|-------------|
-| **Zero Reflection** | Compile-time source generation for maximum performance |
-| **OpenTelemetry** | Built-in tracing with `Activity` spans (zero overhead when disabled) |
-| **LanguageExt** | First-class `Eff<RT, A>` integration for functional composition |
-| **Analyzers** | Catch configuration errors at compile time |
-| **Code Fixes** | Quick fixes for common mistakes |
-
-### Configuration Options
-
-```csharp
-[EffectsModule(
-    typeof(IEmailService),
-    Name = "Email",              // Module name (default: derived from type)
-    Instrumented = true,         // Enable OpenTelemetry tracing (default: true)
-    IncludeOnly = ["SendAsync"], // Only wrap these methods
-    Exclude = ["Ping"]           // Exclude these methods
-)]
-public partial class EmailModule;
-```
+Every feature ships with Roslyn analyzers and code fixes. Missing a `partial` modifier, targeting the wrong type, referencing a non-existent method — these are caught as compiler errors, not runtime surprises.
 
 ## Project Structure
 
 ```
 src/
-├── Deepstaging              # Core attributes (EffectsModule, Runtime, Uses)
-├── Deepstaging.Generators   # Source generators for effects
-├── Deepstaging.Analyzers    # Diagnostic analyzers
-├── Deepstaging.CodeFixes    # Code fix providers
-├── Deepstaging.Runtime      # Runtime support (OpenTelemetry, EF Core)
-├── Deepstaging.Projection   # Query models for Deepstaging attributes
+├── Deepstaging                    # Core attributes and enums
+├── Deepstaging.Projection         # Roslyn analysis layer — attribute queries and pipeline models
+├── Deepstaging.Generators         # Incremental source generators
+├── Deepstaging.Analyzers          # Diagnostic analyzers
+├── Deepstaging.CodeFixes          # Code fix providers
+├── Deepstaging.Runtime            # Runtime support (OpenTelemetry, metrics)
+├── Deepstaging.Testing            # Test support library (ITestRuntime, TestRuntimeAttribute)
+├── Deepstaging.Testing.*          # Projection, generators, analyzers, and code fixes for testing
+└── Deepstaging.Tests              # Test suite
 ```
-
-## Related Projects
-
-- **[Deepstaging.Roslyn](https://github.com/deepstaging/roslyn)** — Fluent toolkit for building Roslyn source generators, analyzers, and code fixes
 
 ## Build & Test
 
 ```bash
-# Build
+# Build (also the lint step — warnings are errors)
 dotnet build Deepstaging.slnx
 
-# Test
-dotnet test Deepstaging.slnx
+# Run all tests
+dotnet run --project src/Deepstaging.Tests -c Release
 
-# Run specific test
-dotnet test --filter "FullyQualifiedName~MyTestClass.MyTestMethod"
+# Run tests by class
+dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
+
+# Run a single test
+dotnet run --project src/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
 ```
-
-## Documentation
-
-- **[Build Configuration](build/README.md)** - MSBuild configuration files
 
 ## License
 
