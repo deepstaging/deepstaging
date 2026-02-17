@@ -71,6 +71,7 @@
             Deepstaging.dll                     (generator dependency)
             Deepstaging.Projection.dll          (generator dependency)
             Deepstaging.Roslyn.dll              (generator dependency)
+            Deepstaging.Roslyn.LanguageExt.dll  (generator dependency)
             Scriban.dll                         (generator dependency)
     -->
 
@@ -99,6 +100,8 @@
         <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Projection.dll"
               Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.dll"
+              Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.LanguageExt.dll"
               Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(BundleArtifactsPath)/Deepstaging.Generators/bin/$(Configuration)/netstandard2.0/Scriban.dll"
               Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
