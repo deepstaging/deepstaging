@@ -80,6 +80,12 @@ public sealed record RuntimeCapabilityModel
     /// Pre-extracted methods from the dependency type, used by StubWriter for test runtime generation.
     /// </summary>
     public EquatableArray<CapabilityMethodModel> Methods { get; init; } = [];
+
+    /// <summary>
+    /// Whether this capability is standalone (from <c>[Capability]</c>) rather than from <c>[EffectsModule]</c>.
+    /// Standalone capabilities need their <c>IHas*</c> interface emitted by the runtime pipeline.
+    /// </summary>
+    public bool IsStandalone { get; init; }
 }
 
 /// <summary>

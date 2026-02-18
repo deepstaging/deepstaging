@@ -29,6 +29,7 @@ public static class ConfigModelQueries
                 TypeName = symbol.Name,
                 Accessibility = symbol.AccessibilityString,
                 Section = attribute.GetSectionName(symbol),
+                DataDirectory = attribute.DataDirectory,
                 ExposedConfigurationTypes =
                 [
                     ..symbol.ExposesAttributes()

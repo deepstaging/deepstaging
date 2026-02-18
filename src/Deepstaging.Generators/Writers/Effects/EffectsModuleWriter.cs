@@ -46,7 +46,6 @@ public static partial class EffectsModuleWriter
                 .AddUsings(DiagnosticsRefs.Namespace, CollectionRefs.Namespace)
                 .AddLanguageExtUsings()
                 .InNamespace(model.Namespace)
-                .WithXmlDoc($"Container class for the <c>{model.Name}</c> effects module and its nested entity set effect classes.")
                 .AddNestedType(module)
                 .Emit();
         }

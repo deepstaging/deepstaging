@@ -49,9 +49,10 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     </ItemGroup>
 
-    <!-- Build props file imported automatically by consuming projects -->
+    <!-- Build props and targets imported automatically by consuming projects -->
     <ItemGroup>
         <None Include="build\Deepstaging.props" Pack="true" PackagePath="build"/>
+        <None Include="build\Deepstaging.targets" Pack="true" PackagePath="build"/>
     </ItemGroup>
 
     <!--

@@ -3,4 +3,13 @@
 <!-- SPDX-License-Identifier: RPL-1.5 -->
 <Project>
     <!-- Automatically imported by projects that reference the Deepstaging package -->
+
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>!generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <!-- Import project-local deepstaging.props if present -->
+    <Import Project="$(MSBuildProjectDirectory)/deepstaging.props"
+            Condition="Exists('$(MSBuildProjectDirectory)/deepstaging.props')"/>
 </Project>

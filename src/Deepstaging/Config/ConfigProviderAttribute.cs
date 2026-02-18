@@ -19,6 +19,11 @@ public sealed class ConfigProviderAttribute : Attribute
     /// When <c>null</c>, the section is inferred from the class name.
     /// </summary>
     public string? Section { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public string DataDirectory { get; set; } = ".config";
 }
 
 /// <summary>

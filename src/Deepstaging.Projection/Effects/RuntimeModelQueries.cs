@@ -19,8 +19,14 @@ public static class RuntimeModelQueries
         /// <returns>A model containing the runtime configuration and all aggregated capabilities.</returns>
         public RuntimeModel QueryRuntimeModel()
         {
-            var modules = runtime.UsesAttributes()
+            var usesAttributes = runtime.UsesAttributes();
+
+            var modules = usesAttributes
                 .SelectMany(attr => attr.EffectsModules)
+                .ToImmutableArray();
+
+            var standaloneCapabilities = usesAttributes
+                .SelectMany(attr => attr.Capabilities)
                 .ToImmutableArray();
 
             return new RuntimeModel
@@ -29,7 +35,11 @@ public static class RuntimeModelQueries
                 RuntimeType = runtime.FullyQualifiedName,
                 Namespace = runtime.Namespace ?? "Global",
                 AccessibilityModifier = runtime.AccessibilityString,
-                Capabilities = [..modules.Select(model => model.Capability)],
+                Capabilities =
+                [
+                    ..modules.Select(model => model.Capability),
+                    ..standaloneCapabilities
+                ],
                 ActivitySources =
                 [
                     ..modules

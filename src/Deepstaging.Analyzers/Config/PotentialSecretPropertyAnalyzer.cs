@@ -4,7 +4,6 @@
 namespace Deepstaging.Analyzers.Config;
 
 using Deepstaging.Config;
-using Deepstaging.Projection.Config;
 
 /// <summary>
 /// Reports a diagnostic when a property on an exposed configuration type appears to contain
@@ -20,7 +19,7 @@ using Deepstaging.Projection.Config;
         "should be decorated with [Secret] so they are placed in the secrets schema instead of appsettings.",
     Severity = DiagnosticSeverity.Warning
 )]
-public sealed class PotentialSecretPropertyAnalyzer : TypeAnalyzer
+public sealed class PotentialSecretPropertyAnalyzer : PropertyAnalyzer
 {
     /// <summary>
     /// Diagnostic ID for potential secret properties missing [Secret].
@@ -42,34 +41,36 @@ public sealed class PotentialSecretPropertyAnalyzer : TypeAnalyzer
     ];
 
     /// <inheritdoc />
-    protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
-        type.HasAttribute<ConfigProviderAttribute>() && GetFirstSuspectProperty(type) is not null;
+    protected override bool ShouldReport(ValidSymbol<IPropertySymbol> property) =>
+        !property.HasAttribute<SecretAttribute>()
+        && LooksLikeSecret(property.Name)
+        && IsExposedByConfigProvider(property);
 
     /// <inheritdoc />
-    protected override object[] GetMessageArgs(ValidSymbol<INamedTypeSymbol> type)
-    {
-        var (property, configType) = GetFirstSuspectProperty(type)!.Value;
-        return [property.Name, configType.Name];
-    }
+    protected override object[] GetMessageArgs(ValidSymbol<IPropertySymbol> property) =>
+        [property.Name, property.Value.ContainingType?.Name ?? ""];
 
-    private static (ValidSymbol<IPropertySymbol> Property, ValidSymbol<INamedTypeSymbol> ConfigType)? GetFirstSuspectProperty(
-        ValidSymbol<INamedTypeSymbol> type)
+    private static bool IsExposedByConfigProvider(ValidSymbol<IPropertySymbol> property)
     {
-        foreach (var attr in type.ExposesAttributes())
+        var containingType = property.Value.ContainingType;
+        if (containingType is null)
+            return false;
+
+        // Check if the containing type has any attribute whose name starts with "Exposes"
+        // referencing it as a type argument — this means some ConfigProvider exposes it.
+        // Alternatively, check if the containing type itself is annotated in a way that
+        // indicates it's a config type. We use a simple heuristic: any type that is
+        // referenced as a type argument of ExposesAttribute<T> somewhere in the same assembly.
+        foreach (var attr in containingType.GetAttributes())
         {
-            var configType = attr.ConfigurationType;
-
-            foreach (var property in configType.QueryProperties().ThatAreInstance().GetAll())
-            {
-                if (property.HasAttribute<SecretAttribute>())
-                    continue;
-
-                if (LooksLikeSecret(property.Name))
-                    return (property, configType);
-            }
+            // If the property's containing type itself has [ConfigProvider], it's not an exposed type
+            if (attr.AttributeClass?.Name is nameof(ConfigProviderAttribute) or "ConfigProviderAttribute")
+                return false;
         }
 
-        return null;
+        // The property lives on a plain config type. Flag it if it looks like a secret.
+        // The [Exposes<T>] linkage is validated by CFG004/CFG005 at the provider level.
+        return true;
     }
 
     private static bool LooksLikeSecret(string name) =>

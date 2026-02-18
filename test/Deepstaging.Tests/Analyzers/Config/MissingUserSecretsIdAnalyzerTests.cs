@@ -33,6 +33,26 @@ public class MissingUserSecretsIdAnalyzerTests : RoslynTestBase
     }
 
     [Test]
+    public async Task NoDiagnostic_WhenUserSecretsIdExists()
+    {
+        const string source = """
+            [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("test-user-secrets-id")]
+            namespace TestApp;
+            public class SlackSecrets
+            {
+                [Deepstaging.Config.Secret]
+                public string ApiToken { get; init; } = "";
+            }
+            [Deepstaging.Config.ConfigProvider(Section = "Slack")]
+            [Deepstaging.Config.Exposes<SlackSecrets>]
+            public sealed partial class SlackConfigProvider;
+        """;
+
+        await AnalyzeWith<MissingUserSecretsIdAnalyzer>(source)
+            .ShouldHaveNoDiagnostics();
+    }
+
+    [Test]
     public async Task NoDiagnostic_WhenNoSecretProperties()
     {
         const string source = """

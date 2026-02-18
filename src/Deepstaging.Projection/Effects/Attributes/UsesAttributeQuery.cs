@@ -24,4 +24,14 @@ public sealed record UsesAttributeQuery(AttributeData AttributeData) : Attribute
     /// Gets all effects modules defined on the referenced module type.
     /// </summary>
     public ImmutableArray<EffectsModuleModel> EffectsModules => ModuleType.QueryEffectsModules();
+
+    /// <summary>
+    /// Gets all standalone capability models from <see cref="CapabilityAttribute"/> instances on the referenced module type.
+    /// </summary>
+    public ImmutableArray<RuntimeCapabilityModel> Capabilities =>
+    [
+        ..ModuleType.CapabilityAttributes()
+            .Where(attr => attr.HasValidTargetType)
+            .Select(attr => attr.TargetType.CreateCapabilityModel() with { IsStandalone = true })
+    ];
 }

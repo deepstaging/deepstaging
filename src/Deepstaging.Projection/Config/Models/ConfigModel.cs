@@ -3,6 +3,8 @@
 
 namespace Deepstaging.Projection.Config.Models;
 
+using System.Linq;
+
 /// <summary>
 /// Represents a configuration provider model built from a type decorated with <see cref="ConfigProviderAttribute"/>.
 /// </summary>
@@ -33,4 +35,14 @@ public sealed record ConfigModel
     /// The configuration types exposed by this provider.
     /// </summary>
     public EquatableArray<ConfigTypeModel> ExposedConfigurationTypes { get; init; } = [];
+
+    /// <summary>
+    /// Whether any exposed configuration type contains properties marked with <c>[Secret]</c>.
+    /// </summary>
+    public bool HasSecrets => ExposedConfigurationTypes.Any(ct => ct.Properties.Any(p => p.IsSecret));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public string DataDirectory { get; init; } = ".config";
 }

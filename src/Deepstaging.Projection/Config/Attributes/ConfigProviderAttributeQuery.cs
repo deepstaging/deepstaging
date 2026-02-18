@@ -27,4 +27,11 @@ public sealed record ConfigProviderAttributeQuery(AttributeData AttributeData) :
         symbol.Map(type => type.Name.EndsWith(Suffix, StringComparison.Ordinal) && type.Name.Length > Suffix.Length
             ? type.Name[..^Suffix.Length]
             : string.Empty);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public string DataDirectory =>
+        NamedArg<string>(nameof(ConfigProviderAttribute.DataDirectory))
+            .OrDefault(".config");
 }

@@ -37,6 +37,7 @@
 
     <!-- TUnit assertions for net10.0 consumers -->
     <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Deepstaging.Roslyn.Testing"/>
         <PackageReference Include="TUnit"/>
     </ItemGroup>
 
