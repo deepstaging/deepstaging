@@ -29,7 +29,7 @@ public class StrongIdMustBePartialCodeFixTests : RoslynTestBase
             """;
 
         await AnalyzeAndFixWith<StrongIdMustBePartialAnalyzer, StructMustBePartialCodeFix>(source)
-            .ForDiagnostic("ID0001")
+            .ForDiagnostic("DSID01")
             .ShouldProduce(expected);
     }
 }

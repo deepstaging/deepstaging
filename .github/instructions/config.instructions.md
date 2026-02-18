@@ -18,22 +18,22 @@ Generates strongly-typed configuration providers with interfaces, DI registratio
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| CFG001 | Error | ConfigProvider class must be partial |
-| CFG002 | Warning | ConfigProvider class should be sealed |
-| CFG003 | Error | Section name could not be inferred (no `ConfigProvider` suffix and no explicit `Section`) |
-| CFG004 | Warning | Exposed type has no public instance properties |
-| CFG005 | Warning | Property appears to contain secrets/PII — consider adding `[Secret]` |
-| CFG006 | Info/Warning | Configuration files missing (Info) or out of date (Warning) |
-| CFG007 | Error | [Secret] properties exist but assembly has no UserSecretsId — run `dotnet user-secrets init` |
+| DSCFG01 | Error | ConfigProvider class must be partial |
+| DSCFG02 | Warning | ConfigProvider class should be sealed |
+| DSCFG03 | Error | Section name could not be inferred (no `ConfigProvider` suffix and no explicit `Section`) |
+| DSCFG04 | Warning | Exposed type has no public instance properties |
+| DSCFG05 | Warning | Property appears to contain secrets/PII — consider adding `[Secret]` |
+| DSCFG06 | Info/Warning | Configuration files missing (Info) or out of date (Warning) |
+| DSCFG07 | Error | [Secret] properties exist but assembly has no UserSecretsId — run `dotnet user-secrets init` |
 
 ## Code Fixes
 
 | Diagnostic | Fix | Class |
 |------------|-----|-------|
-| CFG001 | Add `partial` modifier | `ClassMustBePartialCodeFix` (shared) |
-| CFG002 | Add `sealed` modifier | `ClassShouldBeSealedCodeFix` (shared) |
-| CFG005 | Add `[Secret]` attribute | `AddSecretAttributeCodeFix` |
-| CFG006 | Generate all configuration files | `GenerateConfigFilesCodeFix` |
+| DSCFG01 | Add `partial` modifier | `ClassMustBePartialCodeFix` (shared) |
+| DSCFG02 | Add `sealed` modifier | `ClassShouldBeSealedCodeFix` (shared) |
+| DSCFG05 | Add `[Secret]` attribute | `AddSecretAttributeCodeFix` |
+| DSCFG06 | Generate all configuration files | `GenerateConfigFilesCodeFix` |
 
 ## Projection Models
 

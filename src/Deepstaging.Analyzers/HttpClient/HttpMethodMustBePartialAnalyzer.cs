@@ -19,7 +19,7 @@ public sealed class HttpMethodMustBePartialAnalyzer : MethodAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on HTTP method.
     /// </summary>
-    public const string DiagnosticId = "HTTP002";
+    public const string DiagnosticId = "DSHTTP02";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<IMethodSymbol> method) =>

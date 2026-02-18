@@ -23,7 +23,7 @@ using Deepstaging.Effects;
 public sealed class EffectsModuleTargetHasNoMethodsAnalyzer : TypeAnalyzer
 {
     /// <summary>The diagnostic identifier for this analyzer.</summary>
-    public const string DiagnosticId = "DS0010";
+    public const string DiagnosticId = "DSEFX07";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

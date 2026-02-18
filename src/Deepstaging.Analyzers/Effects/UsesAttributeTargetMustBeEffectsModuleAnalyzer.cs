@@ -10,7 +10,7 @@ using Deepstaging.Effects;
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(
-    "DS0008",
+    "DSRT03",
     "Uses target must be EffectsModule or Capability",
     Message = "Type '{0}' referenced in [Uses] is not marked with [EffectsModule] or [Capability]",
     Description =

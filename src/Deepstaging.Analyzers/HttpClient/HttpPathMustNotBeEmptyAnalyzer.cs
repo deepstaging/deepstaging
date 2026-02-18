@@ -19,7 +19,7 @@ public sealed class HttpPathMustNotBeEmptyAnalyzer : MethodAnalyzer
     /// <summary>
     /// Diagnostic ID for empty HTTP path.
     /// </summary>
-    public const string DiagnosticId = "HTTP004";
+    public const string DiagnosticId = "DSHTTP04";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<IMethodSymbol> method)

@@ -26,7 +26,7 @@ public sealed class ConfigProviderSchemaAnalyzer : TrackedFileTypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing or stale configuration files on ConfigProvider class.
     /// </summary>
-    public const string DiagnosticId = "CFG006";
+    public const string DiagnosticId = "DSCFG06";
 
     /// <inheritdoc />
     protected override bool IsTrackedFile(string filePath) =>

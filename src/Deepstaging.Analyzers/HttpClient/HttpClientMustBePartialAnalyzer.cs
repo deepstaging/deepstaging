@@ -19,7 +19,7 @@ public sealed class HttpClientMustBePartialAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on HttpClient class.
     /// </summary>
-    public const string DiagnosticId = "HTTP001";
+    public const string DiagnosticId = "DSHTTP01";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

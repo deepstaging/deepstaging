@@ -8,7 +8,7 @@ namespace Deepstaging.Analyzers.Effects;
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(
-    "DS0005",
+    "DSEFX04",
     "Duplicate EffectsModule target type",
     Message = "Class '{0}' has multiple [EffectsModule] attributes targeting '{1}'",
     Description = "Each target type should only be specified once in [EffectsModule] attributes on the same class."

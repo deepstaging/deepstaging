@@ -29,7 +29,7 @@ public class StrongIdShouldBeReadonlyCodeFixTests : RoslynTestBase
             """;
 
         await AnalyzeAndFixWith<StrongIdShouldBeReadonlyAnalyzer, StructShouldBeReadonlyCodeFix>(source)
-            .ForDiagnostic("ID0002")
+            .ForDiagnostic("DSID02")
             .ShouldProduce(expected);
     }
 }

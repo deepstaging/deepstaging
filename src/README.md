@@ -99,15 +99,16 @@ The analyzers catch common mistakes at compile time:
 
 | Diagnostic | Description |
 |------------|-------------|
-| `DS0001` | Effects module must be partial |
-| `DS0002` | Effects module should be sealed |
-| `DS0003` | Target type must be an interface |
-| `DS0004` | Duplicate target type in module |
-| `DS0005` | IncludeOnly method not found on target |
-| `DS0006` | Exclude method not found on target |
-| `DS0010` | Runtime must be partial |
-| `DS0011` | Uses attribute must target a runtime |
-| `DS0012` | Uses target must be an effects module |
+| `DSRT01` | Runtime must be partial |
+| `DSRT02` | Uses attribute must target a runtime |
+| `DSRT03` | Uses target must be an effects module |
+| `DSEFX01` | Effects module must be partial |
+| `DSEFX02` | Effects module should be sealed |
+| `DSEFX03` | Target type must be an interface |
+| `DSEFX04` | Duplicate target type in module |
+| `DSEFX05` | Exclude method not found on target |
+| `DSEFX06` | IncludeOnly method not found on target |
+| `DSEFX07` | Effects module target has no methods |
 
 ## OpenTelemetry Integration
 

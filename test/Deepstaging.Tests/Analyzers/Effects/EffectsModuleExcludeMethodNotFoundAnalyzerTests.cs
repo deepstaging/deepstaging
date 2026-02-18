@@ -22,7 +22,7 @@ public class EffectsModuleExcludeMethodNotFoundAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleExcludeMethodNotFoundAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0006")
+            .ShouldReportDiagnostic("DSEFX05")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*NonExistentMethod*IEmailService*");
     }
@@ -100,7 +100,7 @@ public class EffectsModuleExcludeMethodNotFoundAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleExcludeMethodNotFoundAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0006")
+            .ShouldReportDiagnostic("DSEFX05")
             .WithMessage("*DoesNotExist*IEmailService*");
     }
 }

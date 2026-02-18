@@ -27,7 +27,7 @@ public class MissingUserSecretsIdAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<MissingUserSecretsIdAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG007")
+            .ShouldReportDiagnostic("DSCFG07")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*SlackConfigProvider*UserSecretsId*");
     }

@@ -19,7 +19,7 @@ public sealed class StrongIdMustBePartialAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on StrongId struct.
     /// </summary>
-    public const string DiagnosticId = "ID0001";
+    public const string DiagnosticId = "DSID01";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

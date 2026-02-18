@@ -20,7 +20,7 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
             """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0008")
+            .ShouldReportDiagnostic("DSRT03")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*NotAnEffectsModule*[EffectsModule]*");
     }
@@ -82,7 +82,7 @@ public class UsesAttributeTargetMustBeEffectsModuleAnalyzerTests : RoslynTestBas
             """;
 
         await AnalyzeWith<UsesAttributeTargetMustBeEffectsModuleAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0008")
+            .ShouldReportDiagnostic("DSRT03")
             .WithMessage("*NotAModule*");
     }
 }

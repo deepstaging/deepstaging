@@ -19,7 +19,7 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("ID0001")
+            .ShouldReportDiagnostic("DSID01")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*UserId*partial*");
     }
@@ -72,6 +72,6 @@ public class StrongIdMustBePartialAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("ID0001");
+            .ShouldReportDiagnostic("DSID01");
     }
 }

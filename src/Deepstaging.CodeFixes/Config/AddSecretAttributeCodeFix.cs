@@ -6,7 +6,7 @@ namespace Deepstaging.CodeFixes.Config;
 using Analyzers.Config;
 
 /// <summary>
-/// Code fix provider that adds the <c>[Secret]</c> attribute to properties flagged by CFG005.
+/// Code fix provider that adds the <c>[Secret]</c> attribute to properties flagged by DSCFG05.
 /// </summary>
 [Shared]
 [CodeFix(PotentialSecretPropertyAnalyzer.DiagnosticId)]

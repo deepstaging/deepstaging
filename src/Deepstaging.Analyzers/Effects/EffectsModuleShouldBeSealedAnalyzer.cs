@@ -21,7 +21,7 @@ public sealed class EffectsModuleShouldBeSealedAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing sealed modifier on EffectsModule class.
     /// </summary>
-    public const string DiagnosticId = "DS0009";
+    public const string DiagnosticId = "DSEFX02";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

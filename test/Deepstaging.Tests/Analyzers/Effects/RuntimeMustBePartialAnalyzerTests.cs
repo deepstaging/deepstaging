@@ -17,7 +17,7 @@ public class RuntimeMustBePartialAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<RuntimeMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0002")
+            .ShouldReportDiagnostic("DSRT01")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*AppRuntime*partial*");
     }

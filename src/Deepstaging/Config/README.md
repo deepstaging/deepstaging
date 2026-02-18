@@ -70,7 +70,7 @@ Marks a partial class as a configuration provider. The generator creates:
 |----------|------|---------|-------------|
 | `Section` | `string?` | Inferred | Configuration section name |
 
-**Section inference:** When `Section` is omitted, it is inferred by stripping the `ConfigProvider` suffix from the class name. For example, `SlackConfigProvider` → `"Slack"`. If the class name does not end in `ConfigProvider`, use an explicit section or diagnostic CFG003 fires.
+**Section inference:** When `Section` is omitted, it is inferred by stripping the `ConfigProvider` suffix from the class name. For example, `SlackConfigProvider` → `"Slack"`. If the class name does not end in `ConfigProvider`, use an explicit section or diagnostic DSCFG03 fires.
 
 ### [Exposes\<T\>]
 
@@ -156,7 +156,7 @@ public static class SlackConfigProviderExtensions
 }
 ```
 
-> **Note:** `AddUserSecrets` is only generated when `[Secret]` properties are present. It requires a `<UserSecretsId>` in the `.csproj`. Run `dotnet user-secrets init` to add one. Analyzer CFG007 warns if this is missing.
+> **Note:** `AddUserSecrets` is only generated when `[Secret]` properties are present. It requires a `<UserSecretsId>` in the `.csproj`. Run `dotnet user-secrets init` to add one. Analyzer DSCFG07 warns if this is missing.
 
 ## JSON Schema
 
@@ -171,15 +171,15 @@ These follow [JSON Schema Draft-7](https://json-schema.org/draft-07/schema#) and
 
 | ID | Severity | Description | Code Fix |
 |----|----------|-------------|----------|
-| CFG001 | Error | ConfigProvider class must be partial | Add `partial` modifier |
-| CFG002 | Warning | ConfigProvider class should be sealed | Add `sealed` modifier |
-| CFG003 | Error | Section name could not be inferred | — |
-| CFG004 | Warning | Exposed type has no public properties | — |
-| CFG005 | Warning | Property appears to contain secrets/PII | Add `[Secret]` attribute |
-| CFG006 | Info | Schema files can be generated | Generate schema files |
-| CFG007 | Warning | [Secret] properties exist but no UserSecretsId | — |
+| DSCFG01 | Error | ConfigProvider class must be partial | Add `partial` modifier |
+| DSCFG02 | Warning | ConfigProvider class should be sealed | Add `sealed` modifier |
+| DSCFG03 | Error | Section name could not be inferred | — |
+| DSCFG04 | Warning | Exposed type has no public properties | — |
+| DSCFG05 | Warning | Property appears to contain secrets/PII | Add `[Secret]` attribute |
+| DSCFG06 | Info | Schema files can be generated | Generate schema files |
+| DSCFG07 | Warning | [Secret] properties exist but no UserSecretsId | — |
 
-### CFG005 — Secret Heuristics
+### DSCFG05 — Secret Heuristics
 
 The analyzer flags properties whose names match common secret/PII patterns:
 

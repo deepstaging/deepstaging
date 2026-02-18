@@ -25,7 +25,7 @@ public sealed class MissingUserSecretsIdAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing UserSecretsId when [Secret] properties exist.
     /// </summary>
-    public const string DiagnosticId = "CFG007";
+    public const string DiagnosticId = "DSCFG07";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type)

@@ -120,7 +120,7 @@ Analyzers extend `TypeAnalyzer` (from Deepstaging.Roslyn):
 [Reports(DiagnosticId, "Title", Message = "...", Description = "...")]
 public sealed class StrongIdMustBePartialAnalyzer : TypeAnalyzer
 {
-    public const string DiagnosticId = "ID0001";
+    public const string DiagnosticId = "DSID01";
 
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
         type.HasAttribute<StrongIdAttribute>() && type is { IsPartial: false };
@@ -163,7 +163,7 @@ await GenerateWith<StrongIdGenerator>(source)
 **Analyzer tests:**
 ```csharp
 await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
-    .ShouldReportDiagnostic("ID0001")
+    .ShouldReportDiagnostic("DSID01")
     .WithSeverity(DiagnosticSeverity.Error)
     .WithMessage("*UserId*partial*");
 ```
@@ -171,7 +171,7 @@ await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
 **CodeFix tests:**
 ```csharp
 await AnalyzeAndFixWith<StrongIdMustBePartialAnalyzer, StructMustBePartialCodeFix>(source)
-    .ForDiagnostic("ID0001")
+    .ForDiagnostic("DSID01")
     .ShouldProduce(expectedSource);
 ```
 

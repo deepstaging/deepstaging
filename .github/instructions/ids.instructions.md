@@ -16,8 +16,8 @@ Generates strongly-typed ID structs with configurable backing types and serializ
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| ID0001 | Error | StrongId struct must be partial |
-| ID0002 | Warning | StrongId struct should be readonly |
+| DSID01 | Error | StrongId struct must be partial |
+| DSID02 | Warning | StrongId struct should be readonly |
 
 ## Projection Models
 

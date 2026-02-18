@@ -19,7 +19,7 @@ public class StrongIdShouldBeReadonlyAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<StrongIdShouldBeReadonlyAnalyzer>(source)
-            .ShouldReportDiagnostic("ID0002")
+            .ShouldReportDiagnostic("DSID02")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*UserId*readonly*");
     }

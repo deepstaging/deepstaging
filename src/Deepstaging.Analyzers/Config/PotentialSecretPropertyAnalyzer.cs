@@ -24,7 +24,7 @@ public sealed class PotentialSecretPropertyAnalyzer : PropertyAnalyzer
     /// <summary>
     /// Diagnostic ID for potential secret properties missing [Secret].
     /// </summary>
-    public const string DiagnosticId = "CFG005";
+    public const string DiagnosticId = "DSCFG05";
 
     private static readonly string[] SecretPatterns =
     [
@@ -69,7 +69,7 @@ public sealed class PotentialSecretPropertyAnalyzer : PropertyAnalyzer
         }
 
         // The property lives on a plain config type. Flag it if it looks like a secret.
-        // The [Exposes<T>] linkage is validated by CFG004/CFG005 at the provider level.
+        // The [Exposes<T>] linkage is validated by DSCFG04/DSCFG05 at the provider level.
         return true;
     }
 

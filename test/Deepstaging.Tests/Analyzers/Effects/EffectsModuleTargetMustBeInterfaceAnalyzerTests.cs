@@ -19,7 +19,7 @@ public class EffectsModuleTargetMustBeInterfaceAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleTargetMustBeInterfaceAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0004")
+            .ShouldReportDiagnostic("DSEFX03")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*EmailEffects*EmailService*interface*");
     }

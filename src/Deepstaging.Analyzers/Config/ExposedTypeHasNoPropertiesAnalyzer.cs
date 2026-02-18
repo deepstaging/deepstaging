@@ -24,7 +24,7 @@ public sealed class ExposedTypeHasNoPropertiesAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for exposed types with no public properties.
     /// </summary>
-    public const string DiagnosticId = "CFG004";
+    public const string DiagnosticId = "DSCFG04";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

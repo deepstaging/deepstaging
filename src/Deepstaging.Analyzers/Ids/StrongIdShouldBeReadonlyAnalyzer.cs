@@ -20,7 +20,7 @@ public sealed class StrongIdShouldBeReadonlyAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing readonly modifier on StrongId struct.
     /// </summary>
-    public const string DiagnosticId = "ID0002";
+    public const string DiagnosticId = "DSID02";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

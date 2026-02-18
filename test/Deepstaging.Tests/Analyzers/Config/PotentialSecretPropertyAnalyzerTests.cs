@@ -28,7 +28,7 @@ public class PotentialSecretPropertyAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<PotentialSecretPropertyAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG005")
+            .ShouldReportDiagnostic("DSCFG05")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*ApiKey*SlackConfig*");
     }
@@ -92,7 +92,7 @@ public class PotentialSecretPropertyAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<PotentialSecretPropertyAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG005")
+            .ShouldReportDiagnostic("DSCFG05")
             .WithMessage("*ConnectionString*DbConfig*");
     }
 }

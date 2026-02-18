@@ -25,7 +25,7 @@ public class ExposedTypeHasNoPropertiesAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<ExposedTypeHasNoPropertiesAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG004")
+            .ShouldReportDiagnostic("DSCFG04")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*EmptyConfig*SlackConfigProvider*");
     }

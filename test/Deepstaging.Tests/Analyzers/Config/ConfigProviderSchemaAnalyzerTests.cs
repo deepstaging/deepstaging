@@ -24,7 +24,7 @@ public class ConfigProviderSchemaAnalyzerTests : RoslynTestBase
     public async Task ReportsMissingDiagnostic_WhenNoSchemaFilesExist()
     {
         await AnalyzeWith<ConfigProviderSchemaAnalyzer>(Source)
-            .ShouldReportDiagnostic("CFG006")
+            .ShouldReportDiagnostic("DSCFG06")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Info)
             .WithMessage("*SlackConfigProvider*generate*");
     }
@@ -36,7 +36,7 @@ public class ConfigProviderSchemaAnalyzerTests : RoslynTestBase
             .WithAdditionalText("deepstaging.schema.json", """
                 { "$comment": "deepstaging:sha256:0000000000000000000000000000000000000000000000000000000000000000" }
             """)
-            .ShouldReportDiagnostic("CFG006")
+            .ShouldReportDiagnostic("DSCFG06")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*SlackConfigProvider*out of date*");
     }

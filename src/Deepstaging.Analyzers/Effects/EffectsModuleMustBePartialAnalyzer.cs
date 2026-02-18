@@ -21,7 +21,7 @@ public sealed class EffectsModuleMustBePartialAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on EffectsModule class.
     /// </summary>
-    public const string DiagnosticId = "DS0001";
+    public const string DiagnosticId = "DSEFX01";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

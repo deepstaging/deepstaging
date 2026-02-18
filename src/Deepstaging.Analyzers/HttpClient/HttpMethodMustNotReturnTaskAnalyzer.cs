@@ -19,7 +19,7 @@ public sealed class HttpMethodMustNotReturnTaskAnalyzer : MethodAnalyzer
     /// <summary>
     /// Diagnostic ID for returning Task from HTTP method definition.
     /// </summary>
-    public const string DiagnosticId = "HTTP003";
+    public const string DiagnosticId = "DSHTTP03";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<IMethodSymbol> method) =>

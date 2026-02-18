@@ -22,7 +22,7 @@ public class UsesAttributeMustTargetRuntimeAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<UsesAttributeMustTargetRuntimeAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0003")
+            .ShouldReportDiagnostic("DSRT02")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*AppRuntime*[Uses]*[Runtime]*");
     }

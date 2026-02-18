@@ -21,7 +21,7 @@ public class ConfigProviderSectionNotInferrableAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<ConfigProviderSectionNotInferrableAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG003")
+            .ShouldReportDiagnostic("DSCFG03")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*MySettings*");
     }
