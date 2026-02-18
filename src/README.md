@@ -102,6 +102,7 @@ The analyzers catch common mistakes at compile time:
 | `DSRT01` | Runtime must be partial |
 | `DSRT02` | Uses attribute must target a runtime |
 | `DSRT03` | Uses target must be an effects module |
+| `DSRT04` | Effects module available but not referenced |
 | `DSEFX01` | Effects module must be partial |
 | `DSEFX02` | Effects module should be sealed |
 | `DSEFX03` | Target type must be an interface |

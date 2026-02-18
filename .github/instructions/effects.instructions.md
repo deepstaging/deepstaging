@@ -23,6 +23,7 @@ Wraps interfaces and DbContexts as LanguageExt effect modules with OpenTelemetry
 | DSRT01 | Error | Runtime class must be partial |
 | DSRT02 | Error | Uses attribute requires Runtime attribute |
 | DSRT03 | Error | Uses target must be an EffectsModule |
+| DSRT04 | Info | Effects module available but not referenced by runtime |
 
 ### EffectsModule Diagnostics (DSEFX)
 
@@ -30,11 +31,11 @@ Wraps interfaces and DbContexts as LanguageExt effect modules with OpenTelemetry
 |----|----------|-------------|
 | DSEFX01 | Error | EffectsModule class must be partial |
 | DSEFX02 | Warning | EffectsModule class should be sealed |
-| DSEFX03 | Error | EffectsModule target should be an interface |
+| DSEFX03 | Warning | EffectsModule target should be an interface |
 | DSEFX04 | Error | Duplicate EffectsModule target type |
 | DSEFX05 | Error | Excluded method not found on target |
 | DSEFX06 | Error | IncludeOnly method not found on target |
-| DSEFX07 | Error | EffectsModule target has no methods |
+| DSEFX07 | Warning | EffectsModule target has no methods |
 
 ## Projection Models
 
