@@ -19,7 +19,7 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0001")
+            .ShouldReportDiagnostic("DSEFX01")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*EmailEffects*partial*");
     }
@@ -73,6 +73,6 @@ public class EffectsModuleMustBePartialAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0001");
+            .ShouldReportDiagnostic("DSEFX01");
     }
 }

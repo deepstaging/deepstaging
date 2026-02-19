@@ -29,10 +29,10 @@ Generates typed HTTP clients with request/response models from annotated partial
 
 | ID | Severity | Description |
 |----|----------|-------------|
-| HTTP001 | Error | HttpClient class must be partial |
-| HTTP002 | Error | HTTP method must be partial |
-| HTTP003 | Error | HTTP method must not return Task |
-| HTTP004 | Error | HTTP path must not be empty |
+| DSHTTP01 | Error | HttpClient class must be partial |
+| DSHTTP02 | Error | HTTP method must be partial |
+| DSHTTP03 | Error | HTTP method must not return Task |
+| DSHTTP04 | Error | HTTP path must not be empty |
 
 ## Projection Models
 

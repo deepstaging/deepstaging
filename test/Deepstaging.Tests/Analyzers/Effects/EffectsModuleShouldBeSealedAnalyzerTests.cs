@@ -19,7 +19,7 @@ public class EffectsModuleShouldBeSealedAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleShouldBeSealedAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0009")
+            .ShouldReportDiagnostic("DSEFX02")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*EmailEffects*sealed*");
     }

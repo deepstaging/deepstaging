@@ -20,7 +20,7 @@ public class EffectsModuleDuplicateTargetAnalyzerTests : RoslynTestBase
             """;
 
         await AnalyzeWith<EffectsModuleDuplicateTargetAnalyzer>(source)
-            .ShouldReportDiagnostic("DS0005")
+            .ShouldReportDiagnostic("DSEFX04")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*EmailEffects*IEmailService*");
     }

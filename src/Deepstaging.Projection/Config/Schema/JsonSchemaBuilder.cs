@@ -27,11 +27,13 @@ public static class JsonSchemaBuilder
 
     private static string BuildSchema(ConfigModel model, bool secret)
     {
-        var id = secret ? "secrets" : "appsettings";
+        var hash = SchemaHash.Compute(model);
+        var id = secret ? "user-secrets" : "deepstaging";
         var sb = new StringBuilder();
         sb.AppendLine("{");
         sb.AppendLine("  \"$schema\": \"https://json-schema.org/draft-07/schema#\",");
         sb.Append("  \"$id\": \"").Append(id).AppendLine(".schema.json\",");
+        sb.Append("  \"$comment\": \"").Append(hash).AppendLine("\",");
         sb.AppendLine("  \"type\": \"object\",");
         sb.AppendLine("  \"properties\": {");
         sb.Append("    \"").Append(model.Section).AppendLine("\": {");

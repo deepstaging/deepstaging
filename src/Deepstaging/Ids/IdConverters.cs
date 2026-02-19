@@ -4,13 +4,14 @@
 namespace Deepstaging.Ids;
 
 /// <summary>
-/// Specifies which type converters to generate for a strongly-typed ID.
+/// Specifies which type converters to generate for a typed ID.
+/// A <see cref="System.ComponentModel.TypeConverter"/> is always generated regardless of this setting.
 /// </summary>
 [Flags]
 public enum IdConverters
 {
     /// <summary>
-    /// No converters are generated.
+    /// No additional converters are generated.
     /// </summary>
     None = 0,
 
@@ -23,24 +24,4 @@ public enum IdConverters
     /// Generates an Entity Framework Core ValueConverter.
     /// </summary>
     EfCoreValueConverter = 1 << 1,
-
-    /// <summary>
-    /// Generates a <see cref="System.ComponentModel.TypeConverter"/> for design-time support.
-    /// </summary>
-    TypeConverter = 1 << 2,
-
-    /// <summary>
-    /// Generates a Dapper SqlMapper.TypeHandler for database integration.
-    /// </summary>
-    Dapper = 1 << 3,
-
-    /// <summary>
-    /// Generates a Newtonsoft.Json JsonConverter.
-    /// </summary>
-    NewtonsoftJson = 1 << 4,
-
-    /// <summary>
-    /// Generates all available converters.
-    /// </summary>
-    All = JsonConverter | EfCoreValueConverter | TypeConverter | Dapper | NewtonsoftJson
 }

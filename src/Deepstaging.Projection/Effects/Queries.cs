@@ -40,5 +40,15 @@ public static class Queries
             ..symbol.GetAttributes<UsesAttribute>()
                 .Select(attr => attr.AsQuery<UsesAttributeQuery>())
         ];
+
+        /// <summary>
+        /// Gets all <see cref="CapabilityAttribute"/> instances applied to this symbol as queryable wrappers.
+        /// </summary>
+        /// <returns>An immutable array of <see cref="CapabilityAttributeQuery"/> instances.</returns>
+        public ImmutableArray<CapabilityAttributeQuery> CapabilityAttributes() =>
+        [
+            ..symbol.GetAttributes<CapabilityAttribute>()
+                .Select(attr => attr.AsQuery<CapabilityAttributeQuery>())
+        ];
     }
 }

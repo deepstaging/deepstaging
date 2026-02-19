@@ -3,4 +3,19 @@
 <!-- SPDX-License-Identifier: RPL-1.5 -->
 <Project>
     <!-- Automatically imported by projects that reference the Deepstaging package -->
+
+    <PropertyGroup>
+        <DeepstagingDataDirectory Condition="'$(DeepstagingDataDirectory)' == ''">.config</DeepstagingDataDirectory>
+        <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>!generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+
+    <!-- Expose DeepstagingDataDirectory to analyzers and generators -->
+    <ItemGroup>
+        <CompilerVisibleProperty Include="DeepstagingDataDirectory"/>
+    </ItemGroup>
+
+    <!-- Import project-local deepstaging.props if present -->
+    <Import Project="$(MSBuildProjectDirectory)/$(DeepstagingDataDirectory)/deepstaging.props"
+            Condition="Exists('$(MSBuildProjectDirectory)/$(DeepstagingDataDirectory)/deepstaging.props')"/>
 </Project>

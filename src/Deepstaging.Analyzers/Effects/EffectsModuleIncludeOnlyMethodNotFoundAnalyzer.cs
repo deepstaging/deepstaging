@@ -8,7 +8,7 @@ namespace Deepstaging.Analyzers.Effects;
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(
-    "DS0007",
+    "DSEFX06",
     "IncludeOnly method not found",
     Message = "Method '{0}' specified in IncludeOnly does not exist on target type '{1}'",
     Description =

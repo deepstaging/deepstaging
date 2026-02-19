@@ -22,7 +22,7 @@ public static class ConfigWriter
                 .InNamespace(model.Namespace)
                 .WithEach(model.ExposedConfigurationTypes, (builder, configType) => builder
                     .AddProperty(configType.Type.Name, configType.Type.CodeName, prop => prop
-                        .WithAutoPropertyAccessors()
+                        .WithAutoGetter()
                         .WithXmlDoc($"Gets the <see cref=\"{configType.Type.Name}\"/> configuration.")))
                 .WithXmlDoc($"Interface for the <c>{model.TypeName}</c> configuration provider.")
                 .Emit();
@@ -52,13 +52,34 @@ public static class ConfigWriter
     }
 
     /// <summary>
-    /// Generates a static extension class with a DI registration method.
+    /// Generates a static extension class with DI registration and configuration source methods.
     /// </summary>
     private static OptionalEmit WriteExtensionsClass(this ConfigModel model) =>
         TypeBuilder
             .Parse($"public static class {model.TypeName}Extensions")
             .InNamespace(model.Namespace)
             .AddUsings(ConfigurationRefs.Namespace, DependencyInjectionRefs.Namespace)
+            .AddMethod(MethodBuilder.Parse(
+                    $"""
+                     public static {ConfigurationRefs.IConfigurationBuilder} Configure{model.TypeName}Sources(
+                         this {ConfigurationRefs.IConfigurationBuilder} builder,
+                         string? settingsPath = null
+                     )
+                     """)
+                .WithBody(body =>
+                {
+                    var b = body.AddStatement($"builder.AddJsonFile(settingsPath ?? \"deepstaging.settings.json\", optional: true, reloadOnChange: true)");
+
+                    if (model.HasSecrets)
+                        b = b.AddStatement($"builder.AddUserSecrets(typeof({model.TypeName}).Assembly, optional: true)");
+
+                    return b.AddReturn("builder");
+                })
+                .WithXmlDoc(xml => xml
+                    .WithSummary($"Adds configuration sources for <see cref=\"{model.TypeName}\"/>.")
+                    .AddParam("builder", "The configuration builder.")
+                    .AddParam("settingsPath", "Optional path to the settings file. Defaults to <c>deepstaging.settings.json</c>.")
+                    .WithReturns("The configuration builder for fluent chaining.")))
             .AddMethod(MethodBuilder.Parse(
                     $"""
                      public static {DependencyInjectionRefs.IServiceCollection} Add{model.TypeName}(

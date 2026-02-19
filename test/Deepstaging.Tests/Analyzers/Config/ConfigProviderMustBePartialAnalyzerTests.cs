@@ -21,7 +21,7 @@ public class ConfigProviderMustBePartialAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<ConfigProviderMustBePartialAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG001")
+            .ShouldReportDiagnostic("DSCFG01")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Error)
             .WithMessage("*SlackConfigProvider*partial*");
     }

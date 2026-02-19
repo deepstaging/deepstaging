@@ -8,7 +8,7 @@ namespace Deepstaging.Analyzers.Effects;
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(
-    "DS0006",
+    "DSEFX05",
     "Excluded method not found",
     Message = "Method '{0}' specified in Exclude does not exist on target type '{1}'",
     Description =

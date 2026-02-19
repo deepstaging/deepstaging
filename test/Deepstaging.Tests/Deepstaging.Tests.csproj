@@ -31,10 +31,8 @@
         <PackageReference Include="Verify"/>
         <PackageReference Include="Verify.TUnit"/>
         <!-- References for compilation verification of generated converters -->
-        <PackageReference Include="Newtonsoft.Json"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets"/>
-        <PackageReference Include="Dapper"/>
     </ItemGroup>
 
     <ItemGroup>

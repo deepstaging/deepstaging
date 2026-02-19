@@ -24,12 +24,10 @@ internal static class TestConfiguration
             typeof(ConfigProviderAttribute),
             typeof(Microsoft.Extensions.Configuration.UserSecretsConfigurationExtensions),
             // Ids
-            typeof(Ids.StrongIdAttribute),
+            typeof(Ids.TypedIdAttribute),
             typeof(System.ComponentModel.TypeConverter),
             typeof(System.ComponentModel.TypeConverterAttribute),
-            typeof(Newtonsoft.Json.JsonConvert),
             typeof(Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter),
-            typeof(Dapper.SqlMapper),
             // HttpClient
             typeof(HttpClient.HttpClientAttribute),
             typeof(System.Net.Http.HttpClient),

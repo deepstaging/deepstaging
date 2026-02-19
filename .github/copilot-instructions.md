@@ -11,7 +11,7 @@ dotnet run --project test/Deepstaging.Tests -c Release
 dotnet run --project test/Deepstaging.Testing.Tests -c Release
 
 # Test (by class name)
-dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/TypedIdGeneratorTests/*
 
 # Test (by test name)
 dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings
@@ -20,7 +20,7 @@ dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/*/
 dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/Deepstaging.Tests*Effects*/*/*
 
 # Test via dotnet test (flags go after --)
-dotnet test --project test/Deepstaging.Tests -c Release -- --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet test --project test/Deepstaging.Tests -c Release -- --treenode-filter /*/*/TypedIdGeneratorTests/*
 
 # Pack (local dev)
 ./build/pack.sh
@@ -36,10 +36,10 @@ The `--treenode-filter` syntax is `/<Assembly>/<Namespace>/<Class>/<Test>` with 
 
 | Project | Target | Purpose |
 |---------|--------|---------|
-| `Deepstaging` | netstandard2.0 + net10.0 | Core marker attributes (`EffectsModuleAttribute`, `StrongIdAttribute`, `ConfigRootAttribute`, `HttpClientAttribute`) and enums (`BackingType`, `IdConverters`) |
+| `Deepstaging` | netstandard2.0 + net10.0 | Core marker attributes (`EffectsModuleAttribute`, `TypedIdAttribute`, `ConfigRootAttribute`, `HttpClientAttribute`) and enums (`BackingType`, `IdConverters`) |
 | `Deepstaging.Runtime` | net10.0 | Runtime support: OpenTelemetry instrumentation (`ActivityEffectExtensions`), `IHasLoggerFactory`, `EffectMetrics` |
 | `Deepstaging.Projection` | netstandard2.0 | Roslyn analysis layer — attribute queries and pipeline models for each feature |
-| `Deepstaging.Generators` | netstandard2.0 | Incremental source generators: `EffectsGenerator`, `StrongIdGenerator`, `ConfigGenerator`, `HttpClientGenerator` |
+| `Deepstaging.Generators` | netstandard2.0 | Incremental source generators: `EffectsGenerator`, `TypedIdGenerator`, `ConfigGenerator`, `HttpClientGenerator` |
 | `Deepstaging.Analyzers` | netstandard2.0 | Roslyn diagnostic analyzers (enforce partial/sealed, validate targets, check method names) |
 | `Deepstaging.CodeFixes` | netstandard2.0 | Code fix providers (`StructMustBePartialCodeFix`, `ClassMustBePartialCodeFix`, etc.) |
 | `Deepstaging.Testing` | netstandard2.0 + net10.0 | Test support library (not tests) — `ITestRuntime<TSelf>`, `TestRuntimeAttribute<TRuntime>` |
@@ -79,7 +79,7 @@ Deepstaging.Generators/
 │       ├── DbSetQueryWriter.cs
 │       ├── RuntimeWriter.cs
 │       └── RuntimeBootstrapperWriter.cs
-├── Ids/Writers/StrongIdWriter.cs         # + partials: .Constructor, .Converters, .Factory, etc.
+├── Ids/Writers/TypedIdWriter.cs         # + partials: .Constructor, .Converters, .Factory, etc.
 ├── Config/Writers/ConfigWriter.cs
 └── HttpClient/Writers/
     ├── ClientWriter.cs
@@ -90,16 +90,16 @@ Deepstaging.Generators/
 Generator entry point pattern:
 ```csharp
 [Generator]
-public sealed class StrongIdGenerator : IIncrementalGenerator
+public sealed class TypedIdGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var models = context.ForAttribute<StrongIdAttribute>()
-            .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToStrongIdModel(ctx.SemanticModel));
+        var models = context.ForAttribute<TypedIdAttribute>()
+            .Map(static (ctx, _) => ctx.TargetSymbol.AsValidNamedType().ToTypedIdModel(ctx.SemanticModel));
 
         context.RegisterSourceOutput(models, static (ctx, model) =>
         {
-            model.WriteStrongId()
+            model.WriteTypedId()
                 .AddSourceTo(ctx, HintName.From(model.Namespace, model.TypeName));
         });
     }
@@ -108,7 +108,7 @@ public sealed class StrongIdGenerator : IIncrementalGenerator
 
 Writers transform projection models into generated code using TypeBuilder fluent API:
 ```csharp
-model.WriteStrongId()        // returns OptionalEmit
+model.WriteTypedId()        // returns OptionalEmit
     .AddSourceTo(ctx, hint);
 ```
 
@@ -118,12 +118,12 @@ Analyzers extend `TypeAnalyzer` (from Deepstaging.Roslyn):
 ```csharp
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(DiagnosticId, "Title", Message = "...", Description = "...")]
-public sealed class StrongIdMustBePartialAnalyzer : TypeAnalyzer
+public sealed class TypedIdMustBePartialAnalyzer : TypeAnalyzer
 {
-    public const string DiagnosticId = "ID0001";
+    public const string DiagnosticId = "DSID01";
 
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>
-        type.HasAttribute<StrongIdAttribute>() && type is { IsPartial: false };
+        type.HasAttribute<TypedIdAttribute>() && type is { IsPartial: false };
 }
 ```
 
@@ -132,7 +132,7 @@ public sealed class StrongIdMustBePartialAnalyzer : TypeAnalyzer
 Code fixes use helper base classes:
 ```csharp
 [Shared]
-[CodeFix(StrongIdMustBePartialAnalyzer.DiagnosticId)]
+[CodeFix(TypedIdMustBePartialAnalyzer.DiagnosticId)]
 [ExportCodeFixProvider(LanguageNames.CSharp)]
 public sealed class StructMustBePartialCodeFix : StructCodeFix
 {
@@ -153,7 +153,7 @@ All Roslyn tests inherit from `RoslynTestBase` (from `Deepstaging.Roslyn.Testing
 
 **Generator tests:**
 ```csharp
-await GenerateWith<StrongIdGenerator>(source)
+await GenerateWith<TypedIdGenerator>(source)
     .ShouldGenerate()
     .WithFileContaining("public partial struct UserId")
     .WithNoDiagnostics()
@@ -162,16 +162,16 @@ await GenerateWith<StrongIdGenerator>(source)
 
 **Analyzer tests:**
 ```csharp
-await AnalyzeWith<StrongIdMustBePartialAnalyzer>(source)
-    .ShouldReportDiagnostic("ID0001")
+await AnalyzeWith<TypedIdMustBePartialAnalyzer>(source)
+    .ShouldReportDiagnostic("DSID01")
     .WithSeverity(DiagnosticSeverity.Error)
     .WithMessage("*UserId*partial*");
 ```
 
 **CodeFix tests:**
 ```csharp
-await AnalyzeAndFixWith<StrongIdMustBePartialAnalyzer, StructMustBePartialCodeFix>(source)
-    .ForDiagnostic("ID0001")
+await AnalyzeAndFixWith<TypedIdMustBePartialAnalyzer, StructMustBePartialCodeFix>(source)
+    .ForDiagnostic("DSID01")
     .ShouldProduce(expectedSource);
 ```
 
@@ -255,8 +255,8 @@ This codebase uses C# 14 extension members (not classic extension methods):
 ```csharp
 extension(ValidSymbol<INamedTypeSymbol> symbol)
 {
-    public ImmutableArray<StrongIdAttributeQuery> StrongIdAttributes() =>
-        [..symbol.GetAttributes<StrongIdAttribute>().Select(...)];
+    public ImmutableArray<TypedIdAttributeQuery> TypedIdAttributes() =>
+        [..symbol.GetAttributes<TypedIdAttribute>().Select(...)];
 }
 ```
 

@@ -29,7 +29,7 @@
         <PackageId>Deepstaging</PackageId>
         <Title>Deepstaging</Title>
         <Description>Complete Deepstaging toolkit — effects system, strongly-typed IDs, HTTP client generators, and config generators. Source generators, analyzers, and code fixes included.</Description>
-        <PackageTags>deepstaging;effects;strong-id;source-generator;analyzer;roslyn;csharp</PackageTags>
+        <PackageTags>deepstaging;effects;typed-id;source-generator;analyzer;roslyn;csharp</PackageTags>
         <RootNamespace>Deepstaging</RootNamespace>
     </PropertyGroup>
 
@@ -49,9 +49,10 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     </ItemGroup>
 
-    <!-- Build props file imported automatically by consuming projects -->
+    <!-- Build props and targets imported automatically by consuming projects -->
     <ItemGroup>
         <None Include="build\Deepstaging.props" Pack="true" PackagePath="build"/>
+        <None Include="build\Deepstaging.targets" Pack="true" PackagePath="build"/>
     </ItemGroup>
 
     <!--

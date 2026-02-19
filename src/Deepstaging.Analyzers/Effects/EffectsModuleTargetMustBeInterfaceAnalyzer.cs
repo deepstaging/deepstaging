@@ -8,7 +8,7 @@ namespace Deepstaging.Analyzers.Effects;
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 [Reports(
-    "DS0004",
+    "DSEFX03",
     "EffectsModule target should be interface",
     Message = "Class '{0}' has [EffectsModule] targeting concrete class '{1}' instead of an interface",
     Description =

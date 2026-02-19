@@ -24,7 +24,7 @@ public sealed class ConfigProviderSectionNotInferrableAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for non-inferrable section name on ConfigProvider class.
     /// </summary>
-    public const string DiagnosticId = "CFG003";
+    public const string DiagnosticId = "DSCFG03";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

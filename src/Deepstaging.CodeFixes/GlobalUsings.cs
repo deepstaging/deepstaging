@@ -5,6 +5,7 @@
 global using System.Composition;
 global using Deepstaging.Analyzers;
 global using Deepstaging.Analyzers.Config;
+global using Deepstaging.Analyzers.Effects;
 global using Deepstaging.Analyzers.HttpClient;
 global using Deepstaging.Analyzers.Ids;
 global using Deepstaging.Roslyn;

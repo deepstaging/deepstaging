@@ -7,22 +7,22 @@ using Deepstaging.Roslyn.Scriban;
 using Deepstaging.Roslyn.Testing;
 
 /// <summary>
-/// Tests that DSRK005 fires for [StrongId] types without a user template.
+/// Tests that DSRK005 fires for [TypedId] types without a user template.
 /// </summary>
 public class ScaffoldAvailableAnalyzerTests : RoslynTestBase
 {
     private const string ScaffoldMetadataSource =
         """
         [assembly: System.Reflection.AssemblyMetadata(
-            "Deepstaging.Scaffold:Deepstaging.Ids/StrongId",
-            "Deepstaging.Ids.StrongIdAttribute")]
+            "Deepstaging.Scaffold:Deepstaging.Ids/TypedId",
+            "Deepstaging.Ids.TypedIdAttribute")]
         [assembly: System.Reflection.AssemblyMetadata(
-            "Deepstaging.Scaffold:Deepstaging.Ids/StrongId:Content",
+            "Deepstaging.Scaffold:Deepstaging.Ids/TypedId:Content",
             "// scaffold content for {{ TypeName }}")]
         """;
 
     [Test]
-    public async Task ReportsDiagnostic_WhenStrongIdType_HasNoTemplate()
+    public async Task ReportsDiagnostic_WhenTypedIdType_HasNoTemplate()
     {
         var source =
             $$"""
@@ -32,14 +32,14 @@ public class ScaffoldAvailableAnalyzerTests : RoslynTestBase
 
               namespace TestApp;
 
-              [StrongId]
+              [TypedId]
               public partial struct UserId;
               """;
 
         await AnalyzeWith<ScaffoldAvailableAnalyzer>(source)
             .ShouldReportDiagnostic(ScaffoldDiagnostics.ScaffoldAvailable)
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Info)
-            .WithMessage("*UserId*Deepstaging.Ids/StrongId*");
+            .WithMessage("*UserId*Deepstaging.Ids/TypedId*");
     }
 
     [Test]
@@ -53,17 +53,17 @@ public class ScaffoldAvailableAnalyzerTests : RoslynTestBase
 
               namespace TestApp;
 
-              [StrongId]
+              [TypedId]
               public partial struct UserId;
               """;
 
         await AnalyzeWith<ScaffoldAvailableAnalyzer>(source)
-            .WithAdditionalText("Templates/Deepstaging.Ids/StrongId.scriban-cs", "// user override")
+            .WithAdditionalText("Templates/Deepstaging.Ids/TypedId.scriban-cs", "// user override")
             .ShouldHaveNoDiagnostics();
     }
 
     [Test]
-    public async Task NoDiagnostic_WhenNoStrongIdAttribute()
+    public async Task NoDiagnostic_WhenNoTypedIdAttribute()
     {
         var source =
             $$"""

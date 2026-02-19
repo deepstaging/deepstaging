@@ -19,7 +19,7 @@ public sealed class TestRuntimeCapabilityInfoAnalyzer : MultiDiagnosticTypeAnaly
     /// <summary>
     /// Diagnostic ID for the test runtime capability info diagnostic.
     /// </summary>
-    public const string DiagnosticId = "DS0010";
+    public const string DiagnosticId = "DSEFX07";
 
     /// <inheritdoc />
     protected override IEnumerable<RuntimeCapabilityModel> GetDiagnosticItems(ValidSymbol<INamedTypeSymbol> symbol)

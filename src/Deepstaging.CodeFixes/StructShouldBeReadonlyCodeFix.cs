@@ -7,7 +7,7 @@ namespace Deepstaging.CodeFixes;
 /// Code fix provider that adds the 'readonly' modifier to structs.
 /// </summary>
 [Shared]
-[CodeFix(StrongIdShouldBeReadonlyAnalyzer.DiagnosticId)]
+[CodeFix(TypedIdShouldBeReadonlyAnalyzer.DiagnosticId)]
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(StructShouldBeReadonlyCodeFix))]
 public sealed class StructShouldBeReadonlyCodeFix : StructCodeFix
 {

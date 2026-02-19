@@ -21,7 +21,7 @@ public class ConfigProviderShouldBeSealedAnalyzerTests : RoslynTestBase
         """;
 
         await AnalyzeWith<ConfigProviderShouldBeSealedAnalyzer>(source)
-            .ShouldReportDiagnostic("CFG002")
+            .ShouldReportDiagnostic("DSCFG02")
             .WithSeverity(Microsoft.CodeAnalysis.DiagnosticSeverity.Warning)
             .WithMessage("*SlackConfigProvider*sealed*");
     }

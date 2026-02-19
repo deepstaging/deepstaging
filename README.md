@@ -28,19 +28,19 @@ public sealed partial class AppRuntime;
 
 The generator produces `Eff<RT, A>` wrappers, capability interfaces, DI registration, and `Activity` spans — all wired together through the runtime.
 
-### Strong IDs
+### Typed IDs
 
 Type-safe ID structs with configurable backing types and serialization converters.
 
 ```csharp
-[StrongId]
+[TypedId]
 public readonly partial struct UserId;
 
-[StrongId(BackingType = BackingType.Int, Converters = IdConverters.All)]
+[TypedId(BackingType = BackingType.Int, Converters = IdConverters.JsonConverter | IdConverters.EfCoreValueConverter)]
 public readonly partial struct OrderId;
 ```
 
-Generated structs implement `IEquatable<T>`, `IParsable<T>`, `IComparable<T>`, and `ToString`. Opt into JSON, EF Core, Dapper, Newtonsoft, and `TypeConverter` support via the `Converters` flag.
+Generated structs implement `IEquatable<T>`, `IParsable<T>`, `IComparable<T>`, and `ToString`. Opt into JSON and EF Core converter support via the `Converters` flag. A `System.ComponentModel.TypeConverter` is always generated.
 
 ### Configuration
 
@@ -120,7 +120,7 @@ dotnet build Deepstaging.slnx
 dotnet run --project test/Deepstaging.Tests -c Release
 
 # Run tests by class
-dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/StrongIdGeneratorTests/*
+dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/TypedIdGeneratorTests/*
 
 # Run a single test
 dotnet run --project test/Deepstaging.Tests -c Release --treenode-filter /*/*/*/GeneratesGuidId_WithDefaultSettings

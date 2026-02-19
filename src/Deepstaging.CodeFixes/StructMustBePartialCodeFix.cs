@@ -7,7 +7,7 @@ namespace Deepstaging.CodeFixes;
 /// Code fix provider that adds the 'partial' modifier to structs.
 /// </summary>
 [Shared]
-[CodeFix(StrongIdMustBePartialAnalyzer.DiagnosticId)]
+[CodeFix(TypedIdMustBePartialAnalyzer.DiagnosticId)]
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(StructMustBePartialCodeFix))]
 public sealed class StructMustBePartialCodeFix : StructCodeFix
 {

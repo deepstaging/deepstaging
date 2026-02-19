@@ -21,7 +21,7 @@ public sealed class ConfigProviderShouldBeSealedAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing sealed modifier on ConfigProvider class.
     /// </summary>
-    public const string DiagnosticId = "CFG002";
+    public const string DiagnosticId = "DSCFG02";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

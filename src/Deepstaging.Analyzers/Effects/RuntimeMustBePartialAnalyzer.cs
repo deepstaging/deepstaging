@@ -21,7 +21,7 @@ public sealed class RuntimeMustBePartialAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on Runtime class.
     /// </summary>
-    public const string DiagnosticId = "DS0002";
+    public const string DiagnosticId = "DSRT01";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

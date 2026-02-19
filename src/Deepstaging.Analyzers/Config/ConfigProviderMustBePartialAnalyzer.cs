@@ -21,7 +21,7 @@ public sealed class ConfigProviderMustBePartialAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for missing partial modifier on ConfigProvider class.
     /// </summary>
-    public const string DiagnosticId = "CFG001";
+    public const string DiagnosticId = "DSCFG01";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

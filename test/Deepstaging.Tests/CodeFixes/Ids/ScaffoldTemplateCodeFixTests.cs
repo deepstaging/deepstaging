@@ -7,7 +7,7 @@ using Deepstaging.Roslyn.Scriban;
 using Deepstaging.Roslyn.Testing;
 
 /// <summary>
-/// Tests that the scaffold code fix creates a user template file for [StrongId] types.
+/// Tests that the scaffold code fix creates a user template file for [TypedId] types.
 /// </summary>
 public class ScaffoldTemplateCodeFixTests : RoslynTestBase
 {
@@ -16,15 +16,15 @@ public class ScaffoldTemplateCodeFixTests : RoslynTestBase
         using Deepstaging.Ids;
 
         [assembly: System.Reflection.AssemblyMetadata(
-            "Deepstaging.Scaffold:Deepstaging.Ids/StrongId",
-            "Deepstaging.Ids.StrongIdAttribute")]
+            "Deepstaging.Scaffold:Deepstaging.Ids/TypedId",
+            "Deepstaging.Ids.TypedIdAttribute")]
         [assembly: System.Reflection.AssemblyMetadata(
-            "Deepstaging.Scaffold:Deepstaging.Ids/StrongId:Content",
+            "Deepstaging.Scaffold:Deepstaging.Ids/TypedId:Content",
             "// scaffold content for {{ TypeName }}")]
 
         namespace TestApp;
 
-        [StrongId]
+        [TypedId]
         public partial struct UserId;
         """;
 
@@ -34,7 +34,7 @@ public class ScaffoldTemplateCodeFixTests : RoslynTestBase
         await AnalyzeAndFixWith<ScaffoldAvailableAnalyzer, ScaffoldTemplateCodeFix>(Source)
             .ForDiagnostic(ScaffoldDiagnostics.ScaffoldAvailable)
             .ShouldAddAdditionalDocument()
-            .WithPathContaining("StrongId")
+            .WithPathContaining("TypedId")
             .WithContentContaining("scaffold content for {{ TypeName }}");
     }
 
@@ -42,7 +42,7 @@ public class ScaffoldTemplateCodeFixTests : RoslynTestBase
     public async Task NoFix_WhenUserTemplateExists()
     {
         await AnalyzeWith<ScaffoldAvailableAnalyzer>(Source)
-            .WithAdditionalText("Templates/Deepstaging.Ids/StrongId.scriban-cs", "// user template")
+            .WithAdditionalText("Templates/Deepstaging.Ids/TypedId.scriban-cs", "// user template")
             .ShouldHaveNoDiagnostics();
     }
 }

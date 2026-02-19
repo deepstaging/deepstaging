@@ -1,0 +1,21 @@
+<!-- SPDX-FileCopyrightText: 2024-present Deepstaging -->
+<!-- SPDX-License-Identifier: RPL-1.5 -->
+<Project>
+    <!--
+        Auto-discovers JSON schema files in the consuming project and feeds them
+        to analyzers as AdditionalFiles. This enables the ConfigProviderSchemaAnalyzer
+        to detect existing schemas and check staleness.
+    -->
+    <ItemGroup>
+        <AdditionalFiles Include="$(DeepstagingDataDirectory)/**/*.schema.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="!generated/**"/>
+        <None Include="!generated/**"/>
+    </ItemGroup>
+
+    <!-- Import project-local deepstaging.targets if present (file nesting, etc.) -->
+    <Import Project="$(MSBuildProjectDirectory)/$(DeepstagingDataDirectory)/deepstaging.targets"
+            Condition="Exists('$(MSBuildProjectDirectory)/$(DeepstagingDataDirectory)/deepstaging.targets')"/>
+</Project>

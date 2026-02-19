@@ -14,13 +14,13 @@ public static class Queries
     extension(ValidSymbol<INamedTypeSymbol> symbol)
     {
         /// <summary>
-        /// Creates a <see cref="StrongIdModel"/> from the symbol.
+        /// Creates a <see cref="TypedIdModel"/> from the symbol.
         /// </summary>
-        public StrongIdModel ToStrongIdModel(SemanticModel model)
+        public TypedIdModel ToTypedIdModel(SemanticModel model)
         {
-            return symbol.GetAttribute<StrongIdAttribute>()
-                .Map(attr => attr.AsQuery<StrongIdAttributeQuery>())
-                .Map(attr => new StrongIdModel
+            return symbol.GetAttribute<TypedIdAttribute>()
+                .Map(attr => attr.AsQuery<TypedIdAttributeQuery>())
+                .Map(attr => new TypedIdModel
                     {
                         Namespace = symbol.Namespace ?? "",
                         TypeName = symbol.Name,
@@ -30,7 +30,7 @@ public static class Queries
                         Converters = attr.Converters
                     }
                 )
-                .OrThrow($"Expected symbol '{symbol.FullyQualifiedName}' to have StrongIdAttribute.");
+                .OrThrow($"Expected symbol '{symbol.FullyQualifiedName}' to have TypedIdAttribute.");
         }
     }
 }

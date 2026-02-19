@@ -20,7 +20,7 @@ public sealed class UsesAttributeMustTargetRuntimeAnalyzer : TypeAnalyzer
     /// <summary>
     /// Diagnostic ID for Uses attribute without Runtime.
     /// </summary>
-    public const string DiagnosticId = "DS0003";
+    public const string DiagnosticId = "DSRT02";
 
     /// <inheritdoc />
     protected override bool ShouldReport(ValidSymbol<INamedTypeSymbol> type) =>

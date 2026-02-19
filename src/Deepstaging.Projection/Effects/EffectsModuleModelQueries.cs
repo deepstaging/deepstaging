@@ -18,35 +18,28 @@ public static class EffectsModuleModelQueries
         /// Each model contains the effect methods, DbSets (if applicable), and capability information.
         /// </summary>
         /// <returns>An immutable array of <see cref="Models.EffectsModuleModel"/> instances, one per attribute.</returns>
-        public ImmutableArray<EffectsModuleModel> QueryEffectsModules()
-        {
-            return
-            [
-                ..container
-                    .GetAttributes<EffectsModuleAttribute>()
-                    .Select(attr =>
-                        {
-                            var attribute = attr.AsQuery<EffectsModuleAttributeQuery>();
-
-                            return new EffectsModuleModel
-                            {
-                                Capability = attribute.TargetType.CreateCapabilityModel(),
-                                EffectsContainerName = container.Name,
-                                Accessibility = attribute.TargetType.AccessibilityString,
-                                Methods = attribute.CreateEffectMethods(),
-                                Instrumented = attribute.Instrumented,
-                                Name = attribute.Name,
-                                Namespace = container.Namespace ?? "Global",
-                                TargetType = attribute.TargetType.GloballyQualifiedName,
-                                TargetTypeName = attribute.TargetType.Name,
-                                XmlDocumentation = attribute.TargetType.XmlDocumentation.ToSnapshot(),
-                                IsDbContext = attribute.TargetType.IsEfDbContext(),
-                                DbSets = attribute.CreateDbSets()
-                            };
-                        }
-                    )
-            ];
-        }
+        public ImmutableArray<EffectsModuleModel> QueryEffectsModules() =>
+        [
+            ..container
+                .GetAttributes<EffectsModuleAttribute>()
+                .Select(attr => attr.AsQuery<EffectsModuleAttributeQuery>())
+                .Where(attribute => attribute.HasValidTargetType)
+                .Select(attribute => new EffectsModuleModel
+                {
+                    Capability = attribute.TargetType.CreateCapabilityModel(),
+                    EffectsContainerName = container.Name,
+                    Accessibility = attribute.TargetType.AccessibilityString,
+                    Methods = attribute.CreateEffectMethods(),
+                    Instrumented = attribute.Instrumented,
+                    Name = attribute.Name,
+                    Namespace = container.Namespace ?? "Global",
+                    TargetType = attribute.TargetType.GloballyQualifiedName,
+                    TargetTypeName = attribute.TargetType.Name,
+                    XmlDocumentation = attribute.TargetType.XmlDocumentation.ToSnapshot(),
+                    IsDbContext = attribute.TargetType.IsEfDbContext(),
+                    DbSets = attribute.CreateDbSets()
+                })
+        ];
     }
 
     private static EquatableArray<EffectMethodModel> CreateEffectMethods(this EffectsModuleAttributeQuery attribute)
@@ -104,7 +97,7 @@ public static class EffectsModuleModelQueries
             );
     }
 
-    private static RuntimeCapabilityModel CreateCapabilityModel(this ValidSymbol<INamedTypeSymbol> targetType)
+    internal static RuntimeCapabilityModel CreateCapabilityModel(this ValidSymbol<INamedTypeSymbol> targetType)
     {
         var methods = targetType.QueryMethods().GetAll();
 
