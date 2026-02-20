@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: RPL-1.5
 // Global using directives
 
+global using Deepstaging;
+global using Deepstaging.Config;
+global using Deepstaging.Dispatch;
+global using Deepstaging.EventQueue;
 global using Deepstaging.HttpClient;
 global using Deepstaging.Ids;
 global using Deepstaging.Projection.Config;

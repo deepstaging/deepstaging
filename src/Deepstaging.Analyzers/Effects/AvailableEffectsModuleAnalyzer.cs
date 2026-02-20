@@ -43,8 +43,8 @@ public sealed class AvailableEffectsModuleAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Info,
         isEnabledByDefault: true,
         description:
-            "An [EffectsModule]-annotated type exists in the compilation but is not referenced " +
-            "by any [Uses] attribute on this [Runtime] class. Add [Uses(typeof(...))] to wire it in.",
+            "A Deepstaging module ([EffectsModule], [EventQueue], or [DispatchModule]) exists in the compilation " +
+            "but is not referenced by any [Uses] attribute on this [Runtime] class. Add [Uses(typeof(...))] to wire it in.",
         customTags: [WellKnownDiagnosticTags.CompilationEnd]);
 
     /// <inheritdoc />
@@ -67,7 +67,9 @@ public sealed class AvailableEffectsModuleAnalyzer : DiagnosticAnalyzer
 
             var valid = ValidSymbol<INamedTypeSymbol>.From(type);
 
-            if (valid.HasAttribute<EffectsModuleAttribute>())
+            if (valid.HasAttribute<EffectsModuleAttribute>() ||
+                valid.HasAttribute<EventQueueAttribute>() ||
+                valid.HasAttribute<DispatchModuleAttribute>())
                 moduleTypes.Add(type);
 
             if (valid.HasAttribute<RuntimeAttribute>())
