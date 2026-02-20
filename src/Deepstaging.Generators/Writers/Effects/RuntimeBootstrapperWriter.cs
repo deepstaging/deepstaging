@@ -77,6 +77,7 @@ public static class RuntimeBootstrapperWriter
             .WithBody(body => body
                 .AddStatement($"var options = new {optionsType}()")
                 .AddStatement("configure?.Invoke(options)")
+                .ConfigureModuleRegistrations(model)
                 .ConfigureRuntimeRegistration(model)
                 .ConfigureTracingRegistration(model.ActivitySources)
                 .AddReturn("services"))
@@ -120,5 +121,24 @@ public static class RuntimeBootstrapperWriter
               })
               """
         );
+    }
+
+    private static BodyBuilder ConfigureModuleRegistrations(this BodyBuilder builder, RuntimeModel model)
+    {
+        foreach (var registration in model.Registrations)
+        {
+            if (registration.AdditionalParameters is { Count: > 0 })
+            {
+                var paramNames = string.Join(", ", registration.AdditionalParameters.Select(p =>
+                    $"options.{registration.MethodName}_{p.Name}"));
+                builder = builder.AddStatement($"{registration.ContainingType}.{registration.MethodName}(services, {paramNames})");
+            }
+            else
+            {
+                builder = builder.AddStatement($"{registration.ContainingType}.{registration.MethodName}(services)");
+            }
+        }
+
+        return builder;
     }
 }
