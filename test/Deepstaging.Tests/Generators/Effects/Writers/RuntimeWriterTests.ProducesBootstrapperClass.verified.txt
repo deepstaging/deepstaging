@@ -6,6 +6,9 @@
 #nullable enable
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Trace;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestApp;

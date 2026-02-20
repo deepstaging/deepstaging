@@ -34,4 +34,9 @@ public sealed record UsesAttributeQuery(AttributeData AttributeData) : Attribute
             .Where(attr => attr.HasValidTargetType)
             .Select(attr => attr.TargetType.CreateCapabilityModel() with { IsStandalone = true })
     ];
+
+    /// <summary>
+    /// Gets the <see cref="RegistersWithModel"/> from the referenced module type, if it has <c>[RegistersWith]</c>.
+    /// </summary>
+    public RegistersWithModel? RegistersWith => ModuleType.QueryRegistersWithModel();
 }

@@ -5,6 +5,9 @@
 // See LICENSE file in the project root for full license information.
 #nullable enable
 using Deepstaging.Effects;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestApp;
@@ -26,8 +29,11 @@ public interface IHasGreeter
 using Deepstaging.Effects;
 using LanguageExt;
 using LanguageExt.Effects;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using static LanguageExt.Prelude;
 
 namespace TestApp;
@@ -48,6 +54,9 @@ public static partial class GreeterModule
 // See LICENSE file in the project root for full license information.
 #nullable enable
 using Deepstaging.Effects;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestApp;
@@ -69,8 +78,11 @@ public interface IHasNumberProvider
 using Deepstaging.Effects;
 using LanguageExt;
 using LanguageExt.Effects;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using static LanguageExt.Prelude;
 
 namespace TestApp;
@@ -90,6 +102,11 @@ public static partial class GreeterModule
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace TestApp;
 /// <summary>
 /// Effects modules for the <c>GreeterModule</c> aggregate.
@@ -114,6 +131,9 @@ public static partial class GreeterModule
 // See LICENSE file in the project root for full license information.
 #nullable enable
 using Deepstaging.Effects;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TestApp;

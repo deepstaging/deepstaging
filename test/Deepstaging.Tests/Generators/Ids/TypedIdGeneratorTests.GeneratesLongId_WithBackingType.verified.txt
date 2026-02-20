@@ -4,6 +4,11 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace TestApp;
 [global::System.ComponentModel.TypeConverter(typeof(TransactionIdTypeConverter))]
 public partial struct TransactionId : global::System.IEquatable<TransactionId>, global::System.IComparable<TransactionId>, global::System.IFormattable

@@ -29,6 +29,12 @@ public static class RuntimeModelQueries
                 .SelectMany(attr => attr.Capabilities)
                 .ToImmutableArray();
 
+            var registrations = usesAttributes
+                .Select(attr => attr.RegistersWith)
+                .Where(r => r is not null)
+                .Select(r => r!)
+                .ToImmutableArray();
+
             return new RuntimeModel
             {
                 RuntimeTypeName = runtime.Name,
@@ -46,7 +52,8 @@ public static class RuntimeModelQueries
                         .Where(model => model.Instrumented)
                         .Select(model => $"{model.Namespace}.{model.Name}")
                 ],
-                HasInstrumentedModules = modules.Any(model => model.Instrumented)
+                HasInstrumentedModules = modules.Any(model => model.Instrumented),
+                Registrations = registrations
             };
         }
     }

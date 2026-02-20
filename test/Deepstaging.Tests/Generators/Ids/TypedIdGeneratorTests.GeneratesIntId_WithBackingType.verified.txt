@@ -4,6 +4,11 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace TestApp;
 [global::System.ComponentModel.TypeConverter(typeof(OrderIdTypeConverter))]
 public partial struct OrderId : global::System.IEquatable<OrderId>, global::System.IComparable<OrderId>, global::System.IFormattable

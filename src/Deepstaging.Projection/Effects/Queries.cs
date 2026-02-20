@@ -50,5 +50,16 @@ public static class Queries
             ..symbol.GetAttributes<CapabilityAttribute>()
                 .Select(attr => attr.AsQuery<CapabilityAttributeQuery>())
         ];
+
+        /// <summary>
+        /// Gets the <see cref="RegistersWithAttribute"/> instance applied to this symbol, if any.
+        /// </summary>
+        public RegistersWithAttributeQuery? RegistersWithAttribute()
+        {
+            var attrs = symbol.GetAttributes<RegistersWithAttribute>();
+            return attrs.Any()
+                ? attrs.First().AsQuery<RegistersWithAttributeQuery>()
+                : null;
+        }
     }
 }

@@ -45,6 +45,12 @@ public sealed record RuntimeModel
     public bool HasInstrumentedModules { get; init; }
 
     /// <summary>
+    /// DI registration methods from <c>[RegistersWith]</c> attributes on used modules.
+    /// These are aggregated into the bootstrapper's <c>Add{Runtime}()</c> method.
+    /// </summary>
+    public EquatableArray<RegistersWithModel> Registrations { get; init; } = [];
+
+    /// <summary>
     /// The name of the generated composite capabilities interface (e.g., "IRuntimeCapabilities").
     /// </summary>
     public string CapabilitiesInterfaceName => $"I{RuntimeTypeName}Capabilities";
