@@ -3,6 +3,8 @@
 
 namespace Deepstaging.Testing.Generators.Writers;
 
+using Roslyn.Expressions;
+
 /// <summary>
 /// Provides extension methods for generating inner stub classes for each capability
 /// on a test runtime. Each stub implements the capability interface with configurable
@@ -85,10 +87,10 @@ public static class StubWriter
                     .Invoke([..method.Parameters.Select(x => x.Name)])
                     .OrDefault(method switch
                     {
-                        { IsNonGenericTask: true } => TaskRefs.CompletedTask,
-                        { IsNonGenericValueTask: true } => "default",
-                        { IsGenericTask: true } => TaskRefs.FromResult(method.InnerTaskType!, "default!"),
-                        { IsGenericValueTask: true } => TaskRefs.ValueTask(method.InnerTaskType!).New("default!"),
+                        { IsNonGenericTask: true } => TaskExpression.CompletedTask,
+                        { IsNonGenericValueTask: true } => ExpressionRef.From("default"),
+                        { IsGenericTask: true } => TaskExpression.FromResult(method.InnerTaskType!, "default!"),
+                        { IsGenericValueTask: true } => TaskExpression.FromValueTaskResult("default!"),
                         _ => "default!"
                     }))
             .WithXmlDoc(xml => xml

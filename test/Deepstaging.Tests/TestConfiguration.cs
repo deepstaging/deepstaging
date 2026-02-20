@@ -31,7 +31,14 @@ internal static class TestConfiguration
             // HttpClient
             typeof(HttpClient.HttpClientAttribute),
             typeof(System.Net.Http.HttpClient),
-            typeof(System.Text.Json.JsonSerializer)
+            typeof(System.Text.Json.JsonSerializer),
+            // EventQueue
+            typeof(EventQueue.EventQueueAttribute),
+            typeof(EventQueue.EventQueueChannel<>),
+            // Dispatch
+            typeof(Dispatch.DispatchModuleAttribute),
+            typeof(Dispatch.ICommand),
+            typeof(Dispatch.IQuery<>)
         );
     }
 }

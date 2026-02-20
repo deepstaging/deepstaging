@@ -4,6 +4,8 @@
 
 global using System.Runtime.CompilerServices;
 global using Deepstaging.Analyzers.Effects;
+global using Deepstaging.Analyzers.EventQueue;
+global using Deepstaging.Analyzers.Dispatch;
 global using Deepstaging.Analyzers.Ids;
 global using Deepstaging.CodeFixes;
 global using Deepstaging.CodeFixes.Config;

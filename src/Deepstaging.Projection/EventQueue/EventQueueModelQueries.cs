@@ -24,14 +24,16 @@ public static class EventQueueModelQueries
 
             var attribute = attributes.First().AsQuery<EventQueueAttributeQuery>();
 
+            var eventBaseType = attribute.HasEventBaseType ? attribute.EventBaseType : null;
+
             return new EventQueueModel
             {
                 QueueName = attribute.QueueName,
                 ContainerName = container.Name,
                 Namespace = container.Namespace ?? "Global",
                 Accessibility = container.AccessibilityString,
-                EventBaseType = attribute.EventBaseType?.GloballyQualifiedName,
-                EventBaseTypeName = attribute.EventBaseType?.Name,
+                EventBaseType = eventBaseType?.GloballyQualifiedName,
+                EventBaseTypeName = eventBaseType?.Name,
                 Capacity = attribute.Capacity,
                 MaxConcurrency = attribute.MaxConcurrency,
                 TimeoutMilliseconds = attribute.TimeoutMilliseconds,
