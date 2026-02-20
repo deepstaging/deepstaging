@@ -51,9 +51,13 @@ public static class ActivityEffectExtensions
         return Eff<RT, A>.LiftIO(async rt =>
         {
             var resolvedLogger = ResolveLogger(rt, logger, activityName, activitySource);
+            var context = ResolveCorrelationContext(rt);
             using var activity = activitySource?.StartActivity(activityName, ActivityKind.Internal);
 
             ApplyTags(activity, tags);
+            ApplyCorrelationTags(activity, context);
+
+            using var logScope = BeginCorrelationScope(resolvedLogger, context);
 
             var stopwatch = Stopwatch.StartNew();
 
@@ -135,5 +139,33 @@ public static class ActivityEffectExtensions
     private static void LogError(ILogger? logger, Exception ex, string activityName, long durationMs)
     {
         logger?.LogError(ex, "{ActivityName} threw exception after {DurationMs}ms", activityName, durationMs);
+    }
+
+    private static CorrelationContext? ResolveCorrelationContext<RT>(RT rt) =>
+        (rt as IHasCorrelationContext)?.CorrelationContext ?? CorrelationContext.Current;
+
+    private static void ApplyCorrelationTags(Activity? activity, CorrelationContext? context)
+    {
+        if (activity is null || context is null)
+            return;
+
+        if (context.CorrelationId is not null) activity.SetTag("correlation.id", context.CorrelationId);
+        if (context.UserId is not null) activity.SetTag("user.id", context.UserId);
+        if (context.TenantId is not null) activity.SetTag("tenant.id", context.TenantId);
+        if (context.CausationId is not null) activity.SetTag("causation.id", context.CausationId);
+    }
+
+    private static IDisposable? BeginCorrelationScope(ILogger? logger, CorrelationContext? context)
+    {
+        if (logger is null || context is null)
+            return null;
+
+        var state = new Dictionary<string, object?>();
+        if (context.CorrelationId is not null) state["CorrelationId"] = context.CorrelationId;
+        if (context.UserId is not null) state["UserId"] = context.UserId;
+        if (context.TenantId is not null) state["TenantId"] = context.TenantId;
+        if (context.CausationId is not null) state["CausationId"] = context.CausationId;
+
+        return state.Count > 0 ? logger.BeginScope(state) : null;
     }
 }

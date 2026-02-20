@@ -164,8 +164,10 @@ public abstract class ChannelWorker<TEvent> : BackgroundService, IModule
         EventQueueChannel<TEvent>.Envelope envelope,
         CancellationToken cancellationToken)
     {
+        var previousContext = CorrelationContext.Current;
         try
         {
+            CorrelationContext.Current = envelope.Context;
             await DispatchAsync(envelope.Event, cancellationToken).ConfigureAwait(false);
             Interlocked.Increment(ref _processedCount);
             Interlocked.Increment(ref _processingRateWindowCount);
@@ -176,6 +178,10 @@ public abstract class ChannelWorker<TEvent> : BackgroundService, IModule
             Interlocked.Increment(ref _errorCount);
             OnError(envelope.Event, ex);
             envelope.Acknowledgement?.MarkFailed(ex);
+        }
+        finally
+        {
+            CorrelationContext.Current = previousContext;
         }
 
         ResetRateWindowIfNeeded();

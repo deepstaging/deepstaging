@@ -66,7 +66,9 @@ public sealed class EventQueueChannel<TEvent>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     public async ValueTask EnqueueAsync(TEvent @event, CancellationToken cancellationToken = default)
     {
-        await _channel.Writer.WriteAsync(new Envelope(@event, null), cancellationToken).ConfigureAwait(false);
+        await _channel.Writer.WriteAsync(
+            new Envelope(@event, null, CaptureContext()),
+            cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -78,7 +80,9 @@ public sealed class EventQueueChannel<TEvent>
     public async ValueTask<EventAcknowledgement> EnqueueWithAckAsync(TEvent @event, CancellationToken cancellationToken = default)
     {
         var ack = new EventAcknowledgement();
-        await _channel.Writer.WriteAsync(new Envelope(@event, ack), cancellationToken).ConfigureAwait(false);
+        await _channel.Writer.WriteAsync(
+            new Envelope(@event, ack, CaptureContext()),
+            cancellationToken).ConfigureAwait(false);
         return ack;
     }
 
@@ -94,7 +98,24 @@ public sealed class EventQueueChannel<TEvent>
     }
 
     /// <summary>
-    /// Wraps an event with an optional acknowledgement for channel transport.
+    /// Wraps an event with an optional acknowledgement and correlation context for channel transport.
     /// </summary>
-    internal readonly record struct Envelope(TEvent Event, EventAcknowledgement? Acknowledgement);
+    internal readonly record struct Envelope(TEvent Event, EventAcknowledgement? Acknowledgement, CorrelationContext? Context);
+
+    /// <summary>
+    /// Captures the current correlation context for propagation through the channel.
+    /// Sets <see cref="CorrelationContext.CausationId"/> from the current <see cref="Activity"/>
+    /// if not already set, creating a causation chain across async boundaries.
+    /// </summary>
+    private static CorrelationContext? CaptureContext()
+    {
+        var context = CorrelationContext.Current;
+        if (context is null)
+            return null;
+
+        var causation = Activity.Current?.DisplayName;
+        return causation is not null && context.CausationId is null
+            ? context with { CausationId = causation }
+            : context;
+    }
 }
