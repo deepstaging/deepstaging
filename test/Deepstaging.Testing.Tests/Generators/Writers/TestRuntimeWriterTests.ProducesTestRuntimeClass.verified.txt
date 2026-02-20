@@ -4,7 +4,6 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
-using System;
 using TestApp;
 
 namespace TestApp;
@@ -74,7 +73,7 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
     /// <summary>
     /// Configurable stub implementation of <c>IEmailService</c> for testing. Each method delegates to an optional <c>Func</c> property.
     /// </summary>
-    public partial record StubEmailService(global::System.Func<string, string, string, global::System.Threading.Tasks.Task<string>>? onSendAsync = null) : global::TestApp.IEmailService
+    public partial record StubEmailService(global::System.Func<String, String, String, Task>? onSendAsync = null) : global::TestApp.IEmailService
     {
         /// <summary>
         /// Stub implementation that delegates to <see cref="onSendAsync"/> if configured, or returns a default value.
@@ -83,9 +82,9 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
         /// <summary>
         /// Returns a new StubEmailService with the specified behavior configured for the SendAsync method.
         /// </summary>
-        /// <param name="configure">global::System.Func&lt;string, string, string, global::System.Threading.Tasks.Task&lt;string&gt;&gt;</param>
+        /// <param name="configure">global::System.Func&lt;String, String, String, Task&gt;</param>
         /// <returns>A new StubEmailService instance with the configured behavior.</returns>
-        public StubEmailService OnSendAsync(global::System.Func<string, string, string, global::System.Threading.Tasks.Task<string>> configure) => this with
+        public StubEmailService OnSendAsync(global::System.Func<String, String, String, Task> configure) => this with
         {
             onSendAsync = configure
         };
@@ -94,7 +93,7 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
     /// <summary>
     /// Configurable stub implementation of <c>ISlackService</c> for testing. Each method delegates to an optional <c>Func</c> property.
     /// </summary>
-    public partial record StubSlackService(global::System.Func<string, string, global::System.Threading.Tasks.Task>? onPostMessageAsync = null) : global::TestApp.ISlackService
+    public partial record StubSlackService(global::System.Func<String, String, Task>? onPostMessageAsync = null) : global::TestApp.ISlackService
     {
         /// <summary>
         /// Stub implementation that delegates to <see cref="onPostMessageAsync"/> if configured, or returns a default value.
@@ -103,9 +102,9 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
         /// <summary>
         /// Returns a new StubSlackService with the specified behavior configured for the PostMessageAsync method.
         /// </summary>
-        /// <param name="configure">global::System.Func&lt;string, string, global::System.Threading.Tasks.Task&gt;</param>
+        /// <param name="configure">global::System.Func&lt;String, String, Task&gt;</param>
         /// <returns>A new StubSlackService instance with the configured behavior.</returns>
-        public StubSlackService OnPostMessageAsync(global::System.Func<string, string, global::System.Threading.Tasks.Task> configure) => this with
+        public StubSlackService OnPostMessageAsync(global::System.Func<String, String, Task> configure) => this with
         {
             onPostMessageAsync = configure
         };

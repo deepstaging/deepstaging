@@ -13,5 +13,6 @@ global using System.ComponentModel;
 global using System;
 global using Deepstaging.Config;
 global using Deepstaging.Effects;
-global using Deepstaging.Roslyn.Emit.Refs;
+global using Deepstaging.EventQueue;
+global using Deepstaging.Roslyn.Types;
 global using Deepstaging.Roslyn.LanguageExt.Expressions;

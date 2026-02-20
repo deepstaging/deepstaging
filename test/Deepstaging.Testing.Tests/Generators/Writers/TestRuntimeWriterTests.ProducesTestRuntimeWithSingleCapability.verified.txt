@@ -4,7 +4,6 @@
 // Licensed under the Reciprocal Public License 1.5 (RPL-1.5).
 // See LICENSE file in the project root for full license information.
 #nullable enable
-using System;
 using TestApp;
 
 namespace TestApp;
@@ -51,7 +50,7 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
     /// <summary>
     /// Configurable stub implementation of <c>IEmailService</c> for testing. Each method delegates to an optional <c>Func</c> property.
     /// </summary>
-    public partial record StubEmailService(global::System.Func<string, string, string, global::System.Threading.Tasks.Task>? onSendAsync = null) : global::TestApp.IEmailService
+    public partial record StubEmailService(global::System.Func<String, String, String, Task>? onSendAsync = null) : global::TestApp.IEmailService
     {
         /// <summary>
         /// Stub implementation that delegates to <see cref="onSendAsync"/> if configured, or returns a default value.
@@ -60,9 +59,9 @@ public partial class TestAppRuntime : global::TestApp.IAppRuntimeCapabilities, g
         /// <summary>
         /// Returns a new StubEmailService with the specified behavior configured for the SendAsync method.
         /// </summary>
-        /// <param name="configure">global::System.Func&lt;string, string, string, global::System.Threading.Tasks.Task&gt;</param>
+        /// <param name="configure">global::System.Func&lt;String, String, String, Task&gt;</param>
         /// <returns>A new StubEmailService instance with the configured behavior.</returns>
-        public StubEmailService OnSendAsync(global::System.Func<string, string, string, global::System.Threading.Tasks.Task> configure) => this with
+        public StubEmailService OnSendAsync(global::System.Func<String, String, String, Task> configure) => this with
         {
             onSendAsync = configure
         };

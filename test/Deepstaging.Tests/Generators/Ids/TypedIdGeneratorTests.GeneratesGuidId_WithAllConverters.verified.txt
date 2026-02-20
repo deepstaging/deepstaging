@@ -163,7 +163,7 @@ public partial struct CustomerId : global::System.IEquatable<CustomerId>, global
         public override CustomerId Read(ref global::System.Text.Json.Utf8JsonReader reader, global::System.Type typeToConvert, global::System.Text.Json.JsonSerializerOptions options) => new(reader.GetGuid());
         public override void Write(global::System.Text.Json.Utf8JsonWriter writer, CustomerId value, global::System.Text.Json.JsonSerializerOptions options) => writer.WriteStringValue(value.Value);
 #if NET6_0_OR_GREATER
-        public override CustomerId ReadAsPropertyName(ref global::System.Text.Json.Utf8JsonReader reader, global::System.Type typeToConvert, global::System.Text.Json.JsonSerializerOptions options) => new(global::System.Guid.Parse(reader.GetString() ?? throw new global::System.FormatException("The string for the CustomerId property was null")));
+        public override CustomerId ReadAsPropertyName(ref global::System.Text.Json.Utf8JsonReader reader, global::System.Type typeToConvert, global::System.Text.Json.JsonSerializerOptions options) => new(global::System.Guid.Parse(reader.GetString() ?? throw new global::System.FormatException("The string for the CustomerId property was null"));
 #endif
 #if NET6_0_OR_GREATER
         public override void WriteAsPropertyName(global::System.Text.Json.Utf8JsonWriter writer, CustomerId value, global::System.Text.Json.JsonSerializerOptions options) => writer.WritePropertyName(value.Value.ToString());
