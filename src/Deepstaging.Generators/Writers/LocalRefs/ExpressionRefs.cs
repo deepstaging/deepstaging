@@ -5,10 +5,10 @@ namespace Deepstaging.Generators.Writers.LocalRefs;
 /// <summary>
 /// Factory methods for <c>Expression&lt;Func&lt;…&gt;&gt;</c> shortcuts used in effect signatures.
 /// </summary>
-internal static class ExpressionsRefs
+internal static class ExpressionRefs
 {
     /// <summary>Creates an <c>Expression&lt;Func&lt;TSource, TResult&gt;&gt;</c> type reference.</summary>
-    public static TypeRef Expression(TypeRef source, TypeRef result) => LinqRefs.Expression(DelegateRefs.Func(source, result));
+    public static TypeRef Expression(TypeRef source, TypeRef result) => LinqTypes.Expression(DelegateTypes.Func([source], result));
 
     /// <summary><c>Expression&lt;Func&lt;T, TResult&gt;&gt;</c> — binds <c>T</c> as the source type.</summary>
     public static TypeRef Expression(TypeRef result) => Expression("T", result);

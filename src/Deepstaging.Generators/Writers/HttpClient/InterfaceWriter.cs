@@ -29,10 +29,10 @@ public static class InterfaceWriter
     private static MethodBuilder WriteInterfaceMethod(this HttpRequestModel request) =>
         MethodBuilder
             .For(request.AsyncMethodName)
-            .WithReturnType(TaskRefs.Task(request.ReturnType))
+            .WithReturnType(TaskTypes.Task(request.ReturnType))
             .AsAbstract()
             .WithEach(request.Parameters, (b, param) => param.HasDefaultValue
                 ? b.AddParameter(param.Name, param.TypeFqn, p => p.WithDefaultValue(param.DefaultValueExpression!))
                 : b.AddParameter(param.Name, param.TypeFqn))
-            .AddParameter("token", TaskRefs.CancellationToken, p => p.WithDefaultValue("default"));
+            .AddParameter("token", TaskTypes.CancellationToken, p => p.WithDefaultValue("default"));
 }

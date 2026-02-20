@@ -20,9 +20,9 @@ public static class DbSetQueryWriter
             TypeBuilder
                 .Parse($"public sealed class {DbSetRefs.DbSetQueryType} where T : class")
                 .InNamespace("Deepstaging.Effects")
-                .AddUsings(LinqRefs.Namespace, LinqRefs.ExpressionsNamespace)
-                .AddUsings(LanguageExtRefs.Namespace, LanguageExtRefs.PreludeStatic)
-                .AddUsings(TaskRefs.ThreadingNamespace, "Microsoft.EntityFrameworkCore")
+                .AddLanguageExtUsings()
+                .AddUsings(LinqTypes.Namespace, LinqTypes.ExpressionsNamespace)
+                .AddUsings(TaskTypes.Namespace, EntityFrameworkTypes.Namespace)
                 .WithXmlDoc(xml => xml
                     .WithSummary("A composable query builder for DbSet that accumulates LINQ expressions and materializes to an Eff only on terminal operations.")
                     .AddTypeParam("RT", "The runtime type that provides the DbContext capability.")
@@ -47,7 +47,7 @@ public static class DbSetQueryWriter
     private static TypeBuilder AddFilteringMethods(this TypeBuilder builder) => builder
         .AddRegion("Filtering Operations", type => type
             .AddMethod("Where", m => m
-                .AddParameter("predicate", ExpressionsRefs.Predicate)
+                .AddParameter("predicate", ExpressionRefs.Predicate)
                 .WithReturnType(DbSetRefs.DbSetQueryType)
                 .WithExpressionBody(DbSetRefs.DbSetQueryType.New("rt => query(rt).Where(predicate)"))
                 .WithXmlDoc(xml => xml
@@ -59,7 +59,7 @@ public static class DbSetQueryWriter
         .AddRegion("Ordering Operations", type => type
             .AddMethod("OrderBy", m => m
                 .AddTypeParameter("TKey")
-                .AddParameter("keySelector", ExpressionsRefs.Expression("TKey"))
+                .AddParameter("keySelector", ExpressionRefs.Expression("TKey"))
                 .WithReturnType(DbSetRefs.OrderedDbSetQueryType)
                 .WithExpressionBody($"new {DbSetRefs.OrderedDbSetQueryType}(rt => query(rt).OrderBy(keySelector))")
                 .WithXmlDoc(xml => xml
@@ -68,7 +68,7 @@ public static class DbSetQueryWriter
                     .WithReturns("A new ordered query instance.")))
             .AddMethod("OrderByDescending", m => m
                 .AddTypeParameter("TKey")
-                .AddParameter("keySelector", ExpressionsRefs.Expression("TKey"))
+                .AddParameter("keySelector", ExpressionRefs.Expression("TKey"))
                 .WithReturnType(DbSetRefs.OrderedDbSetQueryType)
                 .WithExpressionBody($"new {DbSetRefs.OrderedDbSetQueryType}(rt => query(rt).OrderByDescending(keySelector))")
                 .WithXmlDoc(xml => xml
@@ -80,7 +80,7 @@ public static class DbSetQueryWriter
         .AddRegion("Eager Loading Operations", type => type
             .AddMethod("Include", m => m
                 .AddTypeParameter("TProperty")
-                .AddParameter("navigationPropertyPath", ExpressionsRefs.Expression("TProperty"))
+                .AddParameter("navigationPropertyPath", ExpressionRefs.Expression("TProperty"))
                 .WithReturnType(DbSetRefs.DbSetQueryType)
                 .WithExpressionBody($"new {DbSetRefs.DbSetQueryType}(rt => query(rt).Include(navigationPropertyPath))")
                 .WithXmlDoc(xml => xml
@@ -124,7 +124,7 @@ public static class DbSetQueryWriter
     private static TypeBuilder AddProjectionMethods(this TypeBuilder builder) => builder
         .AddRegion("Projection Operations", type => type
             .AddMethod(MethodBuilder
-                .Parse($"public {DbSetRefs.DbSetQueryOf("TResult")} Select<TResult>({ExpressionsRefs.Expression("TResult")} selector) where TResult : class")
+                .Parse($"public {DbSetRefs.DbSetQueryOf("TResult")} Select<TResult>({ExpressionRefs.Expression("TResult")} selector) where TResult : class")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Projects each element to a new form.")
                     .AddParam("selector", "The projection expression.")
@@ -132,7 +132,7 @@ public static class DbSetQueryWriter
                 .WithExpressionBody($"new {DbSetRefs.DbSetQueryOf("TResult")}(rt => query(rt).Select(selector))"))
             .AddMethod(MethodBuilder
                 .Parse(
-                    $"public {DbSetRefs.DbSetQueryOf("TResult")} SelectMany<TResult>({ExpressionsRefs.Expression(CollectionRefs.IEnumerable("TResult"))} selector) where TResult : class")
+                    $"public {DbSetRefs.DbSetQueryOf("TResult")} SelectMany<TResult>({ExpressionRefs.Expression(CollectionTypes.Enumerable("TResult"))} selector) where TResult : class")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Projects and flattens sequences.")
                     .AddParam("selector", "The projection expression.")
@@ -179,7 +179,7 @@ public static class DbSetQueryWriter
         return builder.AddRegion("Terminal Effects", type => type
             .AddCommonTerminalMethods()
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.OptionT} FirstOrNoneAsync({ExpressionsRefs.Predicate} predicate, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.OptionT} FirstOrNoneAsync({ExpressionRefs.Predicate} predicate, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the first element matching the predicate, or None if not found.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
@@ -187,14 +187,14 @@ public static class DbSetQueryWriter
                     .WithReturns("An effect that yields the matching element wrapped in an Option, or None."))
                 .WithExpressionBody(optionIO.AsyncOptional("query(rt).FirstOrDefaultAsync(predicate, token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.OptionT} SingleOrNoneAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.OptionT} SingleOrNoneAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the single element, or None if empty. Throws if more than one element exists.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the single element wrapped in an Option, or None."))
                 .WithExpressionBody(optionIO.AsyncOptional("query(rt).SingleOrDefaultAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.OptionT} SingleOrNoneAsync({ExpressionsRefs.Predicate} predicate, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.OptionT} SingleOrNoneAsync({ExpressionRefs.Predicate} predicate, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the single element matching the predicate, or None. Throws if more than one element matches.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
@@ -202,14 +202,14 @@ public static class DbSetQueryWriter
                     .WithReturns("An effect that yields the matching element wrapped in an Option, or None."))
                 .WithExpressionBody(optionIO.AsyncOptional("query(rt).SingleOrDefaultAsync(predicate, token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Int} CountAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Int} CountAsync({TaskTypes.CancellationToken} token = default)")
                 .WithExpressionBody(intIO.Async("query(rt).CountAsync(token)"))
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the number of elements.")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Int} CountAsync({ExpressionsRefs.Predicate} predicate, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Int} CountAsync({ExpressionRefs.Predicate} predicate, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements matching the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
@@ -217,21 +217,21 @@ public static class DbSetQueryWriter
                     .WithReturns("An effect that yields the number of matching elements."))
                 .WithExpressionBody(intIO.Async("query(rt).CountAsync(predicate, token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Long} LongCountAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Long} LongCountAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the count of elements as a 64-bit integer.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the number of elements as a <see langword=\"long\" />."))
                 .WithExpressionBody(longIO.Async("query(rt).LongCountAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Bool} AnyAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Bool} AnyAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether the sequence contains any elements.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields <see langword=\"true\" /> if the sequence contains any elements."))
                 .WithExpressionBody(boolIO.Async("query(rt).AnyAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Bool} AnyAsync({ExpressionsRefs.Predicate} predicate, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Bool} AnyAsync({ExpressionRefs.Predicate} predicate, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether any element satisfies the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
@@ -239,7 +239,7 @@ public static class DbSetQueryWriter
                     .WithReturns("An effect that yields <see langword=\"true\" /> if any element matches the predicate."))
                 .WithExpressionBody(boolIO.Async("query(rt).AnyAsync(predicate, token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.Bool} AllAsync({ExpressionsRefs.Predicate} predicate, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.Bool} AllAsync({ExpressionRefs.Predicate} predicate, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Determines whether all elements satisfy the predicate.")
                     .AddParam("predicate", "The LINQ expression representing the filter condition.")
@@ -255,14 +255,14 @@ public static class DbSetQueryWriter
 
         return builder.AddRegion("Aggregate Operations", type => type
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.T} MaxAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.T} MaxAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the maximum value in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the maximum value."))
                 .WithExpressionBody(tIO.AsyncNonNull("query(rt).MaxAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.TResult} MaxAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.TResult} MaxAsync<TResult>({ExpressionRefs.Expression("TResult")} selector, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the maximum value of the selected projection.")
                     .AddTypeParam("TResult", "The type of the projected value.")
@@ -271,14 +271,14 @@ public static class DbSetQueryWriter
                     .WithReturns("An effect that yields the maximum projected value."))
                 .WithExpressionBody(tResultIO.AsyncNonNull("query(rt).MaxAsync(selector, token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.T} MinAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.T} MinAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the minimum value in the sequence.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields the minimum value."))
                 .WithExpressionBody(tIO.AsyncNonNull("query(rt).MinAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.TResult} MinAsync<TResult>({ExpressionsRefs.Expression("TResult")} selector, {TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.TResult} MinAsync<TResult>({ExpressionRefs.Expression("TResult")} selector, {TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the minimum value of the selected projection.")
                     .AddTypeParam("TResult", "The type of the projected value.")
@@ -298,21 +298,21 @@ public static class DbSetQueryWriter
 
         return builder
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.ListT} ToListAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.ListT} ToListAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Executes the query and returns all results as a list.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields a list of all matching elements."))
                 .WithExpressionBody(listIO.Async("query(rt).ToListAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.ArrayT} ToArrayAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.ArrayT} ToArrayAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Executes the query and returns all results as an array.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
                     .WithReturns("An effect that yields an array of all matching elements."))
                 .WithExpressionBody(arrayIO.Async("query(rt).ToArrayAsync(token)")))
             .AddMethod(MethodBuilder
-                .Parse($"public {EffRT.OptionT} FirstOrNoneAsync({TaskRefs.CancellationToken} token = default)")
+                .Parse($"public {EffRT.OptionT} FirstOrNoneAsync({TaskTypes.CancellationToken} token = default)")
                 .WithXmlDoc(xml => xml
                     .WithSummary("Returns the first element, or None if the sequence is empty.")
                     .AddParam("token", "A cancellation token to observe while waiting for the task to complete.")
@@ -329,7 +329,7 @@ public static class DbSetQueryWriter
         .AddRegion("Ordering Operations", type => type
             .AddMethod("ThenBy", m => m
                 .AddTypeParameter("TKey")
-                .AddParameter("keySelector", ExpressionsRefs.Expression("TKey"))
+                .AddParameter("keySelector", ExpressionRefs.Expression("TKey"))
                 .WithReturnType(DbSetRefs.OrderedDbSetQueryType)
                 .WithXmlDoc(xml => xml
                     .WithSummary("Performs a subsequent ordering in ascending order.")
@@ -338,7 +338,7 @@ public static class DbSetQueryWriter
                 .WithExpressionBody($"new {DbSetRefs.OrderedDbSetQueryType}(rt => query(rt).ThenBy(keySelector))"))
             .AddMethod("ThenByDescending", m => m
                 .AddTypeParameter("TKey")
-                .AddParameter("keySelector", ExpressionsRefs.Expression("TKey"))
+                .AddParameter("keySelector", ExpressionRefs.Expression("TKey"))
                 .WithReturnType(DbSetRefs.OrderedDbSetQueryType)
                 .WithXmlDoc(xml => xml
                     .WithSummary("Performs a subsequent ordering in descending order.")

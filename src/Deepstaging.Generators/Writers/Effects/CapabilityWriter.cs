@@ -19,7 +19,7 @@ public static class CapabilityWriter
             TypeBuilder
                 .Interface(model.Interface)
                 .InNamespace(ns)
-                .AddUsings("Deepstaging.Effects", TaskRefs.Namespace)
+                .AddUsings("Deepstaging.Effects", TaskTypes.Namespace)
                 .AddProperty(model.PropertyName, model.DependencyType.CodeName, builder => builder.AsReadOnly())
                 .WithXmlDoc(xml => xml
                     .WithSummary($"Runtime capability interface for the {model.DependencyType.Name} dependency."))

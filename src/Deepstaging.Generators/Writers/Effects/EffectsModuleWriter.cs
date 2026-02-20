@@ -19,7 +19,7 @@ public static partial class EffectsModuleWriter
             TypeBuilder
                 .Interface(model.Capability.Interface)
                 .InNamespace(model.Namespace)
-                .AddUsings("Deepstaging.Effects", TaskRefs.Namespace)
+                .AddUsings("Deepstaging.Effects", TaskTypes.Namespace)
                 .AddProperty(model.Capability.PropertyName, model.TargetType, builder => builder.AsReadOnly())
                 .WithXmlDoc(xml => xml
                     .WithSummary($"Runtime capability interface for the {model.Capability.DependencyType.Name} dependency of the {model.Name} effects module.")
@@ -42,8 +42,8 @@ public static partial class EffectsModuleWriter
 
             return TypeBuilder
                 .Parse($"public static partial class {model.EffectsContainerName}")
-                .AddUsings(SystemRefs.Namespace, "Deepstaging.Effects")
-                .AddUsings(DiagnosticsRefs.Namespace, CollectionRefs.Namespace)
+                .AddUsings("Deepstaging.Effects")
+                .AddUsings(DiagnosticsTypes.Namespace, CollectionTypes.Namespace)
                 .AddLanguageExtUsings()
                 .InNamespace(model.Namespace)
                 .AddNestedType(module)
@@ -53,7 +53,7 @@ public static partial class EffectsModuleWriter
 
     internal static TypeBuilder AddInstrumentationActivitySource(this TypeBuilder builder, EffectsModuleModel module) => builder
         .If(module.Instrumented, b => b
-            .AddUsing(DiagnosticsRefs.Namespace)
-            .AddField(FieldBuilder.Parse($"private static readonly {DiagnosticsRefs.ActivitySource} ActivitySource")
+            .AddUsing(DiagnosticsTypes.Namespace)
+            .AddField(FieldBuilder.Parse($"private static readonly {DiagnosticsTypes.ActivitySource} ActivitySource")
                 .WithInitializer($"""new("{module.Namespace}.{module.Name}", "1.0.0")""")));
 }

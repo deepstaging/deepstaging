@@ -5,8 +5,8 @@
 namespace Deepstaging.Generators.Writers.Effects;
 
 using LocalRefs;
-using static CollectionRefs;
-using static LanguageExtRefs;
+using static CollectionTypes;
+using static LanguageExtTypes;
 
 /// <summary>
 /// DbContext-specific effect emissions (SaveChanges, DbSet methods).
@@ -15,7 +15,7 @@ public static partial class EffectsModuleWriter
 {
     private static TypeBuilder AddDbContextEffects(this TypeBuilder builder, EffectsModuleModel model) =>
         builder.If(model.IsDbContext, type => type
-            .AddUsing(EntityFrameworkRefs.Namespace)
+            .AddUsing(EntityFrameworkTypes.Namespace)
             .AddMethod(model.SaveChangesAsyncMethod().InstrumentMethod(model))
             .WithEach(model.DbSets, (container, dbSet) => container
                 .AddNestedType(CreateDbSetModule(model, dbSet))));
@@ -30,8 +30,8 @@ public static partial class EffectsModuleWriter
             .AddMethod(model.FindAsyncMethod(dbSet).InstrumentMethod(model, dbSet))
             .AddMethod(model.ToListAsyncMethod(dbSet).InstrumentMethod(model, dbSet))
             .AddMethod(model.FirstOrNoneAsyncMethod(dbSet).InstrumentMethod(model, dbSet))
-            .AddMethod(model.CountAsyncMethod(dbSet).InstrumentMethod(model, dbSet))
-            .AddMethod(model.AnyAsyncMethod(dbSet).InstrumentMethod(model, dbSet))
+            .AddMethod(model.CountAsyncMethod().InstrumentMethod(model, dbSet))
+            .AddMethod(model.AnyAsyncMethod().InstrumentMethod(model, dbSet))
             // Modification methods
             .AddMethod(model.AddMethod(dbSet).InstrumentMethod(model, dbSet))
             .AddMethod(model.AddRangeMethod(dbSet).InstrumentMethod(model, dbSet))
@@ -55,7 +55,7 @@ public static partial class EffectsModuleWriter
         .Parse(
             $"""
              public static {EffRT.Of("int")} SaveChangesAsync<RT>(
-                {TaskRefs.CancellationToken} token = default
+                {TaskTypes.CancellationToken} token = default
              ) where RT : {model.Capability.Interface} 
              """)
         .WithXmlDoc(xml => xml
@@ -103,7 +103,7 @@ public static partial class EffectsModuleWriter
         .Parse(
             $"""
              public static {EffRT.Of(List(dbSet.EntityType))} ToListAsync<RT>(
-                {TaskRefs.CancellationToken} token = default
+                {TaskTypes.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
         .WithXmlDoc(xml => xml
@@ -117,8 +117,8 @@ public static partial class EffectsModuleWriter
         .Parse(
             $"""
              public static {EffRT.Of(Option(dbSet.EntityType))} FirstOrNoneAsync<RT>(
-                {ExpressionsRefs.Expression(dbSet.EntityType, "bool")} predicate,
-                {TaskRefs.CancellationToken} token = default
+                {ExpressionRefs.Expression(dbSet.EntityType, "bool")} predicate,
+                {TaskTypes.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
         .WithXmlDoc(xml => xml
@@ -129,11 +129,11 @@ public static partial class EffectsModuleWriter
             .WithReturns("An effect that yields the matching entity wrapped in an Option, or None if not found."))
         .WithExpressionBody("Query<RT>().FirstOrNoneAsync(predicate, token)");
 
-    private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
+    private static MethodBuilder CountAsyncMethod(this EffectsModuleModel model) => MethodBuilder
         .Parse(
             $"""
              public static {EffRT.Of("int")} CountAsync<RT>(
-                {TaskRefs.CancellationToken} token = default
+                {TaskTypes.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
         .WithXmlDoc(xml => xml
@@ -143,11 +143,11 @@ public static partial class EffectsModuleWriter
             .WithReturns("An effect that yields the number of entities."))
         .WithExpressionBody("Query<RT>().CountAsync(token)");
 
-    private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model, DbSetModel dbSet) => MethodBuilder
+    private static MethodBuilder AnyAsyncMethod(this EffectsModuleModel model) => MethodBuilder
         .Parse(
             $"""
              public static {EffRT.Of("bool")} AnyAsync<RT>(
-                {TaskRefs.CancellationToken} token = default
+                {TaskTypes.CancellationToken} token = default
              ) where RT : {model.Capability.Interface}
              """)
         .WithXmlDoc(xml => xml

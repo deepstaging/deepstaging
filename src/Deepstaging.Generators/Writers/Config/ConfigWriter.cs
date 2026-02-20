@@ -33,10 +33,10 @@ public static class ConfigWriter
                 .WithAccessibility(model.Accessibility)
                 .Implements(interfaceName)
                 .InNamespace(model.Namespace)
-                .AddUsing(ConfigurationRefs.Namespace)
+                .AddUsing(ConfigurationTypes.Namespace)
                 .WithPrimaryConstructor(c => c
-                    .AddParameter("configuration", ConfigurationRefs.IConfiguration))
-                .AddField("_section", ConfigurationRefs.IConfigurationSection, f => f
+                    .AddParameter("configuration", ConfigurationTypes.IConfiguration))
+                .AddField("_section", ConfigurationTypes.IConfigurationSection, f => f
                     .AsReadonly()
                     .WithInitializer($"configuration.GetSection(\"{model.Section}\")"))
                 .WithEach(model.ExposedConfigurationTypes, (builder, configType) => builder
@@ -58,11 +58,11 @@ public static class ConfigWriter
         TypeBuilder
             .Parse($"public static class {model.TypeName}Extensions")
             .InNamespace(model.Namespace)
-            .AddUsings(ConfigurationRefs.Namespace, DependencyInjectionRefs.Namespace)
+            .AddUsings(ConfigurationTypes.Namespace, DependencyInjectionTypes.Namespace)
             .AddMethod(MethodBuilder.Parse(
                     $"""
-                     public static {ConfigurationRefs.IConfigurationBuilder} Configure{model.TypeName}Sources(
-                         this {ConfigurationRefs.IConfigurationBuilder} builder,
+                     public static {ConfigurationTypes.IConfigurationBuilder} Configure{model.TypeName}Sources(
+                         this {ConfigurationTypes.IConfigurationBuilder} builder,
                          string? settingsPath = null
                      )
                      """)
@@ -82,9 +82,9 @@ public static class ConfigWriter
                     .WithReturns("The configuration builder for fluent chaining.")))
             .AddMethod(MethodBuilder.Parse(
                     $"""
-                     public static {DependencyInjectionRefs.IServiceCollection} Add{model.TypeName}(
-                         this {DependencyInjectionRefs.IServiceCollection} services,
-                         {ConfigurationRefs.IConfiguration} configuration
+                     public static {DependencyInjectionTypes.IServiceCollection} Add{model.TypeName}(
+                         this {DependencyInjectionTypes.IServiceCollection} services,
+                         {ConfigurationTypes.IConfiguration} configuration
                      )
                      """)
                 .WithBody(body => body

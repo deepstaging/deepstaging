@@ -5,6 +5,7 @@ namespace Deepstaging.Generators.Writers.Ids;
 
 using Projection.Ids.Models;
 using Roslyn.Emit.Converters;
+using Roslyn.Expressions;
 
 internal static class JsonConverterWriter
 {
@@ -49,18 +50,23 @@ internal static class JsonConverterWriter
             _ => throw new ArgumentOutOfRangeException(nameof(backingType), backingType, null)
         };
 
-    private static string GetReadAsPropertyNameExpression(string typeName, BackingType backingType) =>
-        backingType switch
+    static void Test()
+    {
+    }
+
+
+    private static string GetReadAsPropertyNameExpression(string typeName, BackingType backingType)
+    {
+        var throwExpression = ExceptionExpression.ThrowNew(ExceptionTypes.Format, $"\"The string for the {typeName} property was null\"");
+
+        return backingType switch
         {
-            BackingType.Guid =>
-                $"new(global::System.Guid.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
-            BackingType.Int =>
-                $"new(int.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
-            BackingType.Long =>
-                $"new(long.Parse(reader.GetString() ?? throw new {ExceptionRefs.Format}(\"The string for the {typeName} property was null\")))",
-            BackingType.String => "new(reader.GetString()!)",
-            _ => throw new ArgumentOutOfRangeException(nameof(backingType), backingType, null)
+            BackingType.Guid => $"new(global::System.Guid.Parse(reader.GetString() ?? {throwExpression})",
+            BackingType.Int => $"new(int.Parse(reader.GetString() ?? {throwExpression})",
+            BackingType.Long => $"new(long.Parse(reader.GetString() ?? {throwExpression})",
+            BackingType.String => "new(reader.GetString()!)", _ => throw new ArgumentOutOfRangeException(nameof(backingType), backingType, null)
         };
+    }
 
     private static string GetWriteAsPropertyNameExpression(BackingType backingType, PropertyBuilder valueProperty) =>
         backingType switch

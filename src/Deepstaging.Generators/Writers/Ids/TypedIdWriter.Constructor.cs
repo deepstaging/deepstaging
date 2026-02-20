@@ -34,6 +34,6 @@ internal static class ConstructorWriter
                 .When(Directives.NotNet7OrGreater)
                 .AddParameter("value", backingTypeName)
                 .WithBody(b => b
-                    .AddStatement($"Value = value ?? throw {ExceptionRefs.ArgumentNull.New("nameof(value)")}")));
+                    .AddStatement($"Value = value ?? throw {ExceptionTypes.ArgumentNull.New("nameof(value)")}")));
     }
 }

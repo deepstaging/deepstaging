@@ -63,17 +63,17 @@ public static class RuntimeBootstrapperWriter
 
     private static MethodBuilder BootstrapMethod(this RuntimeModel model, TypeRef optionsType)
     {
-        var configureDelegate = DelegateRefs.Action(optionsType);
+        var configureDelegate = DelegateTypes.Action(optionsType);
 
         return MethodBuilder
             .Parse(
                 $"""
-                 public static {DependencyInjectionRefs.IServiceCollection} Add{model.RuntimeTypeName}(
-                     this {DependencyInjectionRefs.IServiceCollection} services, 
+                 public static {DependencyInjectionTypes.IServiceCollection} Add{model.RuntimeTypeName}(
+                     this {DependencyInjectionTypes.IServiceCollection} services, 
                      {configureDelegate.Nullable()} configure = null
                  )
                  """)
-            .AddUsings(SystemRefs.Namespace, TaskRefs.Namespace, DependencyInjectionRefs.Namespace, "OpenTelemetry.Trace")
+            .AddUsings(TaskTypes.Namespace, DependencyInjectionTypes.Namespace, "OpenTelemetry.Trace")
             .WithBody(body => body
                 .AddStatement($"var options = new {optionsType}()")
                 .AddStatement("configure?.Invoke(options)")
@@ -107,7 +107,7 @@ public static class RuntimeBootstrapperWriter
 
         if (model.HasInstrumentedModules)
         {
-            dependencies.Add($"var loggerFactory = options.Logging ? sp.GetRequiredService<{LoggingRefs.ILoggerFactory}>() : null;");
+            dependencies.Add($"var loggerFactory = options.Logging ? sp.GetRequiredService<{LoggingTypes.ILoggerFactory}>() : null;");
             capabilities.Add("loggerFactory");
         }
 
