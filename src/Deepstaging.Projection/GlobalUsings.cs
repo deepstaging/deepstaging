@@ -12,6 +12,7 @@ global using System.Collections.Immutable;
 global using System.ComponentModel;
 global using System;
 global using Deepstaging.Config;
+global using Deepstaging.Dispatch;
 global using Deepstaging.Effects;
 global using Deepstaging.EventQueue;
 global using Deepstaging.Roslyn.Types;
