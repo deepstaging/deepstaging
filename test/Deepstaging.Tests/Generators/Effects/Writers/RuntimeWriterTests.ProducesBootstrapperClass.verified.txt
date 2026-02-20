@@ -50,6 +50,17 @@ public static class RuntimeBootstrapper
     }
 
     /// <summary>
+    /// Eagerly resolves all services required by the <c>Runtime</c> runtime. Call at startup (e.g., in Program.cs) to fail fast if any dependency is missing.
+    /// </summary>
+    /// <param name="services">The service provider to validate against.</param>
+    public static void ValidateRuntime(global::System.IServiceProvider services)
+    {
+        services.GetRequiredService<global::TestApp.IEmailService>();
+        services.GetRequiredService<global::TestApp.ISlackService>();
+        services.GetRequiredService<global::Microsoft.Extensions.Logging.ILoggerFactory>();
+    }
+
+    /// <summary>
     /// Configuration options for bootstrapping the <c>Runtime</c> runtime.
     /// </summary>
     public sealed class RuntimeOptions

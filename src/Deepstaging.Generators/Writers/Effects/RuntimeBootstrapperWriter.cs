@@ -22,6 +22,7 @@ public static class RuntimeBootstrapperWriter
                 .WithXmlDoc($"Provides dependency injection bootstrapping for the <c>{model.RuntimeTypeName}</c> runtime.")
                 .AddNestedType(model.OptionsClass(optionsType))
                 .AddMethod(model.BootstrapMethod(optionsType))
+                .AddMethod(model.ValidateMethod())
                 .Emit();
         }
     }
@@ -163,5 +164,27 @@ public static class RuntimeBootstrapperWriter
         }
 
         return builder;
+    }
+
+    private static MethodBuilder ValidateMethod(this RuntimeModel model)
+    {
+        return MethodBuilder
+            .Parse($"public static void Validate{model.RuntimeTypeName}({DependencyInjectionTypes.IServiceProvider} services)")
+            .AddUsings(DependencyInjectionTypes.Namespace)
+            .WithBody(body =>
+            {
+                foreach (var capability in model.Capabilities)
+                    body = body.AddStatement($"services.GetRequiredService<{capability.DependencyType.CodeName}>()");
+
+                if (model.HasInstrumentedModules)
+                    body = body.AddStatement($"services.GetRequiredService<{LoggingTypes.ILoggerFactory}>()");
+
+                return body;
+            })
+            .WithXmlDoc(xml => xml
+                .WithSummary(
+                    $"Eagerly resolves all services required by the <c>{model.RuntimeTypeName}</c> runtime. " +
+                    "Call at startup (e.g., in Program.cs) to fail fast if any dependency is missing.")
+                .AddParam("services", "The service provider to validate against."));
     }
 }
