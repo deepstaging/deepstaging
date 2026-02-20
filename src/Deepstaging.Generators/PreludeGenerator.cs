@@ -15,13 +15,12 @@ public sealed class PreludeGenerator : IIncrementalGenerator
     {
         context.RegisterPostInitializationOutput(ctx =>
         {
-            
             var result = GlobalUsings.Emit(
                 "Deepstaging.Effects",
                 LanguageExtTypes.Namespace,
                 CollectionTypes.Namespace,
                 TaskTypes.Namespace,
-                NamespaceRef.From("System.Linq"));
+                LinqTypes.Namespace);
 
             if (result.IsValid(out var valid))
                 ctx.AddSource("Deepstaging.GlobalUsings.g.cs", valid.Code);

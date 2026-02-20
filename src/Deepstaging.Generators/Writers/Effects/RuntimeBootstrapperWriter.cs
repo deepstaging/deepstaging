@@ -30,6 +30,7 @@ public static class RuntimeBootstrapperWriter
         .Parse($"public sealed class {optionsType}")
         .WithXmlDoc($"Configuration options for bootstrapping the <c>{model.RuntimeTypeName}</c> runtime.")
         .AddTracingOption(optionsType)
+        .AddMetricsOption(model, optionsType)
         .AddLoggingOption(model, optionsType);
 
     private static TypeBuilder AddTracingOption(this TypeBuilder builder, TypeRef optionsType) => builder
@@ -61,6 +62,21 @@ public static class RuntimeBootstrapperWriter
                     .AddStatement("Logging = true")
                     .AddReturn("this"))));
 
+    private static TypeBuilder AddMetricsOption(this TypeBuilder builder, RuntimeModel model, TypeRef optionsType) => builder
+        .If(model.HasInstrumentedModules, b => b
+            .AddProperty("Metrics", "bool", prop => prop
+                .WithAutoPropertyAccessors()
+                .WithXmlDoc("Gets or sets whether OpenTelemetry metrics are enabled for effect operations."))
+            .AddMethod(MethodBuilder
+                .For("EnableMetrics")
+                .WithReturnType(optionsType)
+                .WithXmlDoc(xml => xml
+                    .WithSummary("Enables OpenTelemetry metrics for effect operations.")
+                    .WithReturns("This options instance for fluent chaining."))
+                .WithBody(body => body
+                    .AddStatement("Metrics = true")
+                    .AddReturn("this"))));
+
     private static MethodBuilder BootstrapMethod(this RuntimeModel model, TypeRef optionsType)
     {
         var configureDelegate = DelegateTypes.Action(optionsType);
@@ -73,13 +89,14 @@ public static class RuntimeBootstrapperWriter
                      {configureDelegate.Nullable()} configure = null
                  )
                  """)
-            .AddUsings(TaskTypes.Namespace, DependencyInjectionTypes.Namespace, "OpenTelemetry.Trace")
+            .AddUsings(TaskTypes.Namespace, DependencyInjectionTypes.Namespace, "OpenTelemetry.Trace", "OpenTelemetry.Metrics")
             .WithBody(body => body
                 .AddStatement($"var options = new {optionsType}()")
                 .AddStatement("configure?.Invoke(options)")
                 .ConfigureModuleRegistrations(model)
                 .ConfigureRuntimeRegistration(model)
                 .ConfigureTracingRegistration(model.ActivitySources)
+                .ConfigureMetricsRegistration(model)
                 .AddReturn("services"))
             .WithXmlDoc(xml => xml
                 .WithSummary($"Registers the <c>{model.RuntimeTypeName}</c> runtime and its dependencies with the service collection.")
@@ -95,6 +112,12 @@ public static class RuntimeBootstrapperWriter
                 var addSourceCalls = string.Join("", activitySources.Select(source => $".AddSource(\"{source}\")"));
                 return b.AddStatement($"services.AddOpenTelemetry().WithTracing(tracing => tracing{addSourceCalls})");
             }));
+
+    private static BodyBuilder ConfigureMetricsRegistration(this BodyBuilder builder, RuntimeModel model) => builder
+        .If(model.HasInstrumentedModules, body => body
+            .AddIf("options.Metrics", b => b
+                .AddStatement($"services.AddSingleton(new global::Deepstaging.Effects.EffectMetrics(\"{model.Namespace}.{model.RuntimeTypeName}\"))")
+                .AddStatement("services.AddOpenTelemetry().WithMetrics(metrics => metrics.AddMeter(\"Deepstaging.Effects\"))")));
 
     private static BodyBuilder ConfigureRuntimeRegistration(this BodyBuilder builder, RuntimeModel model)
     {

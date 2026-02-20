@@ -5,6 +5,7 @@
 // See LICENSE file in the project root for full license information.
 #nullable enable
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,12 @@ public static class RuntimeBootstrapper
             services.AddOpenTelemetry().WithTracing(tracing => tracing.AddSource("TestApp.EmailService").AddSource("TestApp.SlackService"));
         }
 
+        if (options.Metrics)
+        {
+            services.AddSingleton(new global::Deepstaging.Effects.EffectMetrics("TestApp.Runtime"));
+            services.AddOpenTelemetry().WithMetrics(metrics => metrics.AddMeter("Deepstaging.Effects"));
+        }
+
         return services;
     }
 
@@ -52,6 +59,10 @@ public static class RuntimeBootstrapper
         /// </summary>
         public bool Tracing { get; set; }
         /// <summary>
+        /// Gets or sets whether OpenTelemetry metrics are enabled for effect operations.
+        /// </summary>
+        public bool Metrics { get; set; }
+        /// <summary>
         /// Gets or sets whether structured logging is enabled for effect instrumentation.
         /// </summary>
         public bool Logging { get; set; }
@@ -63,6 +74,16 @@ public static class RuntimeBootstrapper
         public RuntimeOptions EnableTracing()
         {
             Tracing = true;
+            return this;
+        }
+
+        /// <summary>
+        /// Enables OpenTelemetry metrics for effect operations.
+        /// </summary>
+        /// <returns>This options instance for fluent chaining.</returns>
+        public RuntimeOptions EnableMetrics()
+        {
+            Metrics = true;
             return this;
         }
 
