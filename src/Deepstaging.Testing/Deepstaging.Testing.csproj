@@ -64,7 +64,7 @@
             Deepstaging.dll                         (generator dependency — for reading attributes)
             Deepstaging.Projection.dll              (generator dependency — for querying models)
             Deepstaging.Roslyn.dll                  (generator dependency)
-            Deepstaging.Roslyn.Workspace.dll        (codefix dependency)
+            Deepstaging.Roslyn.CodeFixes.dll       (codefix dependency)
     -->
 
     <PropertyGroup>
@@ -95,7 +95,7 @@
         <!-- Code fixes -->
         <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Testing.CodeFixes.dll"
               Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.Workspace.dll"
+        <None Include="$(BundleArtifactsPath)/Deepstaging.Testing.CodeFixes/bin/$(Configuration)/netstandard2.0/Deepstaging.Roslyn.CodeFixes.dll"
               Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
